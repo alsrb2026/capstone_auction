@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="@{'옥션월드 - 경매 목록'}"></title>
+</head>
+<body>
+<div class="container">
+    <table class="table">
+        <tr class="text-center">
+            <th scope="col">#</th>
+            <th scope="col">상품명</th>
+            <th scope="col">제목</th>
+            <th scope="col">시작가</th>
+            <th scope="col">상태</th>
+        </tr>
+        <tbody>
+        <tr class="text-center" th:each="item : ${items}">
+            <th scope="row">
+                <span th:text="${item.id}"></span>
+            </th>
+            <td>
+                <a href="#" th:href="@{/items/{id}/auction (id=${item.id})}">
+                    <span th:text="${item.name}"></span>
+                </a>
+            </td>
+            <td>
+                <span th:text="${item.title}"></span>
+            </td>
+            <td>
+                <span th:text="${item.startBid}"></span>
+            </td>
+            <td>
+                <span th:text="${item.status}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

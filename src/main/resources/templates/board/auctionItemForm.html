@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="@{'옥션월드'}"></title>
+</head>
+<body onload="check()">
+<div class="container">
+    <form th:object="${form}" method="post">
+        <input type="hidden" th:field="*{id}" />
+            상품명 : <h5 id="name" th:text="*{name}"></h5>
+        <input type="hidden" th:field="*{name}">
+        <input type="hidden" th:field="*{title}">
+        설명 : <p th:text="*{description}"></p>
+        <input type="hidden" th:field="*{description}">
+        현재 상태 : <p id="status" th:text="*{status}"></p>
+        <input type="hidden" th:field="*{status}">
+        <div>
+            시작가 : <p id="startBid" th:text="*{startBid}"></p>
+            <input type="hidden" th:field="*{startBid}">
+        </div>
+        다음 입찰가 : <p id="currentBid" th:text="*{currentBid}"></p>
+        <input type="hidden" th:field="*{currentBid}">
+        낙찰가 : <p id="winningBid" th:text="*{winningBid}"></p>
+        <input type="hidden" th:field="*{winningBid}">
+        입찰단위 : <p id="unit" th:text="*{unitBid}"></p>
+        <input type="hidden" th:field="*{unitBid}">
+        경매 올린 시간 : <p id="startAuctionTime" th:text="*{startAuctionTime}"></p>
+        <input type="hidden" th:field="*{startAuctionTime}">
+        경매기간 : <p id="period" th:text="*{auctionPeriod}">시간</p>
+        <input type="hidden" th:field="*{auctionPeriod}">
+        남은 시간 : <p id="remainingTime">24</p>
+    <p>
+        <button id="button" type="submit" onclick="bid()">낙찰</button>
+    </p>
+    </form>
+    <script>
+    function check(){
+        const time = document.getElementById("startAuctionTime").innerText;
+        const period = parseInt(document.getElementById("period"));
+        const status = document.getElementById("status");
+        const button = document.getElementById("button");
+        const remainingTime = document.getElementById("remainingTime");
+
+        let start = new Date(time);
+        let now = new Date();
+        let day = today.getDate();
+        let timer;
+        let distance = now - start;
+
+        if(status.innerText === '낙찰 완료'){
+            alert("낙찰된 상품입니다.");
+            button.disabled = true;
+        }
+
+        button.innerText = start;
+    }
+
+    function bid(){
+        const currentBid = parseInt(document.getElementById("currentBid").innerText);
+        const winningBid = parseInt(document.getElementById("winningBid").innerText);
+
+        if(currentBid === winningBid){
+            alert("낙찰되었습니다. 경매가 종료됩니다.");
+        }
+    }
+    </script><!-- 사용자가 경매에 입찰한 금액이 기존 금액보다 낮거나, 너무 높은 경우는 컨트롤러에서 제어.-->
+</div>
+</body>
+</html>

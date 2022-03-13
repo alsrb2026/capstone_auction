@@ -1,24 +1,26 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header">
-    <title>Hello</title>
+    <title>옥션월드</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader" />
     <div class="jumbotron">
-        {{greeting}}
-        <h1>HELLO SHOP</h1>
+        <h1>경매</h1>
         <p class="lead">회원 기능</p>
-        <p>
-            <a class="btn btn-lg btn-secondary" href="/members/new">회원 가입</a>
-        </p>
+<!--        <p>-->
+<!--            <a class="btn btn-lg btn-secondary" href="/members/new">회원 가입</a>-->
+<!--        </p>-->
         <p>
             <a class="btn btn-lg btn-secondary" href="/doLogout">로그 아웃</a>
         </p>
         <p>
             <a class="btn btn-lg btn-secondary" href="/adminpage">어드민페이지</a>
+        </p>
+        <p>
+            <a class="btn btn-lg btn-secondary" href="/itemList">상품리스트</a>
         </p>
 
 
