@@ -35,33 +35,53 @@
     </p>
     </form>
     <script>
+     const button = document.getElementById("button");
+    const period = document.getElementById("period");
+    const status = document.getElementById("status");
+
     function check(){
-        const time = document.getElementById("startAuctionTime").innerText;
-        const period = parseInt(document.getElementById("period"));
-        const status = document.getElementById("status");
-        const button = document.getElementById("button");
-        const remainingTime = document.getElementById("remainingTime");
-
-        let start = new Date(time);
-        let now = new Date();
-        let day = today.getDate();
-        let timer;
-        let distance = now - start;
-
-        if(status.innerText === '낙찰 완료'){
+        if(status.innerText === '입찰 종료'){
             alert("낙찰된 상품입니다.");
             button.disabled = true;
+        }
+        else{
+            calcDay();
+            setInterval(calcDay, 1000);
         }
 
         button.innerText = start;
     }
 
-    function bid(){
-        const currentBid = parseInt(document.getElementById("currentBid").innerText);
-        const winningBid = parseInt(document.getElementById("winningBid").innerText);
+     function calcDay(){
+        const time = document.getElementById("startAuctionTime").innerText;
+        const remainingTime = document.getElementById("remainingTime");
+        const startDate = new Date(time);
+        const nowDate = new Date();
+        const dd = document.getElementById("dd");
+        const distance = nowDate.getTime() - startDate.getTime();
 
-        if(currentBid === winningBid){
-            alert("낙찰되었습니다. 경매가 종료됩니다.");
+        const day = Math.floor(distance/(1000*60*60*24));
+        const hours = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
+        const minutes = Math.floor((distance % (1000*60*60))/(1000*60));
+        const seconds = Math.floor((distance % (1000*60))/1000);
+
+        if(hours >= parseInt(period.innerText)){
+            button.disabled = true;
+            status.innerText = "낙찰 종료";
+            remainingTime.innerText = "00:00:00";
+            exit;
+        }
+        else{
+            remainingTime.innerText = hours + ':' + minutes + ':' + seconds;
+        }
+    }
+
+    function bid(){
+        if(confirm("입찰하시겠습니까?")){
+            alert("입찰에 성공했습니다");
+        }
+        else{
+            event.preventDefault();
         }
     }
     </script><!-- 사용자가 경매에 입찰한 금액이 기존 금액보다 낮거나, 너무 높은 경우는 컨트롤러에서 제어.-->
