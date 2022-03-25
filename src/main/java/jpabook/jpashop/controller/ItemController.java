@@ -1,6 +1,7 @@
 package jpabook.jpashop.controller;
 
 
+
 import jpabook.jpashop.domain.Item;
 import jpabook.jpashop.service.ItemService;
 import lombok.RequiredArgsConstructor;
@@ -40,20 +41,20 @@ public class ItemController {
 
         ItemForm form = new ItemForm();
         form.setId(item.getId());
-        form.setItemUserId(item.getItemUserId());
-        form.setName(item.getName());
-        form.setTitle(item.getTitle());
-        form.setStartBid(item.getStartBid());
-        form.setWinningBid(item.getWinningBid());
-        form.setUnitBid(item.getUnitBid());
-        form.setDescription(item.getDescription());
-        form.setStatus(item.getStatus());
-        form.setImages(item.getImages());
-        form.setCurrentBidId(item.getCurrentBidId());
-        form.setCurrentBid(item.getCurrentBid());
-        form.setStartAuctionTime(item.getStartAuctionTime());
-        form.setStartAuctionTime(item.getStartAuctionTime());
-        form.setAuctionPeriod(item.getAuctionPeriod());
+        form.setItemUserId(item.getProduct().getItemUserId());
+        form.setName(item.getProduct().getName());
+        form.setTitle(item.getProduct().getTitle());
+        form.setStartBid(item.getAuctionInfo().getStartBid());
+        form.setWinningBid(item.getAuctionInfo().getWinningBid());
+        form.setUnitBid(item.getAuctionInfo().getUnitBid());
+        form.setDescription(item.getProduct().getDescription());
+        form.setStatus(item.getAuctionInfo().getStatus());
+        form.setImages(item.getProduct().getImages());
+        form.setCurrentBidId(item.getAuctionInfo().getCurrentBidId());
+        form.setCurrentBid(item.getAuctionInfo().getCurrentBid());
+        form.setStartAuctionTime(item.getAuctionInfo().getStartAuctionTime());
+        form.setStartAuctionTime(item.getAuctionInfo().getStartAuctionTime());
+        form.setAuctionPeriod(item.getAuctionInfo().getAuctionPeriod());
 
         model.addAttribute("form", form);
         return "/board/auctionItemForm.html";
@@ -64,19 +65,19 @@ public class ItemController {
 
         Item item = new Item();
         item.setId(form.getId());
-        item.setItemUserId(form.getItemUserId());
-        item.setName(form.getName());
-        item.setTitle(form.getTitle());
-        item.setStartBid(form.getStartBid());
-        item.setWinningBid(form.getWinningBid());
-        item.setUnitBid(form.getUnitBid());
-        item.setDescription(form.getDescription());
-        item.setStatus(form.getStatus());
-        item.setImages(form.getImages());
-        item.setCurrentBidId(form.getCurrentBidId());
-        item.setCurrentBid(form.getCurrentBid());
-        item.setStartAuctionTime(form.getStartAuctionTime());
-        item.setAuctionPeriod(form.getAuctionPeriod());
+        item.getProduct().setItemUserId(form.getItemUserId());
+        item.getProduct().setName(form.getName());
+        item.getProduct().setTitle(form.getTitle());
+        item.getAuctionInfo().setStartBid(form.getStartBid());
+        item.getAuctionInfo().setWinningBid(form.getWinningBid());
+        item.getAuctionInfo().setUnitBid(form.getUnitBid());
+        item.getProduct().setDescription(form.getDescription());
+        item.getAuctionInfo().setStatus(form.getStatus());
+        item.getProduct().setImages(form.getImages());
+        item.getAuctionInfo().setCurrentBidId(form.getCurrentBidId());
+        item.getAuctionInfo().setCurrentBid(form.getCurrentBid());
+        item.getAuctionInfo().setStartAuctionTime(form.getStartAuctionTime());
+        item.getAuctionInfo().setAuctionPeriod(form.getAuctionPeriod());
 
         // 낙찰 금액이 범위를 넘어가면 컨트롤러에서 따로 처리를 해야하나?
         /*
@@ -85,12 +86,12 @@ public class ItemController {
         }
         */
         // 낙찰 금액이 최고가와 같을 경우, 해당 금액으로 낙찰한 사용자에게 낙찰시킨다. 상품 id를 주고, 상품의 상태를 낙찰 완료로
-        if(item.getCurrentBid() == item.getWinningBid()){
-            item.setStatus("입찰 완료"); //테스트
+        if(item.getAuctionInfo().getCurrentBid() == item.getAuctionInfo().getWinningBid()){
+            item.getAuctionInfo().setStatus("낙찰 완료");
         }
 
-        if(item.getCurrentBid() < item.getWinningBid()){
-            item.setCurrentBid(item.getCurrentBid() + item.getUnitBid());
+        if(item.getAuctionInfo().getCurrentBid() < item.getAuctionInfo().getWinningBid()){
+            item.getAuctionInfo().setCurrentBid(item.getAuctionInfo().getCurrentBid() + item.getAuctionInfo().getUnitBid());
         }
 
         // 경매 상품 등록 기간이 다 되었을 경우
