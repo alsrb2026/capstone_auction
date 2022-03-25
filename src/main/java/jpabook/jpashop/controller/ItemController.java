@@ -87,7 +87,7 @@ public class ItemController {
         */
         // 낙찰 금액이 최고가와 같을 경우, 해당 금액으로 낙찰한 사용자에게 낙찰시킨다. 상품 id를 주고, 상품의 상태를 낙찰 완료로
         if(item.getAuctionInfo().getCurrentBid() == item.getAuctionInfo().getWinningBid()){
-            item.getAuctionInfo().setStatus("낙찰 완료");
+            item.getAuctionInfo().setStatus("입찰 완료");
         }
 
         if(item.getAuctionInfo().getCurrentBid() < item.getAuctionInfo().getWinningBid()){
