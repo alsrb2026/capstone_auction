@@ -59,7 +59,7 @@ public class PostController {
         return "posts/updatePostForm";
     }
 
-    @GetMapping("post/{id}/auction")
+    @GetMapping("post/{id}/auction")//test
     public String auctionItemForm(@PathVariable("id") Long itemId, Model model) {
         Post post = postService.findOne(itemId);
 
