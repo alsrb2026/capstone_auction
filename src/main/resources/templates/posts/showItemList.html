@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="@{'옥션월드 - 경매 목록'}"></title>
+</head>
+<body>
+<div class="container">
+    <table class="table">
+        <tr class="text-center">
+            <th scope="col">#</th>
+            <th scope="col">상품명</th>
+            <th scope="col">제목</th>
+            <th scope="col">시작가</th>
+            <th scope="col">상태</th>
+        </tr>
+        <tbody>
+        <tr class="text-center" th:each="post : ${posts}">
+            <th scope="row">
+                <span th:text="${post.id}"></span>
+            </th>
+            <td>
+                <a href="#" th:href="@{/post/{id}/auction (id=${post.id})}">
+                    <span th:text="${post.name}"></span>
+                </a>
+            </td>
+            <td>
+                <span th:text="${post.title}"></span>
+            </td>
+            <td>
+                <span th:text="${post.contents}"></span>
+            </td>
+            <td>
+                <span th:text="${post.product_name}"></span>
+            </td>
+            <td>
+                <span th:text="${post.startBid}"></span>
+            </td>
+            <td>
+                <span th:text="${post.winningBid}"></span>
+            </td>
+            <td>
+                <span th:text="${post.unitBid}"></span>
+            </td>
+            <td>
+                <span th:text="${post.currentBid}"></span>
+            </td>
+            <td>
+                <span th:text="${post.auctionPeriod}"></span>
+            </td>
+            <td>
+                <span th:text="${post.status}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
