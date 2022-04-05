@@ -1,31 +1,110 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header">
-    <title>옥션월드</title>
+  <head th:replace="fragments/header :: header">
+    <title>도전경매</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+      rel="stylesheet"
+    />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-<div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader" />
-    <div class="jumbotron">
-        <h1>경매</h1>
-        <p class="lead">회원 기능</p>
-<!--        <p>-->
-<!--            <a class="btn btn-lg btn-secondary" href="/members/new">회원 가입</a>-->
-<!--        </p>-->
-        <p>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
+    />
+
+    <link rel="stylesheet" href="../static/css/main.css" />
+
+    <link rel="stylesheet" href="../static/css/common.css" />
+
+    <script
+      src="https://kit.fontawesome.com/20515282ae.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//code.jquery.com/jquery-1.11.0.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+    ></script>
+    <script>
+      $(document).ready(function () {
+        $(".slick-sample").slick({
+          autoplay: true,
+          autoplaySpeed: 3000,
+          prevArrow: $("#prevArrow"),
+          nextArrow: $("#nextArrow"),
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div th:replace="fragments/bodyHeader :: bodyHeader" />
+      <div class="jumbotron">
+        <div class="top-bar">
+          <div class="title">
+            <a href="home.html"
+              ><img
+                src="./assets/premium-icon-hammer-2547559.png"
+                id="iconimg"
+              />도전경매</a
+            >
+          </div>
+          <!--        <p>-->
+          <!--            <a class="btn btn-lg btn-secondary" href="/members/new">회원 가입</a>-->
+          <!--        </p>-->
+
+          <div class="loginbox">
             <a class="btn btn-lg btn-secondary" href="/doLogout">로그 아웃</a>
-        </p>
-        <p>
-            <a class="btn btn-lg btn-secondary" href="/adminpage">어드민페이지</a>
-        </p>
-        <p>
-            <a class="btn btn-lg btn-secondary" href="/itemList">상품리스트</a>
-        </p>
+            |
+            <a class="btn btn-lg btn-secondary" href="/adminpage"
+              >어드민페이지</a
+            >
+            |
 
-
+            <a class="btn btn-lg btn-secondary" href="/members/new">회원가입</a>
+          </div>
+        </div>
+      </div>
+      <div th:replace="fragments/footer :: footer" />
     </div>
-    <div th:replace="fragments/footer :: footer" />
-</div> <!-- /container -->
-</body>
+    <!-- /container -->
+    <div class="content">
+      <div class="l-content">
+        <div class="l-content-text">
+          <div><span class="large-text">도</span>서와</div>
+          <div><span class="large-text">전</span>자기기</div>
+        </div>
+        <img src="./assets/Camera.jpeg" />
+      </div>
+      <div class="r-content">
+        <img src="./assets/Desk.jpeg" />
+        <div class="r-content-text">
+          <div># 대학생 필수품</div>
+          <div>필수 거래 웹 사이트</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide">
+      <div class="slick-sample">
+        <img src="./assets/gavel-3577255_1280.webp" />
+        <img src="./assets/hands-4604066_1920.png" />
+        <img src="./assets/shopping-4974313_1920.jpg" />
+      </div>
+      <button type="button" aria-label="이전" id="prevArrow"></button>
+      <button type="button" aria-label="다음" id="nextArrow"></button>
+    </div>
+    <div class="nav-banner">
+      <a href="/itemList"><div>경매하기</div></a>
+      <a href="#"><div>거래하기</div></a>
+      <a href="#"><div>공지사항</div></a>
+    </div>
+  </body>
 </html>

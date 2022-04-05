@@ -1,0 +1,35 @@
+body {
+  position: relative;
+}
+
+.fieldError {
+  border-color: #bd2130;
+}
+.container {
+  display: flex;
+  justify-content: center;
+}
+.sign-up {
+  font-size: 40px;
+  margin-top: 50px;
+  text-align: center;
+}
+.sign-up-form {
+  margin-top: 50px;
+}
+.form-group {
+  margin-top: 20px;
+}
+.sign-up-form input {
+  margin-top: 10px;
+  width: 400px;
+  height: 50px;
+}
+.sing-up-btn {
+  font-size: 20px;
+  width: 400px;
+  height: 50px;
+  background-color: black;
+  color: white;
+  margin-top: 30px;
+}
