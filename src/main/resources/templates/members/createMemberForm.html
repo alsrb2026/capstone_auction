@@ -10,6 +10,28 @@
     <div class="container">
       <div th:replace="fragments/bodyHeader :: bodyHeader" />
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../../static/css/common.css" />
+  <link rel="stylesheet" href="../../static/css/createMember.css" />
+  <body>
+    <div class="top-bar">
+      <div class="title">
+        <a href="home.html"
+          ><img
+            src="../assets/premium-icon-hammer-2547559.png"
+            id="iconimg"
+          />도전경매</a
+        >
+      </div>
+    </div>
+    <div class="container">
+      <div th:replace="fragments/bodyHeader :: bodyHeader" />
+      <div class="sign-up">회원가입</div>
       <form
         role="form"
         action="/members/new"
@@ -19,6 +41,11 @@
         <div class="form-group">
           <label th:for="name">이름</label>
 
+        class="sign-up-form"
+      >
+        <div class="form-group">
+          <label th:for="name">이름</label>
+          <br />
           <input
             type="text"
             th:field="*{name}"
@@ -32,6 +59,7 @@
         </div>
         <div class="form-group">
           <label th:for="passwd">비밀번호</label>
+          <br />
           <input
             type="text"
             th:field="*{passwd}"
@@ -41,6 +69,7 @@
         </div>
         <div class="form-group">
           <label th:for="street">거리</label>
+          <br />
           <input
             type="text"
             th:field="*{street}"
@@ -50,6 +79,7 @@
         </div>
         <div class="form-group">
           <label th:for="zipcode">우편번호</label>
+          <br />
           <input
             type="text"
             th:field="*{zipcode}"
@@ -57,7 +87,9 @@
             placeholder="우편번호를 입력하세요"
           />
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary sing-up-btn">
+          가입하기
+        </button>
       </form>
       <br />
       <div th:replace="fragments/footer :: footer" />
