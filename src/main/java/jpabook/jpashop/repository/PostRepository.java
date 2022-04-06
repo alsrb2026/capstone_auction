@@ -21,6 +21,12 @@ public class PostRepository {
         }
     }
 
+    public void delete(Long id) {
+        //em.createQuery("delete i from Post i where post_id=:id ");
+        Post dPost = em.find(Post.class,id);
+        em.remove(dPost);
+    }
+
     public Post findOne(Long id) {
         return em.find(Post.class, id);
     }

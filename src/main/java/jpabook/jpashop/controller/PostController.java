@@ -41,13 +41,13 @@ public class PostController {
         post.setCurrentBidId(form.getCurrentBidId());
 
 
-        postService.saveItem(post);
+        postService.savePost(post);
         return "redirect:/";
     }
 
     @GetMapping("/posts")
     public String list(Model model) {
-        List<Post> posts = postService.findItems();
+        List<Post> posts = postService.findPosts();
         model.addAttribute("posts", posts);
         return "posts/postList";
     }
@@ -59,8 +59,8 @@ public class PostController {
         return "posts/updatePostForm";
     }
 
-    @GetMapping("post/{id}/auction")
-    public String auctionItemForm(@PathVariable("id") Long itemId, Model model) {
+    @GetMapping("post/{id}/edit")
+    public String auctionPostForm(@PathVariable("id") Long itemId, Model model) {
         Post post = postService.findOne(itemId);
 
         PostForm form = new PostForm();
@@ -78,6 +78,25 @@ public class PostController {
         model.addAttribute("form", form);
         return "posts/updatePostForm";
     }
+
+    @PostMapping("post/{id}/edit")
+    public String auctionPost(@PathVariable Long id, @ModelAttribute("form") PostForm form) {
+        postService.updatePost(id, form.getTitle(),
+                form.getContents(), form.getProduct_name(), form.getStartBid()
+                ,form.getWinningBid(), form.getUnitBid(), form.getCurrentBid(), form.getAuctionPeriod(),
+                form.getStatus());
+        return "redirect:/";
+    }
+
+
+    @GetMapping("post/{id}/delete")
+    public String postDelete(@PathVariable("id") Long id, Model model) {
+        Post post = postService.findOne(id);
+        //Long deleteId = post.getId();
+        postService.deletePost(post.getId());
+        return "posts/postList";
+    }
+
 
     @PostMapping("/post/{id}/auction")
     public String auctionItem(@ModelAttribute("form")  PostForm form){
@@ -105,7 +124,7 @@ public class PostController {
 
         // 경매 상품 등록 기간이 다 되었을 경우
 
-        postService.saveItem(post); // service에 transaction=false로 하고, repository에 saveItem에 em.flush()를 해야
+        postService.savePost(post); // service에 transaction=false로 하고, repository에 saveItem에 em.flush()를 해야
         // db에 내용이 반영된다.
 
         return "redirect:/";

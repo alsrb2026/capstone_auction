@@ -15,11 +15,33 @@ public class PostService {
 
     private final PostRepository postRepository;
 
-    public void saveItem(Post post) {
+    @Transactional
+    public void savePost(Post post) {
         postRepository.save(post);
     }
 
-    public List<Post> findItems() {
+    @Transactional
+    public void updatePost(Long id, String title, String contents,
+                           String product_name, int startBid, int winningBid
+    , int unitBid, int currentBid, int auctionPeriod, String status ) {
+        Post post = postRepository.findOne(id);
+        post.setTitle(title);
+        post.setContents(contents);
+        post.setProduct_name(product_name);
+        post.setStartBid(startBid);
+        post.setWinningBid(winningBid);
+        post.setUnitBid(unitBid);
+        post.setCurrentBid(currentBid);
+        post.setAuctionPeriod(auctionPeriod);
+        post.setStatus(status);
+    }
+
+    @Transactional
+    public void deletePost(Long id) {
+        postRepository.delete(id);
+    }
+
+    public List<Post> findPosts() {
         return postRepository.findAll();
     }
 

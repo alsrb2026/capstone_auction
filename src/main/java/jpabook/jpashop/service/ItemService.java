@@ -16,11 +16,13 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
+    @Transactional
     public void saveItem(Item item) {
         itemRepository.save(item);
     }
 
     // 나중에는 currentBidId 까지 넘겨줘야 함. 낙찰한 사용자가 누군지 알 수 있게 하기 위해
+    @Transactional
     public void auctionItem(Long id, int winningBid, String status){
         Item item = itemRepository.findOne(id);
         item.getAuctionInfo().setCurrentBid(winningBid);
