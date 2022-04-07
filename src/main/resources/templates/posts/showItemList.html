@@ -21,11 +21,8 @@
             </th>
             <td>
                 <a href="#" th:href="@{/post/{id}/auction (id=${post.id})}">
-                    <span th:text="${post.name}"></span>
+                    <span th:text="${post.title}"></span>
                 </a>
-            </td>
-            <td>
-                <span th:text="${post.title}"></span>
             </td>
             <td>
                 <span th:text="${post.contents}"></span>

@@ -98,6 +98,26 @@ public class PostController {
     }
 
 
+    @GetMapping("post/{id}/auction")
+    public String auctionItemForm(@PathVariable("id") Long itemId, Model model) {
+        Post post = postService.findOne(itemId);
+
+        PostForm form = new PostForm();
+        form.setId(post.getId());
+        form.setTitle(post.getTitle());
+        form.setContents(post.getContents());
+        form.setProduct_name(post.getProduct_name());
+        form.setStartBid(post.getStartBid());
+        form.setWinningBid(post.getWinningBid());
+        form.setUnitBid(post.getUnitBid());
+        form.setCurrentBid(post.getCurrentBid());
+        form.setAuctionPeriod(post.getAuctionPeriod());
+        form.setStatus(post.getStatus());
+
+        model.addAttribute("form", form);
+        return "posts/postItemView.html";
+    }
+
     @PostMapping("/post/{id}/auction")
     public String auctionItem(@ModelAttribute("form")  PostForm form){
 
@@ -114,13 +134,13 @@ public class PostController {
         post.setStatus(form.getStatus());
 
         // 낙찰 금액이 최고가와 같을 경우, 해당 금액으로 낙찰한 사용자에게 낙찰시킨다. 상품 id를 주고, 상품의 상태를 낙찰 완료로
-        if(post.getCurrentBid() == post.getWinningBid()){
-            post.setStatus("입찰 완료");
-        }
-
-        if(post.getCurrentBid() < post.getWinningBid()){
-            post.setCurrentBid(post.getCurrentBid() + post.getUnitBid());
-        }
+//        if(post.getCurrentBid() == post.getWinningBid()){
+//            post.setStatus("입찰 완료");
+//        }
+//
+//        if(post.getCurrentBid() < post.getWinningBid()){
+//            post.setCurrentBid(post.getCurrentBid() + post.getUnitBid());
+//        }
 
         // 경매 상품 등록 기간이 다 되었을 경우
 
@@ -129,6 +149,7 @@ public class PostController {
 
         return "redirect:/";
     }
+
 
 
 }

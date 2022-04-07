@@ -1,8 +1,8 @@
 package jpabook.jpashop.controller;
 
 
-import jpabook.jpashop.domain.Item;
-import jpabook.jpashop.service.ItemService;
+import jpabook.jpashop.domain.Post;
+import jpabook.jpashop.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,13 +14,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
 
-    private final ItemService itemService;
+    private final PostService postService;
 
     @GetMapping("/itemList")
     public String showItemList(Model model) {
-        List<Item> items = itemService.findItems();
+        List<Post> posts = postService.findPosts();
 
-        model.addAttribute("items", items);
+        model.addAttribute("posts", posts);
         return "/posts/showItemList";
     }
 

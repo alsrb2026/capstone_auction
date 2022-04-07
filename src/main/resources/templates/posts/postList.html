@@ -11,8 +11,9 @@
             <thead>
             <tr>
                 <th>#</th>
-                <th>제목s</th>
+                <th>제목</th>
                 <th>내용</th>
+                <th>상품명</th>
                 <th>시작가</th>
                 <th>낙찰가</th>
                 <th>입찰 단위</th>
@@ -25,8 +26,13 @@
             <tbody>
             <tr th:each="post : ${posts}">
                 <td th:text="${post.id}"></td>
-                <td th:text="${post.title}"th:href="@{/post/{id}/auction (id=${post.id})}"></td>
+                <td>
+                    <a href="#" th:href="@{/post/{id}/auction (id=${post.id})}">
+                        <span th:text="${post.title}"></span>
+                    </a>
+                </td>
                 <td th:text="${post.contents}"></td>
+                <td th:text="${post.product_name}"></td>
                 <td th:text="${post.startBid}"></td>
                 <td th:text="${post.winningBid}"></td>
                 <td th:text="${post.unitBid}"></td>
@@ -34,12 +40,7 @@
                 <td th:text="${post.auctionPeriod}"></td>
                 <td th:text="${post.status}"></td>
 
-                <td>
-                    <a href="#" th:href="@{/post/{id}/edit (id=${post.id})}" class="btn btn-primary" role="button">수정</a>
-                </td>
-                <td>
-                    <a href="#" th:href="@{/post/{id}/delete (id=${post.id})}" class="btn btn-delete" role="button">삭제</a>
-                </td>
+
             </tr>
             </tbody>
         </table>
