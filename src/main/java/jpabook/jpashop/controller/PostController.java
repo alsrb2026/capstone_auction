@@ -84,12 +84,16 @@ public class PostController {
     }
 
     @PostMapping("post/{id}/edit")
-    public String auctionPost(@PathVariable Long id, @ModelAttribute("form") PostForm form) {
+    public String auctionPost(@PathVariable Long id, @ModelAttribute("form") PostForm form, Model model) {
+        List<Post> posts = postService.findPosts();
+        model.addAttribute("posts", posts);
+
         postService.updatePost(id, form.getTitle(),
                 form.getContents(), form.getProduct_name(), form.getStartBid()
                 ,form.getWinningBid(), form.getUnitBid(), form.getCurrentBid(), form.getAuctionPeriod(),
                 form.getStatus());
-        return "/posts";
+
+        return "posts/postList";
     }
 
 

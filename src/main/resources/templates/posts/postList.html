@@ -29,7 +29,7 @@
                 <td th:text="${post.id}"></td>
                 <td>
                     <a href="#" th:href="@{/post/{id}/auction (id=${post.id})}">
-                        <span th:text="${post.title}"></span>
+                        <h2><span th:text="${post.title}"></span></h2>
                     </a>
                 </td>
                 <td th:text="${post.contents}"></td>
@@ -41,13 +41,6 @@
                 <td th:text="${post.auctionPeriod}"></td>
                 <td th:text="${post.status}"></td>
                 <td th:text="${post.regisTime}"></td>
-                <td>
-                    <a href="#" th:href="@{/post/{id}/edit (id=${post.id})}" class="btn btn-primary" role="button">수정</a>
-                </td>
-                <td>
-                    <a href="#" th:href="@{/post/{id}/delete (id=${post.id})}" class="btn btn-delete" role="button">삭제</a>
-                </td>
-
             </tr>
             </tbody>
         </table>

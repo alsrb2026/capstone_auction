@@ -7,36 +7,49 @@
 <body>
 <div class="container">
     <form th:object="${form}" method="post">
+        <td>
+            <h2><a href="#" th:href="@{/post/{id}/edit (id=${form.id})}" class="btn btn-primary" role="button">수정</a></h2>
+        </td>
+        <td>
+            <a href="#" th:href="@{/post/{id}/delete (id=${form.id})}" class="btn btn-delete" role="button">삭제</a>
+        </td><br>
         <input type="hidden" th:field="*{id}" />
-        상품명 : <h5 id="title" th:text="*{title}"></h5>
+        상품명 : <h5 id="title" th:text="*{product_name}"></h5>
+        <input type="hidden" th:field="*{product_name}">
+
+        제목 : <p th:text="*{title}"></p>
         <input type="hidden" th:field="*{title}">
+
         내용 : <p th:text="*{contents}"></p>
         <input type="hidden" th:field="*{contents}">
+
         현재 상태 : <p id="status" th:text="*{status}"></p>
         <input type="hidden" th:field="*{status}">
+
         <div>
             시작가 : <p id="startBid" th:text="*{startBid}"></p>
             <input type="hidden" th:field="*{startBid}">
         </div>
+
         다음 입찰가 : <p id="currentBid" th:text="*{currentBid}"></p>
         <input type="hidden" th:field="*{currentBid}">
+
         낙찰가 : <p id="winningBid" th:text="*{winningBid}"></p>
         <input type="hidden" th:field="*{winningBid}">
+
         입찰단위 : <p id="unit" th:text="*{unitBid}"></p>
         <input type="hidden" th:field="*{unitBid}">
+
         경매기간 : <p id="period" th:text="*{auctionPeriod}">시간</p>
         <input type="hidden" th:field="*{auctionPeriod}">
+
         남은 시간 : <p id="remainingTime">24</p>
+
         올린시간 : <p id="regisTime" th:text="*{regisTime}">올린 시간</p>
+        <input type="hidden" th:field="*{regisTime}">
         <p>
             <button id="button" type="submit" onclick="bid()">낙찰</button>
         </p>
-        <!--<td>
-            <a href="#" th:href="@{/post/*{id}/edit (id=${post.id})}" class="btn btn-primary" role="button">수정</a>
-        </td>
-        <td>
-            <a href="#" th:href="@{/post/*{id}/delete (id=${post.id})}" class="btn btn-delete" role="button">삭제</a>
-        </td>-->
     </form>
     <!--<script>
      const button = document.getElementById("button");
