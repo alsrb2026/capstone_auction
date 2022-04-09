@@ -20,6 +20,7 @@
                 <th>현재 입찰가</th>
                 <th>경매 기간</th>
                 <th>상품 상태</th>
+                <th>등록 시간</th>
                 <th></th>
             </tr>
             </thead>
@@ -39,7 +40,13 @@
                 <td th:text="${post.currentBid}"></td>
                 <td th:text="${post.auctionPeriod}"></td>
                 <td th:text="${post.status}"></td>
-
+                <td th:text="${post.regisTime}"></td>
+                <td>
+                    <a href="#" th:href="@{/post/{id}/edit (id=${post.id})}" class="btn btn-primary" role="button">수정</a>
+                </td>
+                <td>
+                    <a href="#" th:href="@{/post/{id}/delete (id=${post.id})}" class="btn btn-delete" role="button">삭제</a>
+                </td>
 
             </tr>
             </tbody>

@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -28,6 +31,8 @@ public class PostController {
     public String create(PostForm form) {
 
         Post post = new Post();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        SimpleDateFormat time = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
         post.setTitle(form.getTitle());
         post.setContents(form.getContents());
         post.setProduct_name(form.getProduct_name());
@@ -35,11 +40,10 @@ public class PostController {
         post.setWinningBid(form.getWinningBid());
         post.setUnitBid(form.getUnitBid());
         post.setCurrentBid(form.getCurrentBid());
-        //post.setStartAuctionTime();
+        post.setRegisTime(Timestamp.valueOf(LocalDateTime.now()));
         post.setAuctionPeriod(form.getAuctionPeriod());
         post.setStatus(form.getStatus());
         post.setCurrentBidId(form.getCurrentBidId());
-
 
         postService.savePost(post);
         return "redirect:/";
@@ -85,7 +89,7 @@ public class PostController {
                 form.getContents(), form.getProduct_name(), form.getStartBid()
                 ,form.getWinningBid(), form.getUnitBid(), form.getCurrentBid(), form.getAuctionPeriod(),
                 form.getStatus());
-        return "redirect:/";
+        return "/posts";
     }
 
 
@@ -113,6 +117,7 @@ public class PostController {
         form.setCurrentBid(post.getCurrentBid());
         form.setAuctionPeriod(post.getAuctionPeriod());
         form.setStatus(post.getStatus());
+        form.setRegisTime(post.getRegisTime());
 
         model.addAttribute("form", form);
         return "posts/postItemView.html";
@@ -132,6 +137,7 @@ public class PostController {
         post.setCurrentBid(form.getCurrentBid());
         post.setAuctionPeriod(form.getAuctionPeriod());
         post.setStatus(form.getStatus());
+        post.setRegisTime(form.getRegisTime());
 
         // 낙찰 금액이 최고가와 같을 경우, 해당 금액으로 낙찰한 사용자에게 낙찰시킨다. 상품 id를 주고, 상품의 상태를 낙찰 완료로
 //        if(post.getCurrentBid() == post.getWinningBid()){

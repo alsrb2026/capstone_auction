@@ -1,6 +1,11 @@
 package jpabook.jpashop.controller;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class HomeController {
@@ -26,7 +31,10 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String getIndex() {
+    public String getHome(HttpServletRequest request) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = ((UserDetails)principal).getUsername();
+        request.setAttribute("nickname",username);
         return "home";
     }
 

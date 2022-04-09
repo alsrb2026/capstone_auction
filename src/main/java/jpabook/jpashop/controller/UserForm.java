@@ -9,10 +9,10 @@ import javax.validation.constraints.NotEmpty;
 @Setter
 public class UserForm {//test3
     @NotEmpty(message = "회원 이름은 필수 입니다")
-    private String name;
+    private String id;
+    private String nickname;
     private String passwd;
-    private String city;
-    private String street;
-    private String zipcode;
+
+
 
 }

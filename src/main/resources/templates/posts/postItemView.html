@@ -24,20 +24,19 @@
         <input type="hidden" th:field="*{winningBid}">
         입찰단위 : <p id="unit" th:text="*{unitBid}"></p>
         <input type="hidden" th:field="*{unitBid}">
-        <!--경매 올린 시간 : <p id="startAuctionTime" th:text="*{startAuctionTime}"></p>
-        <input type="hidden" th:field="*{startAuctionTime}">-->
         경매기간 : <p id="period" th:text="*{auctionPeriod}">시간</p>
         <input type="hidden" th:field="*{auctionPeriod}">
         남은 시간 : <p id="remainingTime">24</p>
+        올린시간 : <p id="regisTime" th:text="*{regisTime}">올린 시간</p>
         <p>
             <button id="button" type="submit" onclick="bid()">낙찰</button>
         </p>
-        <td>
+        <!--<td>
             <a href="#" th:href="@{/post/*{id}/edit (id=${post.id})}" class="btn btn-primary" role="button">수정</a>
         </td>
         <td>
             <a href="#" th:href="@{/post/*{id}/delete (id=${post.id})}" class="btn btn-delete" role="button">삭제</a>
-        </td>
+        </td>-->
     </form>
     <!--<script>
      const button = document.getElementById("button");

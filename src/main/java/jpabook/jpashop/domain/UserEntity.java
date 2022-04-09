@@ -17,12 +17,14 @@ public class UserEntity {
     private long userId;
 
     private String name;
+    private String nickname;
     private String password;
     private String role;
 
     @Builder
-    public UserEntity(String name, String password, String role) {
+    public UserEntity(String name, String nickname, String password, String role) {
         this.name = name;
+        this.nickname = nickname;
         this.password = password;
         this.role = role;
     }

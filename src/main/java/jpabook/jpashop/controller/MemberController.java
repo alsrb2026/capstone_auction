@@ -6,7 +6,6 @@ import jpabook.jpashop.repository.UserRepositoryR;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -15,8 +14,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.List;
 
 
 
@@ -43,25 +43,27 @@ public class MemberController {
     }
 
     @PostMapping("/members/new")
-    public String create(@Valid UserForm form, BindingResult result){
+    public String create(@Valid UserForm form, BindingResult result, HttpServletRequest request, Model model){
 
+        HttpSession session = request.getSession();
         if(result.hasErrors()){
             return "members/createMemberForm";
         }
 
         //Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
 
-        String name = form.getName();
+        String name = form.getId();
+        String nickname = form.getNickname();
         String passwd = form.getPasswd();
 
         UserEntity user = UserEntity.builder()
                 .name(name)
+                .nickname(nickname)
                 .password(passwordEncoder.encode(passwd))
                 .role("user")
                 .build();
 
         System.out.println(name+passwd);
-
         userRepositoryR.save(user);
         return "redirect:/";
     }
