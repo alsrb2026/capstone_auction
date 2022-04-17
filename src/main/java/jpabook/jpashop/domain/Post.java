@@ -3,10 +3,7 @@ package jpabook.jpashop.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
@@ -14,12 +11,13 @@ import java.sql.Timestamp;
 @Setter
 public class Post {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="post_id")
     private Long id;
     private String title;
     private String contents;
     private String product_name;
+    private Category category;
     private int view;
     private int startBid; // 시작가
     private int winningBid; // 낙찰가 -> 1000, 5000, 10000, 15000, 20000, 50000

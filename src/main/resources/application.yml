@@ -48,4 +48,4 @@ logging:
     org.hibernate.type: trace
 
 server:
-  port: 9075
+  port: 9076

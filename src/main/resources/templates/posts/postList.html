@@ -1,54 +1,85 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header" />
+<head>
+    <meta charset="UTF-8">
+    <title>paging</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
 <body>
 
-<div class="container">
+<table class="table table-striped">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <thead class="thead-dark">
+    <tr>
+        <th>#</th>
+        <th>제목</th>
+        <th>내용</th>
+        <th>상품명</th>
+        <th>시작가</th>
+        <th>낙찰가</th>
+        <th>입찰 단위</th>
+        <th>현재 입찰가</th>
+        <th>경매 기간</th>
+        <th>상품 상태</th>
+        <th>등록 시간</th>
+        <th></th>
+    </tr>
+    </thead>
 
-    <div>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>제목</th>
-                <th>내용</th>
-                <th>상품명</th>
-                <th>시작가</th>
-                <th>낙찰가</th>
-                <th>입찰 단위</th>
-                <th>현재 입찰가</th>
-                <th>경매 기간</th>
-                <th>상품 상태</th>
-                <th>등록 시간</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="post : ${posts}">
-                <td th:text="${post.id}"></td>
-                <td>
-                    <a href="#" th:href="@{/post/{id}/auction (id=${post.id})}">
-                        <h2><span th:text="${post.title}"></span></h2>
-                    </a>
-                </td>
-                <td th:text="${post.contents}"></td>
-                <td th:text="${post.product_name}"></td>
-                <td th:text="${post.startBid}"></td>
-                <td th:text="${post.winningBid}"></td>
-                <td th:text="${post.unitBid}"></td>
-                <td th:text="${post.currentBid}"></td>
-                <td th:text="${post.auctionPeriod}"></td>
-                <td th:text="${post.status}"></td>
-                <td th:text="${post.regisTime}"></td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <tbody>
+    <tr th:each="board : ${boardList}">
+        <th scope="row" th:text="${boardStat.index + 1}">1</th>
+        <td th:text="${board.id}"></td>
+        <td>
+            <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
+                <h2><span th:text="${board.title}"></span></h2>
+            </a>
+        </td>
+        <td th:text="${board.contents}"></td>
+        <td th:text="${board.product_name}"></td>
+        <td th:text="${board.startBid}"></td>
+        <td th:text="${board.winningBid}"></td>
+        <td th:text="${board.unitBid}"></td>
+        <td th:text="${board.currentBid}"></td>
+        <td th:text="${board.auctionPeriod}"></td>
+        <td th:text="${board.status}"></td>
+        <td th:text="${board.regisTime}"></td>
+    </tr>
+    </tbody>
+</table>
 
-    <div th:replace="fragments/footer :: footer"/>
-
-</div> <!-- /container -->
+<nav aria-label="Page navigation example ">
+    <ul class="pagination">
+        <li class="page-item">
+            <a class="page-link" th:href="@{/posts?page=1}" aria-label="Previous">
+                <span aria-hidden="true">처음</span>
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" th:href="@{/posts?page={page} (page = ${pagination.prevBlock}) }" aria-label="Previous">
+                <span aria-hidden="true">이전</span>
+            </a>
+        </li>
+        <th:block  th:with="start = ${pagination.startPage}, end = ${pagination.endPage}">
+            <li class="page-item"
+                th:with="start = ${pagination.startPage}, end = ${pagination.endPage}"
+                th:each="pageButton : ${#numbers.sequence(start, end)}">
+                <a class="page-link" th:href="@{/posts?page={page} (page = ${pageButton})}" th:text=${pageButton}></a>
+            </li>
+        </th:block>
+        <li class="page-item">
+            <a class="page-link" th:href="@{posts?page={page} (page = ${pagination.nextBlock})}" aria-label="Next">
+                <span aria-hidden="true">다음</span>
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" th:href="@{posts?page={page} (page = ${pagination.totalPageCnt})}" aria-label="Previous">
+                <span aria-hidden="true">끝</span>
+            </a>
+        </li>
+    </ul>
+</nav>
 
 </body>
 </html>
+

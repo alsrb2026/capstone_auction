@@ -1,8 +1,10 @@
 package jpabook.jpashop.service;
 
+import jpabook.jpashop.domain.Category;
 import jpabook.jpashop.domain.Post;
 import jpabook.jpashop.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +24,13 @@ public class PostService {
 
     @Transactional
     public void updatePost(Long id, String title, String contents,
-                           String product_name, int startBid, int winningBid
+                           String product_name, Category category, int startBid, int winningBid
     , int unitBid, int currentBid, int auctionPeriod, String status ) {
         Post post = postRepository.findOne(id);
         post.setTitle(title);
         post.setContents(contents);
         post.setProduct_name(product_name);
+        post.setCategory(category);
         post.setStartBid(startBid);
         post.setWinningBid(winningBid);
         post.setUnitBid(unitBid);
@@ -41,6 +44,12 @@ public class PostService {
         postRepository.delete(id);
     }
 
+    @Transactional
+    @Modifying
+    public void viewPost(Long id) {
+        postRepository.view(id);
+    }
+
     public List<Post> findPosts() {
         return postRepository.findAll();
     }
@@ -48,4 +57,8 @@ public class PostService {
     public Post findOne(Long id) {
         return postRepository.findOne(id);
     }
+
+
 }
+
+

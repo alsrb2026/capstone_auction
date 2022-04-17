@@ -5,7 +5,9 @@
     <title th:text="@{'옥션월드'}"></title>
 </head>
 <body>
+
 <div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <form th:object="${form}" method="post">
         <td>
             <h2><a href="#" th:href="@{/post/{id}/edit (id=${form.id})}" class="btn btn-primary" role="button">수정</a></h2>
@@ -14,6 +16,10 @@
             <a href="#" th:href="@{/post/{id}/delete (id=${form.id})}" class="btn btn-delete" role="button">삭제</a>
         </td><br>
         <input type="hidden" th:field="*{id}" />
+
+        카테고리 : <p th:text="*{category}"></p>
+        <input type="hidden" th:field="*{category}">
+
         상품명 : <h5 id="title" th:text="*{product_name}"></h5>
         <input type="hidden" th:field="*{product_name}">
 

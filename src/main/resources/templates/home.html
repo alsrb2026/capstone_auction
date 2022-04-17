@@ -17,9 +17,8 @@
       href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
     />
 
-    <link rel="stylesheet" href="../static/css/main.css" />
-
-    <link rel="stylesheet" href="../static/css/common.css" />
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/common.css" />
 
     <script
       src="https://kit.fontawesome.com/20515282ae.js"
@@ -52,7 +51,7 @@
           <div class="title">
             <a href="home.html"
               ><img
-                src="./assets/premium-icon-hammer-2547559.png"
+                src="images/premium-icon-hammer-2547559.png"
                 id="iconimg"
               />도전경매</a
             >
@@ -63,6 +62,11 @@
 
           <div class="loginbox">
             <td th:text="|${nickname}님, 환영합니다.|"></td>
+            <div class="nav-banner">
+              <a href="/posts/new"><div>경매등록</div></a>
+              <a href="/posts"><div>거래하기</div></a>
+              <a href="#"><div>공지사항</div></a>
+            </div>
             <a class="btn btn-lg btn-secondary" href="/doLogout">로그 아웃</a>
             |
             <a class="btn btn-lg btn-secondary" href="/adminpage"
@@ -83,10 +87,10 @@
           <div><span class="large-text">도</span>서와</div>
           <div><span class="large-text">전</span>자기기</div>
         </div>
-        <img src="./assets/Camera.jpeg" />
+        <img src="images/Camera.jpeg" />
       </div>
       <div class="r-content">
-        <img src="./assets/Desk.jpeg" />
+        <img src="images/Desk.jpeg" />
         <div class="r-content-text">
           <div># 대학생 필수품</div>
           <div>필수 경매 웹 사이트</div>
@@ -95,17 +99,13 @@
     </div>
     <div class="slide">
       <div class="slick-sample">
-        <img src="./assets/gavel-3577255_1280.webp" />
-        <img src="./assets/hands-4604066_1920.png" />
-        <img src="./assets/shopping-4974313_1920.jpg" />
+        <img src="images/gavel-3577255_1280.webp" />
+        <img src="images/hands-4604066_1920.png" />
+        <img src="images/shopping-4974313_1920.jpg" />
       </div>
       <button type="button" aria-label="이전" id="prevArrow"></button>
       <button type="button" aria-label="다음" id="nextArrow"></button>
     </div>
-    <div class="nav-banner">
-      <a href="/posts/new"><div>경매등록</div></a>
-      <a href="/posts"><div>거래하기</div></a>
-      <a href="#"><div>공지사항</div></a>
-    </div>
+
   </body>
 </html>

@@ -6,10 +6,20 @@
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
 
-    <form th:object="${form}" method="post">
+    <form th:action="@{/post/${id}/auction}" th:object="${form}" method="post">
         <!-- id -->
         <input type="hidden" th:field="*{id}" />
 
+        <div class="form-group">
+            <select th:field="*{category}" class="form-control" id="category" onchange="handleOnChange(this)">
+                카테고리
+                <option value="도서">도서</option>
+                <option value="학습자료">학습자료</option>
+                <option value="전자기기">전자기기</option>
+                <option value="생필품">생필품</option>
+            </select>
+
+        </div>
         <div class="form-group">
             <label th:for="name">제목</label>
             <input type="text" th:field="*{title}" class="form-control" placeholder="이름을 입력하세요">
