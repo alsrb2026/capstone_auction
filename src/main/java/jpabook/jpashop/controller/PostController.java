@@ -164,7 +164,7 @@ public class PostController {
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
 
-        return "posts/postList";
+        return "redirect:/";
     }
 
 

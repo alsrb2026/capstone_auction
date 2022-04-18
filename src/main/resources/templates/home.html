@@ -16,10 +16,8 @@
       type="text/css"
       href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
     />
-
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/common.css" />
-
     <script
       src="https://kit.fontawesome.com/20515282ae.js"
       crossorigin="anonymous"
@@ -56,10 +54,6 @@
               />도전경매</a
             >
           </div>
-          <!--        <p>-->
-          <!--            <a class="btn btn-lg btn-secondary" href="/members/new">회원 가입</a>-->
-          <!--        </p>-->
-
           <div class="loginbox">
             <td th:text="|${nickname}님, 환영합니다.|"></td>
             <div class="nav-banner">
@@ -72,15 +66,12 @@
             <a class="btn btn-lg btn-secondary" href="/adminpage"
               >어드민페이지</a
             >
-            |
-
             <a class="btn btn-lg btn-secondary" href="/members/new">회원가입</a>
           </div>
         </div>
       </div>
       <div th:replace="fragments/footer :: footer" />
     </div>
-    <!-- /container -->
     <div class="content">
       <div class="l-content">
         <div class="l-content-text">
@@ -106,6 +97,5 @@
       <button type="button" aria-label="이전" id="prevArrow"></button>
       <button type="button" aria-label="다음" id="nextArrow"></button>
     </div>
-
   </body>
 </html>

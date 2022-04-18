@@ -6,7 +6,6 @@
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
 </head>
 <body>
-
 <table class="table table-striped">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <thead class="thead-dark">
@@ -25,7 +24,6 @@
         <th></th>
     </tr>
     </thead>
-
     <tbody>
     <tr th:each="board : ${boardList}">
         <th scope="row" th:text="${boardStat.index + 1}">1</th>
@@ -47,7 +45,6 @@
     </tr>
     </tbody>
 </table>
-
 <nav aria-label="Page navigation example ">
     <ul class="pagination">
         <li class="page-item">

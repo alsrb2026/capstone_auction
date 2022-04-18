@@ -2,12 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header" />
 <body>
-
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-
     <form th:action="@{/posts/new}" th:object="${form}" method="post">
-
         <div class="form-group">
         <select th:field="*{category}" class="form-control" id="category" onchange="handleOnChange(this)">
             카테고리
@@ -61,19 +58,14 @@
     </form>
     <br/>
     <div th:replace="fragments/footer :: footer" />
-
-</div> <!-- /container -->
-
+</div>
 <script>
     var a = document.getElementById('category').options[document.getElementById('category').selectedIndex].text;
-
     function handleOnChange(e) {
         // 선택된 데이터의 텍스트값 가져오기
         const text = e.options[e.selectedIndex].text;
         System.out.println(text);
-
     }
 </script>
-
 </body>
 </html>
