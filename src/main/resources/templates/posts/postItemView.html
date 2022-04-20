@@ -17,7 +17,6 @@
         </td><br>
         <input type="hidden" th:field="*{id}" />
         <input type="hidden" th:field="*{postUserId}">
-        <input type="hidden" th:field="*{title}">
         <input type="hidden" th:field="*{currentBidId}">
 
         카테고리 : <p th:text="*{category}"></p>
@@ -69,11 +68,11 @@
     const status = document.getElementById("status");
 
     function check(){
-        if(status.innerText === '입찰 종료'){
+        if(status.innerText === '입찰종료'){
             alert("입찰 종료된 상품입니다.");
             button.disabled = true;
         }
-        else if(status.innerText === '낙찰 됨'){
+        else if(status.innerText === '낙찰완료'){
             alert("낙찰된 상품입니다.");
             button.disabled = true;
         }

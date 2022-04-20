@@ -41,26 +41,27 @@ public class PostController {
     public String create(PostForm form) {
 
         Post post = new Post();
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         SimpleDateFormat time = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = ((UserDetails) principal).getUsername();
         Long id = userRepository.findByName(name).get().getUserId(); // 상품 등록한 user id 를 repository에서 조회해서 넣었음.
 
-        post.setTitle(form.getTitle());
         post.setPostUserId(id); // 상품 등록한 사용자 id
+        post.setTitle(form.getTitle());
         post.setContents(form.getContents());
-        post.setCategory(form.getCategory());
         post.setProduct_name(form.getProduct_name());
+        post.setCategory(form.getCategory());
+        post.setView(0); // 조회 수도 초기 값은 0으로
         post.setStartBid(form.getStartBid());
         post.setWinningBid(form.getWinningBid());
         post.setUnitBid(form.getUnitBid());
-        post.setCurrentBid(form.getStartBid());
+        post.setCurrentBid(form.getStartBid()); // 처음 물품 등록할 때에는 입찰한 사람이 없으므로 현재 입찰 가격은 시작 가격으로 설정.
         post.setRegisTime(Timestamp.valueOf(LocalDateTime.now()));
         post.setAuctionPeriod(form.getAuctionPeriod());
-        post.setStatus("입찰 중");
-        post.setCurrentBidId(form.getCurrentBidId());
+        post.setStatus("입찰 중"); // 등록하면 바로 입찰 중인 상태가 될 것이기 때문에.
+        post.setCurrentBidId(0L);
+        // 게시 시간
 
         postService.savePost(post);
         return "redirect:/";
@@ -114,10 +115,10 @@ public class PostController {
         form.setStartBid(post.getStartBid());
         form.setWinningBid(post.getWinningBid());
         form.setUnitBid(post.getUnitBid());
-        form.setCurrentBid(0); // 처음 물품 등록할 때에는 입찰한 사람이 없으므로 현재 입찰 가격은 0으로 한다.
+        form.setCurrentBid(post.getCurrentBid());
         form.setAuctionPeriod(post.getAuctionPeriod());
         form.setStatus(post.getStatus());
-        form.setCurrentBidId(0L);
+        form.setCurrentBidId(post.getCurrentBidId());
         // 작성 시간
         model.addAttribute("form", form);
         return "posts/updatePostForm";
@@ -236,34 +237,44 @@ public class PostController {
         post.setAuctionPeriod(form.getAuctionPeriod());
         post.setRegisTime(form.getRegisTime());
 
-        if(form.getCurrentBid() == 0){ // 현재 입찰하려고하는 사용자가 첫 입찰자인 경우
-            post.setCurrentBid(form.getStartBid()); // 시작가격으로 현재 입찰가 설정
-            post.setCurrentBidId(id); // 항상 입찰자는 바뀔 수 있으므로, form.get~ 하지 않는다.
-            post.setStatus(form.getStatus());
-        }
-        else{ // 현재 입찰하려고 하는 사용자가 첫 입찰자가 아닌 경우
-            if(form.getCurrentBid() == form.getWinningBid()){ // 입찰하려고 하는 금액이 낙찰가일 경우 -> 채팅방도 연결해줘야 함.
+        // 1. 경매에 참여할 수 있는지 없는지 부터 체크
+        if(!calcDay(form.getAuctionPeriod(), form.getRegisTime())) { // 아직 물품 경매 기간이 지나지 않았을 경우
+            // 1-1. 현재 입찰한 사용자가 첫 번째 입찰자일 경우
+            if(form.getCurrentBidId() == 0){ //
                 post.setCurrentBidId(id);
-                post.setStatus("낙찰됨");
+                post.setStatus("입찰 중");
+                post.setCurrentBid(form.getStartBid() + form.getUnitBid());
             }
-            else if(form.getCurrentBid() < form.getWinningBid()){
-                // 입찰하려고 하는 금액이 낙찰가보다 낮은 경우 -> 기간이 지났는지도 확인해야 함. 기간이 지난 경우의
-                // 가장 최근에 입찰한 사용자에게 채팅, 낙찰자로 설정해야 함.
-                if(!calcDay(form.getAuctionPeriod(), form.getRegisTime())){ // 아직 물품 경매 기간이 지나지 않았을 경우
-                    post.setCurrentBid(form.getCurrentBid() + form.getUnitBid());
+            // 1-2. 첫 번째 입찰자가 아닐 경우
+            else{
+                if(form.getCurrentBid() == form.getWinningBid()){ // 1-2-(1). 현재 입찰한 금액이 낙찰가일 경우
                     post.setCurrentBidId(id);
-                    post.setStatus(form.getStatus());
+                    post.setStatus("낙찰완료");
+                    // 그리고 채팅 연결
                 }
-                else{ // 물품 경매 기간이 지난 경우, 최근에 입찰한 사용자와 물품 등록자 간에 채팅 연결
-                    post.setStatus("낙찰됨");
+                else if(form.getCurrentBid() < form.getWinningBid()){ // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
+                    post.setCurrentBidId(id);
+                    post.setStatus("입찰 중");
+                    post.setCurrentBid(form.getCurrentBid() + form.getUnitBid());
                 }
+                else{} // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
             }
-            else{} // 에러 처리, 낙찰가보다 높게 입찰한 경우 이므로
+        }
+        // 2. 경매 기간이 지난 경우. -> controller 로 따로 작성해야 하나?
+        else{
+            // 2-1. 물품에 입찰자가 있는지 체크
+            if(form.getCurrentBidId() != 0){ // 2.2 현재 입찰 id 값을 0으로 초기화했으므로 0이 아닌 경우 -> 입찰자가 존재하는 경우
+                form.setStatus("낙찰됨");
+                // 그리고 채팅 연결.
+            }
+            else{
+                form.setStatus("입찰 기간 종료");
+            }
         }
 
         postService.savePost(post); // service에 transaction=false로 하고, repository에 saveItem에 em.flush()를 해야
         // db에 내용이 반영된다.
-        return "posts/postItemView";
+        return "posts/postList";
     }
 
     private boolean calcDay(int period, Date regisTime){
