@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<script src="/webjars/jquery/jquery.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <title th:text="@{'옥션월드'}"></title>
 </head>
-<body>
+<body onload="check()">
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <form th:object="${form}" method="post">
@@ -15,6 +16,9 @@
             <a href="#" th:href="@{/post/{id}/delete (id=${form.id})}" class="btn btn-delete" role="button">삭제</a>
         </td><br>
         <input type="hidden" th:field="*{id}" />
+        <input type="hidden" th:field="*{postUserId}">
+        <input type="hidden" th:field="*{title}">
+        <input type="hidden" th:field="*{currentBidId}">
 
         카테고리 : <p th:text="*{category}"></p>
         <input type="hidden" th:field="*{category}">
@@ -50,62 +54,66 @@
 
         남은 시간 : <p id="remainingTime">24</p>
 
-        올린시간 : <p id="regisTime" th:text="*{regisTime}">올린 시간</p>
+        올린시간 : <p id="regisTime" th:text="*{regisTime}"></p>
         <input type="hidden" th:field="*{regisTime}">
         <p>
-            <button id="button" type="submit" onclick="bid()">낙찰</button>
+            <button id="button" type="submit" onclick="bid()">입찰하기</button>
         </p>
     </form>
-    <!--<script>
-     const button = document.getElementById("button");
+</div>
+</body>
+<script th:inline="javascript">
+
+    const button = document.getElementById("button");
     const period = document.getElementById("period");
     const status = document.getElementById("status");
 
     function check(){
         if(status.innerText === '입찰 종료'){
+            alert("입찰 종료된 상품입니다.");
+            button.disabled = true;
+        }
+        else if(status.innerText === '낙찰 됨'){
             alert("낙찰된 상품입니다.");
             button.disabled = true;
         }
         else{
-            calcDay();
-            setInterval(calcDay, 1000);
-        }
-
-        button.innerText = start;
-    }
-
-     function calcDay(){
-        const time = document.getElementById("startAuctionTime").innerText;
-        const remainingTime = document.getElementById("remainingTime");
-        const startDate = new Date(time);
-        const nowDate = new Date();
-        const distance = nowDate.getTime() - startDate.getTime();
-
-        const day = Math.floor(distance/(1000*60*60*24));
-        const hours = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
-        const minutes = Math.floor((distance % (1000*60*60))/(1000*60));
-        const seconds = Math.floor((distance % (1000*60))/1000);
-
-        if(hours >= parseInt(period.innerText)){
-            button.disabled = true;
-            status.innerText = "입찰 종료";
-            remainingTime.innerText = "00:00:00";
-            exit;
-        }
-        else{
-            remainingTime.innerText = `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+            //calcDay();
+            //setInterval(calcDay, 1000);
         }
     }
 
     function bid(){
-        if(confirm("입찰하시겠습니까?")){
-            alert("입찰에 성공했습니다");
+        var buyId = getCookie('id');
+        var regisId = [[${form.postUserId}]];
+        if(buyId != regisId){
+            if(confirm("입찰하시겠습니까?")){
+                alert("입찰에 성공했습니다");
+            }
+            else{
+                event.preventDefault();
+            }
         }
         else{
+            alert("자신의 물품에 입찰할 수 없습니다.");
             event.preventDefault();
         }
     }
-    </script>&lt;!&ndash; 사용자가 경매에 입찰한 금액이 기존 금액보다 낮거나, 너무 높은 경우는 컨트롤러에서 제어.&ndash;&gt;-->
-</div>
-</body>
+
+    function getCookie(cookieName){
+        cookieName = cookieName + '=';
+        var cookieData = document.cookie;
+        var start = cookieData.indexOf(cookieName);
+        var value = '';
+        if(start != -1){
+            start += cookieName.length;
+            var end = cookieData.indexOf(';', start);
+            if(end == -1){
+                end = cookieData.length;
+            }
+            value = cookieData.substring(start, end);
+        }
+        return unescape(value);
+    }
+</script>
 </html>

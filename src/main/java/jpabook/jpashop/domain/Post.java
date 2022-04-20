@@ -14,6 +14,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="post_id")
     private Long id;
+    private Long postUserId; // 상품 등록한 사용자 id
     private String title;
     private String contents;
     private String product_name;

@@ -14,7 +14,4 @@ public class UserForm {//test3
     private String nickname;
     private List<String> likeList;
     private String passwd;
-
-
-
 }

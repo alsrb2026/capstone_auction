@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<script src="/webjars/jquery/jquery.min.js"></script>
   <head th:replace="fragments/header :: header">
     <title>도전경매</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -55,7 +56,7 @@
             >
           </div>
           <div class="loginbox">
-            <td th:text="|${nickname}님, 환영합니다.|"></td>
+            <td th:text="|${user.nickname}님, 환영합니다.|"></td>
             <div class="nav-banner">
               <a href="roomlist"><div>채팅하기</div></a>
               <a href="/posts/new"><div>경매등록</div></a>
@@ -98,5 +99,18 @@
       <button type="button" aria-label="이전" id="prevArrow"></button>
       <button type="button" aria-label="다음" id="nextArrow"></button>
     </div>
+    <script th:inline="javascript">
+      $(function(){
+        var id = [[${user.userId}]];
+        var expire = new Date();
+        expire.setDate(expire.getDate() + 1); // 하루만 쿠키로 저장
+        idCookies = 'id=' + escape(id) + '; path=/ ';
+        document.cookie = idCookies;
+
+        var nickname = [[${user.nickname}]];
+        nicknameCookies = 'nickname=' + escape(nickname) + '; path=/ ';
+        document.cookie = nicknameCookies;
+    });
+  </script>
   </body>
 </html>

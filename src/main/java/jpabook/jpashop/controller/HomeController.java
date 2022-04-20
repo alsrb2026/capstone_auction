@@ -1,5 +1,8 @@
 package jpabook.jpashop.controller;
 
+import jpabook.jpashop.domain.UserEntity;
+import jpabook.jpashop.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -8,8 +11,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
+@RequiredArgsConstructor
 public class HomeController {
 
+    private final UserRepository userRepository;
 
     /*@GetMapping("/signUp")
     public String signUp() {
@@ -34,7 +39,9 @@ public class HomeController {
     public String getHome(HttpServletRequest request) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = ((UserDetails)principal).getUsername();
-        request.setAttribute("nickname",username);
+        UserEntity user = userRepository.findByName(username).get();
+
+        request.setAttribute("user",user);
         return "home";
     }
 

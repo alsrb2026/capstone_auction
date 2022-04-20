@@ -27,7 +27,6 @@
     <tbody>
     <tr th:each="board : ${boardList}">
         <th scope="row" th:text="${boardStat.index + 1}">1</th>
-        <td th:text="${board.id}"></td>
         <td>
             <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
                 <h2><span th:text="${board.title}"></span></h2>
@@ -41,7 +40,7 @@
         <td th:text="${board.currentBid}"></td>
         <td th:text="${board.auctionPeriod}"></td>
         <td th:text="${board.status}"></td>
-        <td th:text="${board.regisTime}"></td>
+        <td th:text="${#dates.format(board.regisTime, 'yyyy년 MM월 dd일 HH시 mm분')}"></td>
     </tr>
     </tbody>
 </table>
@@ -76,7 +75,6 @@
         </li>
     </ul>
 </nav>
-
 </body>
 </html>
 

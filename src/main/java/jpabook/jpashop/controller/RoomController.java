@@ -3,7 +3,6 @@ package jpabook.jpashop.controller;
 import jpabook.jpashop.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,9 +20,7 @@ public class RoomController {
 
     //채팅방 목록 조회
     @GetMapping(value = "/roomlist")
-    public ModelAndView rooms(HttpServletRequest request){
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ModelAndView rooms(){
 
         ModelAndView mv = new ModelAndView("/roomlist");
 

@@ -16,40 +16,36 @@
         </div>
         <div class="form-group">
             <label th:for="name">제목</label>
-            <input type="text" th:field="*{title}" class="form-control" placeholder="이름을 입력하세요">
+            <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요">
         </div>
         <div class="form-group">
             <label th:for="price">내용</label>
-            <input type="text" th:field="*{contents}" class="form-control" placeholder="가격을 입력하세요">
+            <input type="text" th:field="*{contents}" class="form-control" placeholder="내용을 입력하세요">
         </div>
         <div class="form-group">
             <label th:for="price">상품명</label>
-            <input type="text" th:field="*{product_name}" class="form-control" placeholder="가격을 입력하세요">
+            <input type="text" th:field="*{product_name}" class="form-control" placeholder="상품명을 입력하세요">
         </div>
         <div class="form-group">
             <label th:for="price">시작가</label>
-            <input type="text" th:field="*{startBid}" class="form-control" placeholder="가격을 입력하세요">
+            <input type="text" th:field="*{startBid}" class="form-control" placeholder="시작 가격을 입력하세요">
         </div>
         <div class="form-group">
-            <label th:for="price">낙찰가</label>
-            <input type="text" th:field="*{winningBid}" class="form-control" placeholder="가격을 입력하세요">
+            <label th:for="price">즉시 낙찰가</label>
+            <input type="text" th:field="*{winningBid}" class="form-control" placeholder="즉시 낙찰가를 입력하세요">
         </div>
         <div class="form-group">
             <label th:for="price">입찰 단위</label>
-            <input type="text" th:field="*{unitBid}" class="form-control" placeholder="가격을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label th:for="price">현재 입찰가</label>
-            <input type="text" th:field="*{currentBid}" class="form-control" placeholder="가격을 입력하세요">
+            <input type="text" th:field="*{unitBid}" class="form-control" placeholder="입찰 단위을 입력하세요">
         </div>
         <div class="form-group">
             <label th:for="price">경매 기간</label>
-            <input type="text" th:field="*{auctionPeriod}" class="form-control" placeholder="가격을 입력하세요">
+            <input type="text" th:field="*{auctionPeriod}" class="form-control" placeholder="기간을 입력하세요">
         </div>
-        <div class="form-group">
+        <!--<div class="form-group">
             <label th:for="price">상품 상태</label>
             <input type="text" th:field="*{status}" class="form-control" placeholder="가격을 입력하세요">
-        </div>
+        </div> -->
 <!--        <div class="form-group">-->
 <!--            <label th:for="price">조회수</label>-->
 <!--            <input type="text" th:field="*{view}" class="form-control" placeholder="가격을 입력하세요">-->
@@ -64,7 +60,6 @@
     function handleOnChange(e) {
         // 선택된 데이터의 텍스트값 가져오기
         const text = e.options[e.selectedIndex].text;
-        System.out.println(text);
     }
 </script>
 </body>
