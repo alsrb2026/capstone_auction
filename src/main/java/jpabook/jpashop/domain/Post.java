@@ -17,7 +17,7 @@ public class Post {
     private Long postUserId; // 상품 등록한 사용자 id
     private String title;
     private String contents;
-    private String product_name;
+    private String productName;
     private Category category;
     private int view;
     private int startBid; // 시작가

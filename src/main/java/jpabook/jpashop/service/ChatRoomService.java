@@ -16,8 +16,8 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
 
-    public ChatRoom createChatRoom(String name) {
-        return chatRoomRepository.createChatRoom(name);
+    public ChatRoom createChatRoom(String name, Long id1, Long id2) {
+        return chatRoomRepository.createChatRoom(name, id1, id2);
     }
 
     public List<ChatRoom> findAllChatRooms(){

@@ -29,14 +29,14 @@ public class RoomController {
         return mv;
     }
 
-    //채팅방 개설
+    /* //채팅방 개설
     @PostMapping(value = "/createRoom")
     public String create(@RequestParam String name, RedirectAttributes rttr){
 
         log.info("# Create Chat Room , name: " + name);
         rttr.addFlashAttribute("roomName", chatRoomService.createChatRoom(name));
         return "redirect:/roomlist";
-    }
+    }*/
 
     //채팅방 조회
     @GetMapping("/room")

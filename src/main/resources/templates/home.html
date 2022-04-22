@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<<<<<<< HEAD
 <script src="/webjars/jquery/jquery.min.js"></script>
   <head th:replace="fragments/header :: header">
-=======
   <head>
->>>>>>> main
     <title>도전경매</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,12 +49,10 @@
       <div class="jumbotron">
         <div class="top-bar">
           <div class="title">
-            <a href="/"
-              ><img
+            <a href="/"><img
                 src="images/premium-icon-hammer-2547559.png"
                 id="iconimg"
-              />도전경매</a
-            >
+              />도전경매</a>
           </div>
 
           <div class="search-from">
@@ -67,7 +62,6 @@
             </form>
           </div>
           <div class="loginbox">
-<<<<<<< HEAD
             <td th:text="|${user.nickname}님, 환영합니다.|"></td>
             <div class="nav-banner">
               <a href="roomlist"><div>채팅목록</div></a>
@@ -76,14 +70,8 @@
               <a href="#"><div>공지사항</div></a>
             </div>
             <a class="btn btn-lg btn-secondary" href="/doLogout">로그 아웃</a>
-=======
-            <td th:text="|${nickname}님, 환영합니다.|"></td>
-            <a class="btn btn-lg btn-secondary logout-btn" href="/doLogout">로그 아웃</a>
->>>>>>> main
-            |
-            <a class="btn btn-lg btn-secondary" href="/adminpage"
-              >어드민페이지</a
-            >
+            <a class="btn btn-lg btn-secondary logout-btn" href="/members/new">로그 아웃</a>
+            <a class="btn btn-lg btn-secondary" href="/adminpage">어드민페이지</a>
             <a class="btn btn-lg btn-secondary" href="/members/new">회원가입</a>
           </div>
         </div>
@@ -115,7 +103,6 @@
       <button type="button" aria-label="이전" id="prevArrow"></button>
       <button type="button" aria-label="다음" id="nextArrow"></button>
     </div>
-<<<<<<< HEAD
     <script th:inline="javascript">
       $(function(){
         var id = [[${user.userId}]];
@@ -129,7 +116,6 @@
         document.cookie = nicknameCookies;
     });
   </script>
-=======
     <div class="sec_content">
       <div>
         <img class="l-sec_content-img" src="./images/그림1.png" />
@@ -154,6 +140,5 @@
       <a href="/posts"><div>거래하기</div></a>
       <a href="#"><div>공지사항</div></a>
     </div>
->>>>>>> main
   </body>
 </html>

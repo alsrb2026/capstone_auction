@@ -13,8 +13,8 @@ public class ChatRoomRepository {
 
     private final EntityManager em;
 
-    public ChatRoom createChatRoom(String name){
-        ChatRoom chatRoom = ChatRoom.create(name);
+    public ChatRoom createChatRoom(String name, Long id1, Long id2){
+        ChatRoom chatRoom = ChatRoom.create(name, id1, id2);
         if(chatRoom.getRoomId() == null) {
             em.persist(chatRoom);
         }

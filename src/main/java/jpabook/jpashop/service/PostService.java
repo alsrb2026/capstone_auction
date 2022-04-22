@@ -24,12 +24,12 @@ public class PostService {
 
     @Transactional
     public void updatePost(Long id, String title, String contents,
-                           String product_name, Category category, int startBid, int winningBid
+                           String productName, Category category, int startBid, int winningBid
     , int unitBid, int currentBid, int auctionPeriod, String status ) {
         Post post = postRepository.findOne(id);
         post.setTitle(title);
         post.setContents(contents);
-        post.setProduct_name(product_name);
+        post.setProductName(productName);
         post.setCategory(category);
         post.setStartBid(startBid);
         post.setWinningBid(winningBid);

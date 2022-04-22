@@ -3,8 +3,10 @@ package jpabook.jpashop.controller;
 import jpabook.jpashop.domain.Pagination;
 import jpabook.jpashop.domain.Post;
 import jpabook.jpashop.domain.UserEntity;
+import jpabook.jpashop.repository.ChatRoomRepository;
 import jpabook.jpashop.repository.PostRepository;
 import jpabook.jpashop.repository.UserRepository;
+import jpabook.jpashop.service.ChatRoomService;
 import jpabook.jpashop.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -13,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -29,6 +32,7 @@ public class PostController {
     private final PostService postService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ChatRoomService chatRoomService;
 
     @GetMapping("/posts/new")
     public String createForm(HttpServletRequest request, Model model) {
@@ -50,7 +54,7 @@ public class PostController {
         post.setPostUserId(id); // 상품 등록한 사용자 id
         post.setTitle(form.getTitle());
         post.setContents(form.getContents());
-        post.setProduct_name(form.getProduct_name());
+        post.setProductName(form.getProductName());
         post.setCategory(form.getCategory());
         post.setView(0); // 조회 수도 초기 값은 0으로
         post.setStartBid(form.getStartBid());
@@ -110,7 +114,7 @@ public class PostController {
         form.setPostUserId(post.getPostUserId());
         form.setTitle(post.getTitle());
         form.setContents(post.getContents());
-        form.setProduct_name(post.getProduct_name());
+        form.setProductName(post.getProductName());
         form.setCategory(post.getCategory());
         form.setStartBid(post.getStartBid());
         form.setWinningBid(post.getWinningBid());
@@ -148,7 +152,7 @@ public class PostController {
 
 
         postService.updatePost(id, form.getTitle(),
-                form.getContents(), form.getProduct_name(), form.getCategory(), form.getStartBid()
+                form.getContents(), form.getProductName(), form.getCategory(), form.getStartBid()
                 ,form.getWinningBid(), form.getUnitBid(), form.getCurrentBid(), form.getAuctionPeriod(),
                 form.getStatus());
 
@@ -200,7 +204,7 @@ public class PostController {
         form.setPostUserId(post.getPostUserId());
         form.setTitle(post.getTitle());
         form.setContents(post.getContents());
-        form.setProduct_name(post.getProduct_name());
+        form.setProductName(post.getProductName());
         form.setCategory(post.getCategory());
         // 조회 수
         form.setStartBid(post.getStartBid());
@@ -217,7 +221,7 @@ public class PostController {
     }
 
     @PostMapping("/post/{id}/auction") // id에 해당하는 물품 입찰.
-    public String auctionItem(@ModelAttribute("form")  PostForm form){
+    public String auctionItem(@ModelAttribute("form")  PostForm form, Model model){
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = ((UserDetails) principal).getUsername();
@@ -228,7 +232,7 @@ public class PostController {
         post.setPostUserId(form.getPostUserId());
         post.setTitle(form.getTitle());
         post.setContents(form.getContents());
-        post.setProduct_name(form.getProduct_name());
+        post.setProductName(form.getProductName());
         post.setCategory(form.getCategory());
         // 조회 수
         post.setStartBid(form.getStartBid());
@@ -249,8 +253,18 @@ public class PostController {
             else{
                 if(form.getCurrentBid() == form.getWinningBid()){ // 1-2-(1). 현재 입찰한 금액이 낙찰가일 경우
                     post.setCurrentBidId(id);
-                    post.setStatus("낙찰완료");
-                    // 그리고 채팅 연결
+                    post.setStatus("낙찰됨");
+                    // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
+                    chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id);
+
+                    model.addAttribute("list", chatRoomService.findAllChatRooms());
+
+                    // 원래 ChatRoom Controller에서 채팅방 조회할 때 사용했던  코드.
+                    /*ModelAndView mv = new ModelAndView("/roomlist");
+                    mv.addObject("list", chatRoomService.findAllChatRooms());
+                    */
+
+                    return "/roomlist";
                 }
                 else if(form.getCurrentBid() < form.getWinningBid()){ // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
                     post.setCurrentBidId(id);
@@ -268,7 +282,7 @@ public class PostController {
                 // 그리고 채팅 연결.
             }
             else{
-                form.setStatus("입찰 기간 종료");
+                form.setStatus("입찰 종료");
             }
         }
 

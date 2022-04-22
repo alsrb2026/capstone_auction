@@ -16,12 +16,11 @@ public class UserRepositoryR {
         return em.createQuery("select m from user m where m.name = name",
                            UserEntity.class).setParameter("name", name)
                .getSingleResult();
-        }
+    }
 
     @Transactional
     public void save(UserEntity user){
         em.persist(user);
     }
-
 
 }
