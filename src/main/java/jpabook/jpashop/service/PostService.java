@@ -25,7 +25,7 @@ public class PostService {
     @Transactional
     public void updatePost(Long id, String title, String contents,
                            String productName, Category category, int startBid, int winningBid
-    , int unitBid, int currentBid, int auctionPeriod, String status ) {
+    , int unitBid, int currentBid, int auctionPeriod, String status, Long currentBidId) {
         Post post = postRepository.findOne(id);
         post.setTitle(title);
         post.setContents(contents);
@@ -37,8 +37,14 @@ public class PostService {
         post.setCurrentBid(currentBid);
         post.setAuctionPeriod(auctionPeriod);
         post.setStatus(status);
-    }
+        post.setCurrentBidId(currentBidId);
+    } // 만약 입찰한 유저가 있고, currentBidId를 update할 때, 같이 넣지 않으면 입찰한 유저 정보가 사라져서 추가함.
 
+    @Transactional // post id, 현재 입찰한 사용자 id, 입찰 상태, 현재 입찰 금액만 업데이트.
+    public void auctionPost(Long id, int currentBid, String status, Long currentBidId){
+        Post post = postRepository.findOne(id);
+
+    }
     @Transactional
     public void deletePost(Long id) {
         postRepository.delete(id);

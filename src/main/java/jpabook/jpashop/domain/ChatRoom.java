@@ -23,15 +23,17 @@ public class ChatRoom {
     @Column(name = "room_id")
     private String roomId;
     private String name;
-    private static ArrayList<Long> id = new ArrayList<>(2);
+    private Long regisUserId;
+    private Long auctionUserId;
 
     public static ChatRoom create(String name, Long id1, Long id2) {
+        // id1 : 판매자, id2 : 구매자
         ChatRoom room = new ChatRoom();
 
         room.roomId = UUID.randomUUID().toString();
         room.name = name;
-        id.add(id1);
-        id.add(id2); // 구매자와 물품주인의 id만 넣어준다.
+        room.regisUserId = id1;
+        room.auctionUserId = id2;
 
         return room;
     }

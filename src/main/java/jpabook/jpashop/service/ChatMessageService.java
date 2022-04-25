@@ -18,8 +18,8 @@ public class ChatMessageService {
     public void saveChatMessage(ChatMessage chatMessage){
         chatMessageRepository.save(chatMessage);
     }
-
-    public List<ChatMessage> findAllChatMessages(){
-        return chatMessageRepository.findAll();
+    // DB에 채팅이 채팅 고유의 id와 채팅이 일어나는 방 번호가 저장되어 있으므로, 채팅방 번호에 해당하는 채팅들을 list로 받아온다.
+    public List<ChatMessage> findChatMessages(String id){
+        return chatMessageRepository.findAll(id);
     }
 }

@@ -42,6 +42,7 @@ public class HomeController {
         UserEntity user = userRepository.findByName(username).get();
 
         request.setAttribute("user",user);
+        request.setAttribute("user",user);
         return "home";
     }
 
