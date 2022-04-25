@@ -19,7 +19,6 @@ public class ChatController {
     //"/pub/chat/enter"
     @MessageMapping(value = "/chat/enter")
     public void enter(ChatMessage message) throws Exception {
-        message.setMessage(message.getSender() + "님이 채팅방에 참여하였습니다.");
         template.convertAndSend("/sub/chat/room/" + message.getChRoomId(), message);
         chatMessageService.saveChatMessage(message);
 
@@ -34,7 +33,7 @@ public class ChatController {
 
     @MessageMapping(value = "/chat/message")
     public void message(ChatMessage message) throws Exception {
-        message.setMessage(message.getSender() + ": " + message.getMessage());
+        message.setMessage(message.getMessage());
         template.convertAndSend("/sub/chat/room/" + message.getChRoomId(), message);
         chatMessageService.saveChatMessage(message);
     }

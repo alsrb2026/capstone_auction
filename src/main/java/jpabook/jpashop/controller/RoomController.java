@@ -1,5 +1,6 @@
 package jpabook.jpashop.controller;
 
+import jpabook.jpashop.service.ChatMessageService;
 import jpabook.jpashop.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class RoomController {
 
     private final ChatRoomService chatRoomService;
+    private final ChatMessageService chatMessageService;
 
     //채팅방 목록 조회
     @GetMapping(value = "/roomlist")
@@ -29,15 +31,6 @@ public class RoomController {
         return mv;
     }
 
-    /* //채팅방 개설
-    @PostMapping(value = "/createRoom")
-    public String create(@RequestParam String name, RedirectAttributes rttr){
-
-        log.info("# Create Chat Room , name: " + name);
-        rttr.addFlashAttribute("roomName", chatRoomService.createChatRoom(name));
-        return "redirect:/roomlist";
-    }*/
-
     //채팅방 조회
     @GetMapping("/room")
     public String getRoom(String roomId, Model model){
@@ -45,6 +38,7 @@ public class RoomController {
         log.info("# get Chat Room, roomID : " + roomId);
 
         model.addAttribute("room", chatRoomService.findChatRoomById(roomId));
+        model.addAttribute("chatList", chatMessageService.findChatMessages(roomId));
 
         return "room";
     }
@@ -55,6 +49,6 @@ public class RoomController {
 
         chatRoomService.exitChatRoom(roomId);
 
-        return "roomlist"; // -> 삭제 코드를 넣지 않았는데, 안보인다..
+        return "roomlist";
     }
 }

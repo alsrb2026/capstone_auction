@@ -155,7 +155,7 @@ public class PostController {
         postService.updatePost(id, form.getTitle(),
                 form.getContents(), form.getProductName(), form.getCategory(), form.getStartBid()
                 ,form.getWinningBid(), form.getUnitBid(), form.getCurrentBid(), form.getAuctionPeriod(),
-                form.getStatus());
+                form.getStatus(), form.getCurrentBidId());
 
         return "redirect:/";
     }
@@ -223,25 +223,13 @@ public class PostController {
 
     @Transactional
     @PostMapping("/post/{id}/auction") // id에 해당하는 물품 입찰.
-    public String auctionItem(@ModelAttribute("form")  PostForm form, Model model){
-
+    public String auctionItem(@RequestParam(defaultValue = "1") int page, @ModelAttribute("form")  @PathVariable("id") Long regisId,
+                              PostForm form, Model model){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = ((UserDetails) principal).getUsername();
         Long id = userRepository.findByName(name).get().getUserId(); // 현재 입찰하려고 하는 사용자의 id
 
-        Post post = new Post();
-        post.setId(form.getId());
-        post.setPostUserId(form.getPostUserId());
-        post.setTitle(form.getTitle());
-        post.setContents(form.getContents());
-        post.setProductName(form.getProductName());
-        post.setCategory(form.getCategory());
-        // 조회 수
-        post.setStartBid(form.getStartBid());
-        post.setWinningBid(form.getWinningBid());
-        post.setUnitBid(form.getUnitBid());
-        post.setAuctionPeriod(form.getAuctionPeriod());
-        post.setRegisTime(form.getRegisTime());
+        Post post = postRepository.findOne(form.getId());
 
         // 1. 경매에 참여할 수 있는지 없는지 부터 체크
         if(!calcDay(form.getAuctionPeriod(), form.getRegisTime())) { // 아직 물품 경매 기간이 지나지 않았을 경우
@@ -276,7 +264,7 @@ public class PostController {
                 else{} // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
             }
         }
-        // 2. 경매 기간이 지난 경우. -> controller 로 따로 작성해야 하나?
+        // 2. 경매 기간이 지난 경우.
         else{
             // 2-1. 물품에 입찰자가 있는지 체크
             if(form.getCurrentBidId() != 0){ // 2.2 현재 입찰 id 값을 0으로 초기화했으므로 0이 아닌 경우 -> 입찰자가 존재하는 경우
@@ -286,10 +274,32 @@ public class PostController {
             else{
                 form.setStatus("입찰 종료");
             }
-        }
+        } 
 
+        /*
         postService.savePost(post); // service에 transaction=false로 하고, repository에 saveItem에 em.flush()를 해야
         // db에 내용이 반영된다.
+        */
+        
+        // 입찰 중(초기 상태), 낙찰됨(낙찰될 경우), 입찰 종료(시간 지나고 입찰자가 없을 경우) 이 3가지가 입찰 상태
+        
+        int totalListCnt = postRepository.findAllCnt();
+        System.out.println("test totalListCnt =" + totalListCnt);
+        // 생성인자로  총 게시물 수, 현재 페이지를 전달
+        Pagination pagination = new Pagination(totalListCnt, page);
+
+        // DB select start index
+        int startIndex = pagination.getStartIndex();
+        System.out.println("test startIndex =" + startIndex);
+        // 페이지 당 보여지는 게시글의 최대 개수
+        int pageSize = pagination.getPageSize();
+        System.out.println("test pageSize =" + pageSize);
+
+        List<Post> boardList = postRepository.findListPaging(startIndex, pageSize);
+
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("pagination", pagination);
+
         return "posts/postList";
     }
 
