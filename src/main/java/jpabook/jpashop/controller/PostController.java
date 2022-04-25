@@ -2,24 +2,19 @@ package jpabook.jpashop.controller;
 
 import jpabook.jpashop.domain.Pagination;
 import jpabook.jpashop.domain.Post;
-import jpabook.jpashop.domain.UserEntity;
-import jpabook.jpashop.repository.ChatRoomRepository;
 import jpabook.jpashop.repository.PostRepository;
 import jpabook.jpashop.repository.UserRepository;
 import jpabook.jpashop.service.ChatRoomService;
 import jpabook.jpashop.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -38,25 +33,25 @@ public class PostController {
     @GetMapping("/posts/new")
     public String createForm(HttpServletRequest request, Model model) {
         model.addAttribute("form", new PostForm());
-        System.out.println("test="+request.getParameter("category"));
+        System.out.println("test=" + request.getParameter("category"));
         return "posts/createPostForm";
     }
 
     @PostMapping("/posts/new")
-    public String create(PostForm form) {
+    public String create(@RequestParam String category, PostForm form) {
 
         Post post = new Post();
-        SimpleDateFormat time = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = ((UserDetails) principal).getUsername();
         Long id = userRepository.findByName(name).get().getUserId(); // 상품 등록한 user id 를 repository에서 조회해서 넣었음.
-
+        System.out.println("category = " + category);
         post.setPostUserId(id); // 상품 등록한 사용자 id
         post.setTitle(form.getTitle());
         post.setContents(form.getContents());
         post.setProductName(form.getProductName());
-        post.setCategory(form.getCategory());
+        post.setCategory(category);
         post.setView(0); // 조회 수도 초기 값은 0으로
         post.setStartBid(form.getStartBid());
         post.setWinningBid(form.getWinningBid());
@@ -76,7 +71,7 @@ public class PostController {
     public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 
         // 총 게시물 수
-        int totalListCnt = postRepository.findAllCnt();
+        int totalListCnt = postService.findAllCount();
         System.out.println("test totalListCnt =" + totalListCnt);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
@@ -88,16 +83,71 @@ public class PostController {
         int pageSize = pagination.getPageSize();
         System.out.println("test pageSize =" + pageSize);
 
-        List<Post> boardList = postRepository.findListPaging(startIndex, pageSize);
+        List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
 
-//        List<Post> posts = postService.findPosts();
-//        model.addAttribute("posts", posts);
 
         return "posts/postList";
     }
+
+    @GetMapping("/post/search")
+    public String searchList(@RequestParam(value = "keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
+        System.out.println("keyword =" + keyword);
+        // 총 게시물 수
+        int totalListCnt = postService.findAllCount();
+        System.out.println("test totalListCnt =" + totalListCnt);
+        // 생성인자로  총 게시물 수, 현재 페이지를 전달
+        Pagination pagination = new Pagination(totalListCnt, page);
+
+        // DB select start index
+        int startIndex = pagination.getStartIndex();
+        System.out.println("test startIndex =" + startIndex);
+        // 페이지 당 보여지는 게시글의 최대 개수
+        int pageSize = pagination.getPageSize();
+        System.out.println("test pageSize =" + pageSize);
+
+
+        List<Post> searchboardList = postService.findSearchListPaging(startIndex, pageSize, keyword);
+
+        model.addAttribute("boardList", searchboardList);
+        model.addAttribute("pagination", pagination);
+
+        return "posts/postList";
+    }
+
+    @GetMapping("/post/searchCategory/{keyword}")
+    public String searchCategory(@PathVariable("keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
+        // 총 게시물 수
+        int totalListCnt = postService.findAllCount();
+        System.out.println("test totalListCnt =" + totalListCnt);
+        // 생성인자로  총 게시물 수, 현재 페이지를 전달
+        Pagination pagination = new Pagination(totalListCnt, page);
+
+        // DB select start index
+        int startIndex = pagination.getStartIndex();
+        System.out.println("test startIndex =" + startIndex);
+        // 페이지 당 보여지는 게시글의 최대 개수
+        int pageSize = pagination.getPageSize();
+        System.out.println("test pageSize =" + pageSize);
+
+
+        List<Post> searchboardList = postService.findCategoryListPaging(startIndex, pageSize, keyword);
+
+        model.addAttribute("boardList", searchboardList);
+        model.addAttribute("pagination", pagination);
+
+        return "posts/postList";
+    }
+
+    @GetMapping("/post/myPost") //내 게시글 목록은 검색창, 페이징 없음
+    public String searchMyPost(Model model) {
+        List<Post> posts = postService.findPosts();
+        model.addAttribute("boardList", posts);
+        return "posts/myPostList";
+    }
+
 
     @GetMapping("/post/{id}")
     public String auctionItem(@PathVariable("id") Long id, Model model) {
@@ -134,7 +184,7 @@ public class PostController {
 //        List<Post> posts = postService.findPosts();
 //        model.addAttribute("posts", posts);
         // 총 게시물 수
-        int totalListCnt = postRepository.findAllCnt();
+        int totalListCnt = postService.findAllCount();
         System.out.println("test totalListCnt =" + totalListCnt);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
@@ -146,7 +196,7 @@ public class PostController {
         int pageSize = pagination.getPageSize();
         System.out.println("test pageSize =" + pageSize);
 
-        List<Post> boardList = postRepository.findListPaging(startIndex, pageSize);
+        List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
@@ -154,7 +204,7 @@ public class PostController {
 
         postService.updatePost(id, form.getTitle(),
                 form.getContents(), form.getProductName(), form.getCategory(), form.getStartBid()
-                ,form.getWinningBid(), form.getUnitBid(), form.getCurrentBid(), form.getAuctionPeriod(),
+                , form.getWinningBid(), form.getUnitBid(), form.getCurrentBid(), form.getAuctionPeriod(),
                 form.getStatus());
 
         return "redirect:/";
@@ -169,7 +219,7 @@ public class PostController {
 
 //        List<Post> posts = postService.findPosts();
 //        model.addAttribute("posts", posts);
-        int totalListCnt = postRepository.findAllCnt();
+        int totalListCnt = postService.findAllCount();
         System.out.println("test totalListCnt =" + totalListCnt);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
@@ -181,7 +231,7 @@ public class PostController {
         int pageSize = pagination.getPageSize();
         System.out.println("test pageSize =" + pageSize);
 
-        List<Post> boardList = postRepository.findListPaging(startIndex, pageSize);
+        List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
@@ -223,7 +273,7 @@ public class PostController {
 
     @Transactional
     @PostMapping("/post/{id}/auction") // id에 해당하는 물품 입찰.
-    public String auctionItem(@ModelAttribute("form")  PostForm form, Model model){
+    public String auctionItem(@ModelAttribute("form") PostForm form, Model model) {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = ((UserDetails) principal).getUsername();
@@ -244,16 +294,16 @@ public class PostController {
         post.setRegisTime(form.getRegisTime());
 
         // 1. 경매에 참여할 수 있는지 없는지 부터 체크
-        if(!calcDay(form.getAuctionPeriod(), form.getRegisTime())) { // 아직 물품 경매 기간이 지나지 않았을 경우
+        if (!calcDay(form.getAuctionPeriod(), form.getRegisTime())) { // 아직 물품 경매 기간이 지나지 않았을 경우
             // 1-1. 현재 입찰한 사용자가 첫 번째 입찰자일 경우
-            if(form.getCurrentBidId() == 0){ //
+            if (form.getCurrentBidId() == 0) { //
                 post.setCurrentBidId(id);
                 post.setStatus("입찰 중");
                 post.setCurrentBid(form.getStartBid() + form.getUnitBid());
             }
             // 1-2. 첫 번째 입찰자가 아닐 경우
-            else{
-                if(form.getCurrentBid() == form.getWinningBid()){ // 1-2-(1). 현재 입찰한 금액이 낙찰가일 경우
+            else {
+                if (form.getCurrentBid() == form.getWinningBid()) { // 1-2-(1). 현재 입찰한 금액이 낙찰가일 경우
                     post.setCurrentBidId(id);
                     post.setStatus("낙찰됨");
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
@@ -267,23 +317,21 @@ public class PostController {
                     */
 
                     return "/roomlist";
-                }
-                else if(form.getCurrentBid() < form.getWinningBid()){ // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
+                } else if (form.getCurrentBid() < form.getWinningBid()) { // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
                     post.setCurrentBidId(id);
                     post.setStatus("입찰 중");
                     post.setCurrentBid(form.getCurrentBid() + form.getUnitBid());
-                }
-                else{} // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
+                } else {
+                } // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
             }
         }
         // 2. 경매 기간이 지난 경우. -> controller 로 따로 작성해야 하나?
-        else{
+        else {
             // 2-1. 물품에 입찰자가 있는지 체크
-            if(form.getCurrentBidId() != 0){ // 2.2 현재 입찰 id 값을 0으로 초기화했으므로 0이 아닌 경우 -> 입찰자가 존재하는 경우
+            if (form.getCurrentBidId() != 0) { // 2.2 현재 입찰 id 값을 0으로 초기화했으므로 0이 아닌 경우 -> 입찰자가 존재하는 경우
                 form.setStatus("낙찰됨");
                 // 그리고 채팅 연결.
-            }
-            else{
+            } else {
                 form.setStatus("입찰 종료");
             }
         }
@@ -293,16 +341,16 @@ public class PostController {
         return "posts/postList";
     }
 
-    private boolean calcDay(int period, Date regisTime){
+    private boolean calcDay(int period, Date regisTime) {
         Date now = new Date();
         long gap = now.getTime() - regisTime.getTime();
         long gapHour = gap / (1000 * 60 * 60);
-        if(gapHour < period){ // 기간이 지나지 않았을 경우, false
+        if (gapHour < period) { // 기간이 지나지 않았을 경우, false
             return false;
-        }
-        else{ // 기간 지났을 경우, true
+        } else { // 기간 지났을 경우, true
             return true;
         }
     }
 }
+
 

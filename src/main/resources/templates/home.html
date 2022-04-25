@@ -1,9 +1,19 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <script src="/webjars/jquery/jquery.min.js"></script>
   <head th:replace="fragments/header :: header">
   <head>
     <title>도전경매</title>
+    <div>
+      test
+    </div>
+
+    <a class="btn btn-lg btn-secondary" href="/post/searchCategory/book">도서</a>
+    <a class="btn btn-lg btn-secondary" href="/post/searchCategory/studyMaterial">학습자료</a>
+    <a class="btn btn-lg btn-secondary" href="/post/searchCategory/electronics">전자기기</a>
+    <a class="btn btn-lg btn-secondary" href="/post/searchCategory/daily">생필품</a>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -56,9 +66,11 @@
           </div>
 
           <div class="search-from">
-            <form>
-              <input class="search-box" type="text" placeholder="내가 찾는 도서, 전자기기" />
-              <input class="search-btn" type="submit" value="검색" />
+            <form action="/post/search" method="GET">
+              <div>
+                <input name="keyword" type="text" placeholder="내가 찾는 도서, 전자기기">
+              </div>
+              <button style="background-color: #80bdff">검색</button>
             </form>
           </div>
           <div class="loginbox">
@@ -69,10 +81,17 @@
               <a href="/posts"><div>거래하기</div></a>
               <a href="#"><div>공지사항</div></a>
             </div>
-            <a class="btn btn-lg btn-secondary" href="/doLogout">로그 아웃</a>
-            <a class="btn btn-lg btn-secondary logout-btn" href="/members/new">로그 아웃</a>
-            <a class="btn btn-lg btn-secondary" href="/adminpage">어드민페이지</a>
-            <a class="btn btn-lg btn-secondary" href="/members/new">회원가입</a>
+            <sec:authorize access="isAnonymous()">
+              <a class="btn btn-lg btn-secondary logout-btn" href="/members/new">로그인</a>
+              <a class="btn btn-lg btn-secondary" href="/members/new">회원가입</a>
+            </sec:authorize>
+            <sec:authorize access="isAuthenticated()">
+              <a class="btn btn-lg btn-secondary" href="/doLogout">로그 아웃</a>
+              <a class="btn btn-lg btn-secondary" href="/adminpage">어드민페이지</a>
+              <a class="btn btn-lg btn-secondary" href="/mypage">마이 페이지</a>
+            </sec:authorize>
+
+
           </div>
         </div>
       </div>

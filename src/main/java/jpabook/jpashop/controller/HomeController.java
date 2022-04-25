@@ -1,11 +1,13 @@
 package jpabook.jpashop.controller;
 
 import jpabook.jpashop.domain.UserEntity;
+import jpabook.jpashop.repository.PostRepository;
 import jpabook.jpashop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,20 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HomeController {
 
     private final UserRepository userRepository;
-
-    /*@GetMapping("/signUp")
-    public String signUp() {
-        UserEntity user = UserEntity.builder()
-                .name("galid")
-                .password(passwordEncoder.encode("1234"))
-                .role("user")
-                .build();
-
-        System.out.println("save?");
-        userRepository.save(user);
-
-        return "redirect:/login";
-    }*/
+    private final PostRepository postRepository;
 
     @GetMapping("/login")
     public String getLoginForm() {
@@ -50,9 +39,11 @@ public class HomeController {
         return "adminpage";
     }
 
-//    @GetMapping("/home")
-//    public String getMain() {
-//        return "home";
-//    }
+    @GetMapping("/mypage")
+    public String getMyPage(Model model) {
+
+        return "mypage";
+    }
+
 }
 

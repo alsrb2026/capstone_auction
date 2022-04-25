@@ -55,4 +55,28 @@ public class PostRepository {
                 .setMaxResults(pageSize)
                 .getResultList();
     }
+
+    public List<Post> findSearchListPaging(int startIndex, int pageSize, String keyword) {
+        return em.createQuery("select b from Post b where b.title LIKE :keyword", Post.class)
+                .setParameter("keyword","%"+keyword+"%")
+                .setFirstResult(startIndex)
+                .setMaxResults(pageSize)
+                .getResultList();
+    }
+
+    public List<Post> findCategoryListPaging(int startIndex, int pageSize, String keyword) {
+        return em.createQuery("select b from Post b where b.category = :keyword", Post.class)
+                .setParameter("keyword",keyword)
+                .setFirstResult(startIndex)
+                .setMaxResults(pageSize)
+                .getResultList();
+    }
+//내 게시글인지 어떻게 판단할래? JOIN해서? 아니면 id값? -> Post에 postUserId필드가 있음 이거 활용
+    public List<Post> findMyListPaging(int startIndex, int pageSize, Long myId) {
+        return em.createQuery("select b from Post b where b.postUserId = :myId", Post.class)
+                .setParameter("myId",myId)
+                .setFirstResult(startIndex)
+                .setMaxResults(pageSize)
+                .getResultList();
+    }
 }

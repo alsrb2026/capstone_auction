@@ -1,6 +1,5 @@
 package jpabook.jpashop.controller;
 
-import jpabook.jpashop.domain.Category;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +14,7 @@ public class PostForm {
     private String title;
     private String contents;
     private String productName;
-    private Category category;
+    private String category;
     private int startBid; // 시작가
     private int winningBid; // 낙찰가 -> 1000, 5000, 10000, 15000, 20000, 50000
     private int unitBid; // 입찰 단위

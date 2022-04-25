@@ -1,6 +1,5 @@
 package jpabook.jpashop.service;
 
-import jpabook.jpashop.domain.Category;
 import jpabook.jpashop.domain.Post;
 import jpabook.jpashop.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class PostService {
 
     @Transactional
     public void updatePost(Long id, String title, String contents,
-                           String productName, Category category, int startBid, int winningBid
+                           String productName, String category, int startBid, int winningBid
     , int unitBid, int currentBid, int auctionPeriod, String status ) {
         Post post = postRepository.findOne(id);
         post.setTitle(title);
@@ -58,7 +57,25 @@ public class PostService {
         return postRepository.findOne(id);
     }
 
+    public int findAllCount() { //게시글 개수
+        return postRepository.findAllCnt();
+    }
 
+    public List<Post> findListPaging(int startIndex, int pageSize){ //전체 게시글
+        return postRepository.findListPaging(startIndex, pageSize);
+    }
+
+    public List<Post> findSearchListPaging(int startIndex, int pageSize, String keyword) { //검색 게시글
+        return postRepository.findSearchListPaging(startIndex, pageSize, keyword);
+    }
+
+    public List<Post> findCategoryListPaging(int startIndex, int pageSize, String keyword) {//카테고리 별 게시글
+        return postRepository.findCategoryListPaging(startIndex, pageSize, keyword);
+    }
+
+    public List<Post> findMyListPaging(int startIndex, int pageSize, Long myId) { //내가 쓴 게시글
+        return postRepository.findMyListPaging(startIndex, pageSize, myId);
+    }
 }
 
 
