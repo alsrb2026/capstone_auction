@@ -57,23 +57,27 @@ public class PostService {
         return postRepository.findOne(id);
     }
 
-    public int findAllCount() { //게시글 개수
+    //게시글 개수
+    public int findAllCount() {
         return postRepository.findAllCnt();
     }
 
-    public List<Post> findListPaging(int startIndex, int pageSize){ //전체 게시글
+    //전체 게시글
+    public List<Post> findListPaging(int startIndex, int pageSize){
         return postRepository.findListPaging(startIndex, pageSize);
     }
-
-    public List<Post> findSearchListPaging(int startIndex, int pageSize, String keyword) { //검색 게시글
+    //검색 게시글
+    public List<Post> findSearchListPaging(int startIndex, int pageSize, String keyword) {
         return postRepository.findSearchListPaging(startIndex, pageSize, keyword);
     }
 
-    public List<Post> findCategoryListPaging(int startIndex, int pageSize, String keyword) {//카테고리 별 게시글
+    //카테고리 별 게시글
+    public List<Post> findCategoryListPaging(int startIndex, int pageSize, String keyword) {
         return postRepository.findCategoryListPaging(startIndex, pageSize, keyword);
     }
 
-    public List<Post> findMyListPaging(int startIndex, int pageSize, Long myId) { //내가 쓴 게시글
+    //내가 쓴 게시글
+    public List<Post> findMyListPaging(int startIndex, int pageSize, Long myId) {
         return postRepository.findMyListPaging(startIndex, pageSize, myId);
     }
 }

@@ -11,6 +11,7 @@ public class PostForm {
 
     private long id;
     private long postUserId;
+    private String postUserName;
     private String title;
     private String contents;
     private String productName;

@@ -29,7 +29,6 @@ public class HomeController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = ((UserDetails)principal).getUsername();
         UserEntity user = userRepository.findByName(username).get();
-
         request.setAttribute("user",user);
         return "home";
     }

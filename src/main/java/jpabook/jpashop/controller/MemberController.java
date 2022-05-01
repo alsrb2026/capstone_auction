@@ -63,7 +63,6 @@ public class MemberController {
                 .role("user")
                 .build();
 
-        System.out.println(name+passwd);
         userRepositoryR.save(user);
         return "redirect:/";
     }

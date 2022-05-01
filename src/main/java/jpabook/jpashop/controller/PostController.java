@@ -2,7 +2,6 @@ package jpabook.jpashop.controller;
 
 import jpabook.jpashop.domain.Pagination;
 import jpabook.jpashop.domain.Post;
-import jpabook.jpashop.repository.PostRepository;
 import jpabook.jpashop.repository.UserRepository;
 import jpabook.jpashop.service.ChatRoomService;
 import jpabook.jpashop.service.PostService;
@@ -26,14 +25,12 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ChatRoomService chatRoomService;
 
     @GetMapping("/posts/new")
     public String createForm(HttpServletRequest request, Model model) {
         model.addAttribute("form", new PostForm());
-        System.out.println("test=" + request.getParameter("category"));
         return "posts/createPostForm";
     }
 
@@ -45,9 +42,13 @@ public class PostController {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = ((UserDetails) principal).getUsername();
+
         Long id = userRepository.findByName(name).get().getUserId(); // 상품 등록한 user id 를 repository에서 조회해서 넣었음.
-        System.out.println("category = " + category);
+
+        //id로 사용자 닉네임 검색하고 그 값을
+
         post.setPostUserId(id); // 상품 등록한 사용자 id
+        post.setPostUserName(name); // 상품 등록한 사용자 id(닉네임)
         post.setTitle(form.getTitle());
         post.setContents(form.getContents());
         post.setProductName(form.getProductName());
@@ -72,16 +73,13 @@ public class PostController {
 
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
-        System.out.println("test totalListCnt =" + totalListCnt);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
 
         // DB select start index
         int startIndex = pagination.getStartIndex();
-        System.out.println("test startIndex =" + startIndex);
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
-        System.out.println("test pageSize =" + pageSize);
 
         List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
@@ -94,19 +92,15 @@ public class PostController {
 
     @GetMapping("/post/search")
     public String searchList(@RequestParam(value = "keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
-        System.out.println("keyword =" + keyword);
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
-        System.out.println("test totalListCnt =" + totalListCnt);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
 
         // DB select start index
         int startIndex = pagination.getStartIndex();
-        System.out.println("test startIndex =" + startIndex);
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
-        System.out.println("test pageSize =" + pageSize);
 
 
         List<Post> searchboardList = postService.findSearchListPaging(startIndex, pageSize, keyword);
@@ -121,17 +115,12 @@ public class PostController {
     public String searchCategory(@PathVariable("keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
-        System.out.println("test totalListCnt =" + totalListCnt);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
-
         // DB select start index
         int startIndex = pagination.getStartIndex();
-        System.out.println("test startIndex =" + startIndex);
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
-        System.out.println("test pageSize =" + pageSize);
-
 
         List<Post> searchboardList = postService.findCategoryListPaging(startIndex, pageSize, keyword);
 
@@ -158,11 +147,26 @@ public class PostController {
 
     @GetMapping("post/{id}/edit")
     public String auctionPostForm(@PathVariable("id") Long itemId, Model model) {
-        Post post = postService.findOne(itemId);
 
         PostForm form = new PostForm();
+        Post post = postService.findOne(itemId);
+
+        //현재 로그인 한 사용자 아이디 name에 저장
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = ((UserDetails) principal).getUsername();
+
+        //자신의 게시글이 아니면 수정,삭제 버튼이 안보이게 해놨지만 만약을 대비해 서버에서 한번 더 체크
+        //로그인 한 사용자 name과 글 작성자 name과 다르면 수정 못하게 이전페이지로 보내기
+
+        if(!name.equals(post.getPostUserName())) {
+            return "redirect:/";
+        }
+
+
+
         form.setId(post.getId());
         form.setPostUserId(post.getPostUserId());
+        form.setPostUserName(form.getPostUserName());
         form.setTitle(post.getTitle());
         form.setContents(post.getContents());
         form.setProductName(post.getProductName());
@@ -185,18 +189,17 @@ public class PostController {
 //        model.addAttribute("posts", posts);
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
-        System.out.println("test totalListCnt =" + totalListCnt);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
 
         // DB select start index
         int startIndex = pagination.getStartIndex();
-        System.out.println("test startIndex =" + startIndex);
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
-        System.out.println("test pageSize =" + pageSize);
 
         List<Post> boardList = postService.findListPaging(startIndex, pageSize);
+
+
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
@@ -213,23 +216,33 @@ public class PostController {
 
     @GetMapping("post/{id}/delete")
     public String postDelete(@RequestParam(defaultValue = "1") int page, @PathVariable("id") Long id, Model model) {
+
         Post post = postService.findOne(id);
+
+        //현재 로그인 한 사용자 아이디 name에 저장
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = ((UserDetails) principal).getUsername();
+
+        //자신의 게시글이 아니면 수정,삭제 버튼이 안보이게 해놨지만 만약을 대비해 서버에서 한번 더 체크
+        //로그인 한 사용자 name과 글 작성자 name과 다르면 수정 못하게 이전페이지로 보내기
+
+        if(!name.equals(post.getPostUserName())) {
+            return "redirect:/";
+        }
+
         //Long deleteId = post.getId();
         postService.deletePost(post.getId());
 
 //        List<Post> posts = postService.findPosts();
 //        model.addAttribute("posts", posts);
         int totalListCnt = postService.findAllCount();
-        System.out.println("test totalListCnt =" + totalListCnt);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
 
         // DB select start index
         int startIndex = pagination.getStartIndex();
-        System.out.println("test startIndex =" + startIndex);
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
-        System.out.println("test pageSize =" + pageSize);
 
         List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
@@ -245,7 +258,7 @@ public class PostController {
         Post post = postService.findOne(itemId);
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String name = ((UserDetails) principal).getUsername();
+        String name = ((UserDetails) principal).getUsername(); //현재 로그인 상태의 아이디
         Long id = userRepository.findByName(name).get().getUserId();
         //현재 세션에 있는 사용자가 입찰을 해서 이 컨트롤러 함수로 들어온 것이므로 위 코드로 입찰자 id를 획득한다.
         // 아이디 중복이 없다는 가정하에
@@ -253,6 +266,7 @@ public class PostController {
         PostForm form = new PostForm();
         form.setId(post.getId());
         form.setPostUserId(post.getPostUserId());
+        form.setPostUserName(form.getPostUserName());
         form.setTitle(post.getTitle());
         form.setContents(post.getContents());
         form.setProductName(post.getProductName());
@@ -268,6 +282,8 @@ public class PostController {
         form.setCurrentBidId(post.getCurrentBidId());
 
         model.addAttribute("form", form);
+        model.addAttribute("postUserName",post.getPostUserName());
+        model.addAttribute("loginName",name);
         return "posts/postItemView";
     }
 
@@ -282,6 +298,7 @@ public class PostController {
         Post post = new Post();
         post.setId(form.getId());
         post.setPostUserId(form.getPostUserId());
+        post.setPostUserName(form.getPostUserName());
         post.setTitle(form.getTitle());
         post.setContents(form.getContents());
         post.setProductName(form.getProductName());
