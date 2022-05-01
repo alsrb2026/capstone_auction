@@ -123,12 +123,12 @@
 }
 
 #prevArrow {
-  background-image: url(../../templates/assets/icon-backward.svg);
+  background-image: url(/images/icon-backward.svg);
   left: 20px;
 }
 
 #nextArrow {
-  background-image: url(../../templates/assets/icon-forward.svg);
+  background-image: url(/images/icon-forward.svg);
   right: 20px;
 }
 #prevArrow,

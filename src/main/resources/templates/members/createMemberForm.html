@@ -1,26 +1,34 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-  <head th:replace="fragments/header :: header" />
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrinkto-fit=no">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css" integrity="sha384-
+ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+        crossorigin="anonymous">
+  <!-- Custom styles for this template -->
+  <link href="/css/jumbotron-narrow.css" rel="stylesheet">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+          rel="stylesheet"
+  />
+  <link rel="stylesheet" href="../css/common.css" />
+  <link rel="stylesheet" href="../css/createMember.css" />
+  <title>경매</title>
+</head>
   <style>
     .fieldError {
       border-color: #bd2130;
     }
   </style>
   <body>
-    <div class="container">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="../css/common.css" />
-  <link rel="stylesheet" href="../css/createMember.css" />
-  <body>
     <div class="top-bar">
       <div class="title">
-        <a href="home.html"
+        <a href="/"
           ><img
             src="../images/premium-icon-hammer-2547559.png"
             id="iconimg"
@@ -65,13 +73,13 @@
           <label th:for="passwd">비밀번호</label>
           <br />
           <input
-            type="text"
+            type="password"
             th:field="*{passwd}"
             class="form-control"
             placeholder="비밀번호를 입력하세요"
           />
         </div>
-        <button type="submit" class="btn btn-primary sing-up-btn">
+        <button type="submit" class="btn btn-primary sign-up-btn">
           가입하기
         </button>
       </form>

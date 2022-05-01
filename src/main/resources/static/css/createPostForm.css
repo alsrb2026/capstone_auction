@@ -1,3 +1,37 @@
-.asd{
+
+.form-control
+{
+    height: 50px;
+    border: solid 2px black;
+    border-radius: 0;
+}
+.form-group
+{
+    display: flex;
+    width: 80vh;
     height: 100px;
+    align-items: center;
+    border-bottom: solid 2px black;
+}
+.post-content-textarea{
+    height: 150px;
+}
+.form-group div{
+
+    width : 150px;
+    margin-right: 20px;
+    font-size: 20px;
+    font-weight: bolder;
+}
+.btn{
+    width: 100px;
+    background-color: black;
+    color: white;
+    height: 40px;
+    border-radius: 0;
+    border: solid 1px black;
+}
+.btn:hover{
+    background-color: black;
+    border: solid 1px black;
 }

@@ -1,12 +1,35 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title th:text="@{'옥션월드'}"></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrinkto-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" integrity="sha384-
+ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <!-- Custom styles for this template -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+            rel="stylesheet"
+    />
+    <link href="/css/jumbotron-narrow.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/css/common.css" />
+    <title>경매</title>
 </head>
 <body>
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div class="top-bar">
+        <div class="title">
+            <a href="/"
+            ><img
+                    src="/images/premium-icon-hammer-2547559.png"
+                    id="iconimg"
+            />도전경매</a
+            >
+        </div>
+    </div>
     <form th:object="${form}" method="post">
         <td>
             <h2><a href="#" th:href="@{/post/{id}/edit (id=${form.id})}" class="btn btn-primary" role="button">수정</a></h2>

@@ -42,3 +42,7 @@
 .sign-up-btn{
   margin-top: 20px;
 }
+
+#login-btn:hover{
+  cursor: grab;
+}

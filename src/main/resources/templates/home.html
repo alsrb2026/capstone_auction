@@ -62,7 +62,7 @@
             </form>
           </div>
           <div class="loginbox">
-            <td th:text="|${nickname}님, 환영합니다.|"></td>
+            <td class="welcome" th:text="|${nickname}님, 환영합니다.|"></td>
             <a class="btn btn-lg btn-secondary logout-btn" href="/doLogout">로그 아웃</a>
             |
             <a class="btn btn-lg btn-secondary" href="/adminpage"
@@ -91,11 +91,13 @@
     </div>
 
     <div class="slide">
+
       <div class="slick-sample">
         <img src="/images/slide1.png" />
         <img src="/images/slide2.png" />
         <img src="/images/slide3.png" />
       </div>
+
       <button type="button" aria-label="이전" id="prevArrow"></button>
       <button type="button" aria-label="다음" id="nextArrow"></button>
     </div>
