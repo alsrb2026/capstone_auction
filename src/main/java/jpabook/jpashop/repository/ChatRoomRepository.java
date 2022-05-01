@@ -26,8 +26,9 @@ public class ChatRoomRepository {
         return chatRoom;
     }
 
-    public List<ChatRoom> findAllRooms(){
-        return em.createQuery("select c from ChatRoom c", ChatRoom.class)
+    public List<ChatRoom> findAllRooms(Long id){
+        return em.createQuery("select c from ChatRoom c where c.regisUserId = :id or c.auctionUserId = :id", ChatRoom.class)
+                .setParameter("id", id)
                 .getResultList();
     }
 
