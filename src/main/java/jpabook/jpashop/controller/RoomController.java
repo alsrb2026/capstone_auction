@@ -1,9 +1,12 @@
 package jpabook.jpashop.controller;
 
+import jpabook.jpashop.repository.UserRepository;
 import jpabook.jpashop.service.ChatMessageService;
 import jpabook.jpashop.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +22,7 @@ public class RoomController {
 
     private final ChatRoomService chatRoomService;
     private final ChatMessageService chatMessageService;
+    private final UserRepository userRepository;
 
     //채팅방 목록 조회
     @GetMapping(value = "/roomlist")
@@ -26,7 +30,11 @@ public class RoomController {
 
         ModelAndView mv = new ModelAndView("/roomlist");
 
-        mv.addObject("list", chatRoomService.findAllChatRooms());
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = ((UserDetails) principal).getUsername();
+        Long id = userRepository.findByName(name).get().getUserId(); // 현재 입찰하려고 하는 사용자의 id
+
+        mv.addObject("list", chatRoomService.findAllChatRooms(id));
 
         return mv;
     }

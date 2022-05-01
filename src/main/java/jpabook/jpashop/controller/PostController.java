@@ -247,12 +247,7 @@ public class PostController {
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
                     chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id);
 
-                    model.addAttribute("list", chatRoomService.findAllChatRooms());
-
-                    // 원래 ChatRoom Controller에서 채팅방 조회할 때 사용했던  코드.
-                    /*ModelAndView mv = new ModelAndView("/roomlist");
-                    mv.addObject("list", chatRoomService.findAllChatRooms());
-                    */
+                    model.addAttribute("list", chatRoomService.findAllChatRooms(id));
 
                     return "/roomlist";
                 }
@@ -267,19 +262,16 @@ public class PostController {
         // 2. 경매 기간이 지난 경우.
         else{
             // 2-1. 물품에 입찰자가 있는지 체크
-            if(form.getCurrentBidId() != 0){ // 2.2 현재 입찰 id 값을 0으로 초기화했으므로 0이 아닌 경우 -> 입찰자가 존재하는 경우
-                form.setStatus("낙찰됨");
+            if(post.getCurrentBidId() != 0){ // 2.2 현재 입찰 id 값을 0으로 초기화했으므로 0이 아닌 경우 -> 입찰자가 존재하는 경우
+                post.setCurrentBidId(id);
+                post.setStatus("낙찰됨");
                 // 그리고 채팅 연결.
+
             }
             else{
-                form.setStatus("입찰 종료");
+                post.setStatus("입찰 종료"); // 낙찰자 없이 종료
             }
-        } 
-
-        /*
-        postService.savePost(post); // service에 transaction=false로 하고, repository에 saveItem에 em.flush()를 해야
-        // db에 내용이 반영된다.
-        */
+        }
         
         // 입찰 중(초기 상태), 낙찰됨(낙찰될 경우), 입찰 종료(시간 지나고 입찰자가 없을 경우) 이 3가지가 입찰 상태
         

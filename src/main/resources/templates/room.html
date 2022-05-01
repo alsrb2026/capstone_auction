@@ -30,7 +30,7 @@
                 </thead>
                 <tbody id="msgArea">
                 <tr th:each="chat : ${chatList}">
-                    <td th:text="${chat.sender} + ' : ' + ${chat.message}"></td>
+                    <td th:text="${chat.sender} + ': ' + ${chat.message} + ' ' + ${#dates.format(chat.chatDate, 'HH:mm')}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -42,8 +42,8 @@
 </div>
 </body>
 <script th:inline="javascript">
+var chat_id = 1;
     $(function(){
-        var chat_id = 1;
         var roomId = [[${room.roomId}]];
         var roomName = [[${room.name}]];
         var username = getCookie('nickname');
@@ -57,23 +57,17 @@
             stomp.subscribe("/sub/chat/room/" + roomId, function(chat){
                 var content = JSON.parse(chat.body);
                 var msgDate = sendMsgDate(content.chatDate);
-                $("#msgArea").append("<tr><td>" + content.message + msgDate + "</td></tr>");
+                $("#msgArea").append("<tr><td>" + content.sender + ": " + content.message + " " + msgDate + "</td></tr>");
             })
-            if(chat_id == 1){
-                stomp.send('/pub/chat/enter', {}, JSON.stringify({
-                id: chat_id++,
-                chRoomId: roomId,
-                sender: "system",
-                message: username + "님이 입장하셨습니다",
-                chatDate: now}));
-            }
         });
 
         $("#send").on("click", function(e){
             var msg = document.getElementById("msg");
             now = new Date();
-            stomp.send('/pub/chat/message', {}, JSON.stringify({id: chat_id++, chRoomId: roomId, sender: username, message: msg.value, chatDate: now}));
+            stomp.send('/pub/chat/message', {}, JSON.stringify({chRoomId: roomId, sender: username, message: msg.value, chatDate: now}));
             msg.value = "";
+
+
         });
 
         $("#exit").on("click", function(e) {
@@ -94,13 +88,7 @@
         var year = time.getHours();
         var minutes = time.getMinutes();
 
-        if(year > 12){
-            year -= 12;
-            date = "오후 " + year + ":" + minutes;
-        }
-        else{
-            date = "오전 " + year + ":" + minutes;
-        }
+        date = year + ":" + minutes;
         return date;
     }
 
