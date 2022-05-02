@@ -47,21 +47,26 @@ public class PostController {
 
         //id로 사용자 닉네임 검색하고 그 값을
 
-        post.setPostUserId(id); // 상품 등록한 사용자 id
-        post.setPostUserName(name); // 상품 등록한 사용자 id(닉네임)
-        post.setTitle(form.getTitle());
-        post.setContents(form.getContents());
-        post.setProductName(form.getProductName());
-        post.setCategory(category);
-        post.setView(0); // 조회 수도 초기 값은 0으로
-        post.setStartBid(form.getStartBid());
-        post.setWinningBid(form.getWinningBid());
-        post.setUnitBid(form.getUnitBid());
-        post.setCurrentBid(form.getStartBid()); // 처음 물품 등록할 때에는 입찰한 사람이 없으므로 현재 입찰 가격은 시작 가격으로 설정.
-        post.setRegisTime(Timestamp.valueOf(LocalDateTime.now()));
-        post.setAuctionPeriod(form.getAuctionPeriod());
-        post.setStatus("입찰 중"); // 등록하면 바로 입찰 중인 상태가 될 것이기 때문에.
-        post.setCurrentBidId(0L);
+        post = makePost(post,id,name,form.getTitle(),form.getContents(),form.getProductName(),
+                form.getCategory(),0,form.getStartBid(),form.getWinningBid(),form.getUnitBid(),
+                form.getStartBid(),Timestamp.valueOf(LocalDateTime.now()),form.getAuctionPeriod(),
+                "입찰 중" ,0L);
+
+//        post.setPostUserId(id); // 상품 등록한 사용자 id
+//        post.setPostUserName(name); // 상품 등록한 사용자 id(닉네임)
+//        post.setTitle(form.getTitle());
+//        post.setContents(form.getContents());
+//        post.setProductName(form.getProductName());
+//        post.setCategory(category);
+//        post.setView(0); // 조회 수도 초기 값은 0으로
+//        post.setStartBid(form.getStartBid());
+//        post.setWinningBid(form.getWinningBid());
+//        post.setUnitBid(form.getUnitBid());
+//        post.setCurrentBid(form.getStartBid()); // 처음 물품 등록할 때에는 입찰한 사람이 없으므로 현재 입찰 가격은 시작 가격으로 설정.
+//        post.setRegisTime(Timestamp.valueOf(LocalDateTime.now()));
+//        post.setAuctionPeriod(form.getAuctionPeriod());
+//        post.setStatus("입찰 중"); // 등록하면 바로 입찰 중인 상태가 될 것이기 때문에.
+//        post.setCurrentBidId(0L);
         // 게시 시간
 
         postService.savePost(post);
@@ -92,16 +97,15 @@ public class PostController {
 
     @GetMapping("/post/search")
     public String searchList(@RequestParam(value = "keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
+
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
-
         // DB select start index
         int startIndex = pagination.getStartIndex();
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
-
 
         List<Post> searchboardList = postService.findSearchListPaging(startIndex, pageSize, keyword);
 
@@ -113,6 +117,7 @@ public class PostController {
 
     @GetMapping("/post/searchCategory/{keyword}")
     public String searchCategory(@PathVariable("keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
+
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
@@ -162,8 +167,6 @@ public class PostController {
             return "redirect:/";
         }
 
-
-
         form.setId(post.getId());
         form.setPostUserId(post.getPostUserId());
         form.setPostUserName(form.getPostUserName());
@@ -198,8 +201,6 @@ public class PostController {
         int pageSize = pagination.getPageSize();
 
         List<Post> boardList = postService.findListPaging(startIndex, pageSize);
-
-
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
@@ -297,18 +298,10 @@ public class PostController {
 
         Post post = new Post();
         post.setId(form.getId());
-        post.setPostUserId(form.getPostUserId());
-        post.setPostUserName(form.getPostUserName());
-        post.setTitle(form.getTitle());
-        post.setContents(form.getContents());
-        post.setProductName(form.getProductName());
-        post.setCategory(form.getCategory());
-        // 조회 수
-        post.setStartBid(form.getStartBid());
-        post.setWinningBid(form.getWinningBid());
-        post.setUnitBid(form.getUnitBid());
-        post.setAuctionPeriod(form.getAuctionPeriod());
-        post.setRegisTime(form.getRegisTime());
+        makePost(post,id,name,form.getTitle(),form.getContents(),form.getProductName(),
+                form.getCategory(),0,form.getStartBid(),form.getWinningBid(),form.getUnitBid(),
+                form.getStartBid(),Timestamp.valueOf(LocalDateTime.now()),form.getAuctionPeriod(),
+                "입찰 중" ,0L);
 
         // 1. 경매에 참여할 수 있는지 없는지 부터 체크
         if (!calcDay(form.getAuctionPeriod(), form.getRegisTime())) { // 아직 물품 경매 기간이 지나지 않았을 경우
@@ -356,6 +349,32 @@ public class PostController {
         postService.savePost(post); // service에 transaction=false로 하고, repository에 saveItem에 em.flush()를 해야
         // db에 내용이 반영된다.
         return "posts/postList";
+    }
+
+    public Post makePost(Post post, Long id, String name, String title, String contents, String productName,
+                   String category, int view, int starttBid, int winningBid, int unitBid, int currentBid,
+                   Timestamp nowtime, int auctionPeriod, String status, Long currentBidId ){
+        post.setPostUserId(id); // 상품 등록한 사용자 id
+        post.setPostUserName(name); // 상품 등록한 사용자 id(닉네임)
+        post.setTitle(title);
+        post.setContents(contents);
+        post.setProductName(productName);
+        post.setCategory(category);
+        post.setView(view); // 조회 수도 초기 값은 0으로
+        post.setStartBid(starttBid);
+        post.setWinningBid(winningBid);
+        post.setUnitBid(unitBid);
+        post.setCurrentBid(starttBid); // 처음 물품 등록할 때에는 입찰한 사람이 없으므로 현재 입찰 가격은 시작 가격으로 설정.
+        post.setRegisTime(nowtime);
+        post.setAuctionPeriod(auctionPeriod);
+        post.setStatus(status); // 등록하면 바로 입찰 중인 상태가 될 것이기 때문에.
+        post.setCurrentBidId(currentBidId);
+
+        return post;
+    }
+
+    public void setForm(){
+
     }
 
     private boolean calcDay(int period, Date regisTime) {

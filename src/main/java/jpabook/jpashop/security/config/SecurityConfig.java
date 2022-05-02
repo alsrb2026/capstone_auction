@@ -28,7 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .headers(headers -> headers .cacheControl(cache -> cache.disable()))
                 .authorizeRequests()
-                .antMatchers("/login","/members/new")
+                .antMatchers("/login","/members/new","/","/posts","/post/search",
+                        "/post/searchCategory/{keyword}","post/{id}/auction")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

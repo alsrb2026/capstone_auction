@@ -20,16 +20,40 @@ public class HomeController {
     private final PostRepository postRepository;
 
     @GetMapping("/login")
-    public String getLoginForm() {
+    public String getLoginForm(HttpServletRequest request) {
         return "loginPage";
     }
 
-    @GetMapping("/")
-    public String getHome(HttpServletRequest request) {
+    // 로그인 결과 페이지
+    @GetMapping("/user/login/result")
+    public String dispLoginResult(HttpServletRequest request) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = ((UserDetails)principal).getUsername();
         UserEntity user = userRepository.findByName(username).get();
         request.setAttribute("user",user);
+        return "home";
+    }
+
+    @GetMapping("/user/logout/result")
+    public String dispLogout() {
+        return "home";
+    }
+
+    // 내 정보 페이지
+    @GetMapping("/user/info")
+    public String dispMyInfo() {
+        return "/myinfo";
+    }
+
+    //어드민 페이지
+    @GetMapping("/admin")
+    public String dispAdmin() {
+        return "/admin";
+    }
+
+
+    @GetMapping("/")
+    public String getHome(HttpServletRequest request) {
         return "home";
     }
 
