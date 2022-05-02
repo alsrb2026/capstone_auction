@@ -13,11 +13,13 @@ public class ChatMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "chat_message_id")
     private Long id;
 
     private String chRoomId;
+    private String senderName;
+    private String receiverName;
+    private Date sendTime;
+    private Date recvTime;
     private String message;
-    private String sender;
-    private Date chatDate;
+    private int checkRead; // checkRead = 0 : 메세지를 읽지 않았다는 의미, 1이면 읽었다는 의미.
 }

@@ -18,6 +18,12 @@ public class UserRepositoryR {
                .getSingleResult();
     }
 
+    public UserEntity findById(Long id){
+        return em.createQuery("select m from user m where m.id = id",
+                        UserEntity.class).setParameter("id", id)
+                .getSingleResult();
+    }
+
     @Transactional
     public void save(UserEntity user){
         em.persist(user);

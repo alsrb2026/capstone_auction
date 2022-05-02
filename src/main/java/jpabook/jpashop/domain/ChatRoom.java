@@ -25,8 +25,9 @@ public class ChatRoom {
     private String name;
     private Long regisUserId;
     private Long auctionUserId;
-
-    public static ChatRoom create(String name, Long id1, Long id2) {
+    private String regisName;
+    private String buyerName;
+    public static ChatRoom create(String name, Long id1, Long id2, String regisName, String buyerName) {
         // id1 : 판매자, id2 : 구매자
         ChatRoom room = new ChatRoom();
 
@@ -34,6 +35,8 @@ public class ChatRoom {
         room.name = name;
         room.regisUserId = id1;
         room.auctionUserId = id2;
+        room.regisName = regisName;
+        room.buyerName = buyerName;
 
         return room;
     }

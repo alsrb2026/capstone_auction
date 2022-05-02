@@ -4,21 +4,46 @@
 <head>
 </head>
 <body>
-<div class="container">
-    <div>
-        <p class="nickname"></p>
-    </div>
-    <div>
-        <ul th:each="room : ${list}">
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<div class="msg-container">
+    <div class="msg-list">
+        <h4>Chat List</h4>
+        <div th:each="room : ${list}">
+            <div class="chatListBox">
+                <div type="button" class="chatRoom" th:onclick="|location.href='@{/room(roomId=${room.roomId})}'|">
+                    <div class="roomDetails">
+                        <div class="profile">
+                            <div th:if="${room.regisName == connectedUserName}">
+                                <h5>[[${room.buyerName}]]님과의 채팅방</h5>
+                            </div>
+                            <div th:if="${room.buyerName == connectedUserName}">
+                                <h5>[[${room.regisName}]]님과의 채팅방</h5>
+                            </div>
+                        </div>
+                        <div class="chat">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--
             <li><a th:href="@{/room(roomId=${room.roomId})}">[[${room.name}]]</a></li>
-        </ul>
+            -->
+        </div>
     </div>
 </div>
 <script th:inline="javascript">
     $(function(){
         var id = getCookie('id');
-        var nickname = getCookie('nickname');
-        $('.nickname').text(nickname + '님 환영합니다');
+        var username = getCookie('nickname');
+
+        MessageList(username);
     })
 
     function getCookie(cookieName){
@@ -35,6 +60,10 @@
             value = cookieData.substring(start, end);
         }
         return unescape(value);
+    }
+
+    function MessageList(username){
+
     }
 </script>
 </body>
