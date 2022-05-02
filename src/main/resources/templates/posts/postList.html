@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>paging</title>
@@ -9,8 +10,17 @@
 <table class="table table-striped">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <thead class="thead-dark">
+
+    <form action="/post/search" method="GET">
+        <div>
+            <input name="keyword" type="text" placeholder="검색어를 입력해주세요">
+        </div>
+        <button>검색</button>
+    </form>
+
     <tr>
         <th>#</th>
+        <th>작성자</th>
         <th>제목</th>
         <th>내용</th>
         <th>상품명</th>
@@ -27,21 +37,21 @@
     <tbody>
     <tr th:each="board : ${boardList}">
         <th scope="row" th:text="${boardStat.index + 1}">1</th>
-        <td th:text="${board.id}"></td>
+        <td th:text="${board.getPostUserId()}"></td>
         <td>
             <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
                 <h2><span th:text="${board.title}"></span></h2>
             </a>
         </td>
         <td th:text="${board.contents}"></td>
-        <td th:text="${board.product_name}"></td>
+        <td th:text="${board.productName}"></td>
         <td th:text="${board.startBid}"></td>
         <td th:text="${board.winningBid}"></td>
         <td th:text="${board.unitBid}"></td>
         <td th:text="${board.currentBid}"></td>
         <td th:text="${board.auctionPeriod}"></td>
         <td th:text="${board.status}"></td>
-        <td th:text="${board.regisTime}"></td>
+        <td th:text="${#dates.format(board.regisTime, 'yyyy년 MM월 dd일 HH시 mm분')}"></td>
     </tr>
     </tbody>
 </table>
@@ -76,7 +86,6 @@
         </li>
     </ul>
 </nav>
-
 </body>
 </html>
 

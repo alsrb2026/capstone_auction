@@ -23,8 +23,9 @@ public class ChatMessageRepository {
         }
     }
 
-    public List<ChatMessage> findAll(){
-        return em.createQuery("select cm from ChatMessage cm", ChatMessage.class)
+    public List<ChatMessage> findAll(String id){
+        return em.createQuery("select cm from ChatMessage cm where cm.chRoomId = :id", ChatMessage.class)
+                .setParameter("id", id)
                 .getResultList();
     }
 }

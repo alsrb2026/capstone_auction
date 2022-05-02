@@ -12,16 +12,21 @@ import javax.persistence.EntityManager;
 public class UserRepositoryR {
 
     private final EntityManager em;
-//        public UserEntity findByName(String name) {
-//            return em.createQuery("select m from user m where m.name = :name",
-//                            UserEntity.class).setParameter("name",name)
-//                    .getSingleResult();
-//        }
+    public UserEntity findByName(String name) {
+        return em.createQuery("select m from user m where m.name = name",
+                           UserEntity.class).setParameter("name", name)
+               .getSingleResult();
+    }
+
+    public UserEntity findById(Long id){
+        return em.createQuery("select m from user m where m.id = id",
+                        UserEntity.class).setParameter("id", id)
+                .getSingleResult();
+    }
 
     @Transactional
     public void save(UserEntity user){
         em.persist(user);
     }
-
 
 }

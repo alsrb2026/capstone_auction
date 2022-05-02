@@ -50,8 +50,6 @@ public class MemberController {
             return "members/createMemberForm";
         }
 
-        //Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
-
         String name = form.getId();
         String nickname = form.getNickname();
         String passwd = form.getPasswd();
@@ -63,30 +61,7 @@ public class MemberController {
                 .role("user")
                 .build();
 
-        System.out.println(name+passwd);
         userRepositoryR.save(user);
-        return "redirect:/";
+        return "home/loginPage";
     }
-    /*public String create(@Valid MemberForm form, BindingResult result){
-
-        if(result.hasErrors()){
-            return "members/createMemberForm";
-        }
-
-        Address address = new Address(form.getCity(), form.getStreet(), form.getZipcode());
-
-        Member member = new Member();
-        member.setName(form.getName());
-        member.setAddress(address);
-
-        memberService.join(member);
-        return "redirect:/";
-    }*/
-
-//    @GetMapping("/members")
-//    public String List(Model model) {
-//        List<Member> members = memberService.findMembers();
-//        model.addAttribute("members",members);
-//        return "members/memberList";
-//    }
 }

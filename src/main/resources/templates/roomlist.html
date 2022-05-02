@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<script src="/webjars/jquery/jquery.min.js"></script>
+<head>
+</head>
+<body>
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+<div class="msg-container">
+    <div class="msg-list">
+        <h4>Chat List</h4>
+        <div th:each="room : ${list}">
+            <div class="chatListBox">
+                <div type="button" class="chatRoom" th:onclick="|location.href='@{/room(roomId=${room.roomId})}'|">
+                    <div class="roomDetails">
+                        <div class="profile">
+                            <div th:if="${room.regisName == connectedUserName}">
+                                <h5>[[${room.buyerName}]]님과의 채팅방</h5>
+                            </div>
+                            <div th:if="${room.buyerName == connectedUserName}">
+                                <h5>[[${room.regisName}]]님과의 채팅방</h5>
+                            </div>
+                        </div>
+                        <div class="chat">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <li><a th:href="@{/room(roomId=${room.roomId})}">[[${room.name}]]</a></li>
+            -->
+        </div>
+    </div>
+</div>
+<script th:inline="javascript">
+    $(function(){
+        var id = getCookie('id');
+        var username = getCookie('nickname');
+
+        MessageList(username);
+    })
+
+    function getCookie(cookieName){
+        cookieName = cookieName + '=';
+        var cookieData = document.cookie;
+        var start = cookieData.indexOf(cookieName);
+        var value = '';
+        if(start != -1){
+            start += cookieName.length;
+            var end = cookieData.indexOf(';', start);
+            if(end == -1){
+                end = cookieData.length;
+            }
+            value = cookieData.substring(start, end);
+        }
+        return unescape(value);
+    }
+
+    function MessageList(username){
+
+    }
+</script>
+</body>
+</html>
