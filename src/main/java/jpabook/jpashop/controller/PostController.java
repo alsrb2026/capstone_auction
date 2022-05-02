@@ -45,29 +45,12 @@ public class PostController {
 
         Long id = userRepository.findByName(name).get().getUserId(); // 상품 등록한 user id 를 repository에서 조회해서 넣었음.
 
-        //id로 사용자 닉네임 검색하고 그 값을
+
 
         post = makePost(post,id,name,form.getTitle(),form.getContents(),form.getProductName(),
                 form.getCategory(),0,form.getStartBid(),form.getWinningBid(),form.getUnitBid(),
                 form.getStartBid(),Timestamp.valueOf(LocalDateTime.now()),form.getAuctionPeriod(),
                 "입찰 중" ,0L);
-
-//        post.setPostUserId(id); // 상품 등록한 사용자 id
-//        post.setPostUserName(name); // 상품 등록한 사용자 id(닉네임)
-//        post.setTitle(form.getTitle());
-//        post.setContents(form.getContents());
-//        post.setProductName(form.getProductName());
-//        post.setCategory(category);
-//        post.setView(0); // 조회 수도 초기 값은 0으로
-//        post.setStartBid(form.getStartBid());
-//        post.setWinningBid(form.getWinningBid());
-//        post.setUnitBid(form.getUnitBid());
-//        post.setCurrentBid(form.getStartBid()); // 처음 물품 등록할 때에는 입찰한 사람이 없으므로 현재 입찰 가격은 시작 가격으로 설정.
-//        post.setRegisTime(Timestamp.valueOf(LocalDateTime.now()));
-//        post.setAuctionPeriod(form.getAuctionPeriod());
-//        post.setStatus("입찰 중"); // 등록하면 바로 입찰 중인 상태가 될 것이기 때문에.
-//        post.setCurrentBidId(0L);
-        // 게시 시간
 
         postService.savePost(post);
         return "redirect:/";
@@ -226,16 +209,12 @@ public class PostController {
 
         //자신의 게시글이 아니면 수정,삭제 버튼이 안보이게 해놨지만 만약을 대비해 서버에서 한번 더 체크
         //로그인 한 사용자 name과 글 작성자 name과 다르면 수정 못하게 이전페이지로 보내기
-
         if(!name.equals(post.getPostUserName())) {
             return "redirect:/";
         }
 
-        //Long deleteId = post.getId();
         postService.deletePost(post.getId());
 
-//        List<Post> posts = postService.findPosts();
-//        model.addAttribute("posts", posts);
         int totalListCnt = postService.findAllCount();
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
@@ -253,8 +232,8 @@ public class PostController {
         return "redirect:/";
     }
 
-
-    @GetMapping("post/{id}/auction") // id에 해당하는 경매 물품 조회
+    // id에 해당하는 경매 물품 조회
+    @GetMapping("post/{id}/auction")
     public String auctionItemForm(@PathVariable("id") Long itemId, Model model) {
         Post post = postService.findOne(itemId);
 
@@ -272,7 +251,6 @@ public class PostController {
         form.setContents(post.getContents());
         form.setProductName(post.getProductName());
         form.setCategory(post.getCategory());
-        // 조회 수
         form.setStartBid(post.getStartBid());
         form.setWinningBid(post.getWinningBid());
         form.setUnitBid(post.getUnitBid());
@@ -371,10 +349,6 @@ public class PostController {
         post.setCurrentBidId(currentBidId);
 
         return post;
-    }
-
-    public void setForm(){
-
     }
 
     private boolean calcDay(int period, Date regisTime) {

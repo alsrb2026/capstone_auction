@@ -79,4 +79,8 @@ public class PostRepository {
                 .setMaxResults(pageSize)
                 .getResultList();
     }
+
+    public void viewTop5(Long id) {
+        //return em.createQuery("select b from Post b order by view desc limit 5", Post.class)
+    }
 }

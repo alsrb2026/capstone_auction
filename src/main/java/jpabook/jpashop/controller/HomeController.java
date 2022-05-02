@@ -1,8 +1,8 @@
 package jpabook.jpashop.controller;
 
 import jpabook.jpashop.domain.UserEntity;
-import jpabook.jpashop.repository.PostRepository;
 import jpabook.jpashop.repository.UserRepository;
+import jpabook.jpashop.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,55 +17,48 @@ import javax.servlet.http.HttpServletRequest;
 public class HomeController {
 
     private final UserRepository userRepository;
-    private final PostRepository postRepository;
+    private final PostService postService;
+
+    @GetMapping("/")
+    public String getHome(HttpServletRequest request) {
+        return "home/home";
+    }
 
     @GetMapping("/login")
     public String getLoginForm(HttpServletRequest request) {
-        return "loginPage";
+        return "home/loginPage";
     }
 
-    // 로그인 결과 페이지
+    // 로그인 성공하면 아래 작업하고 home으로 이동
     @GetMapping("/user/login/result")
     public String dispLoginResult(HttpServletRequest request) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = ((UserDetails)principal).getUsername();
         UserEntity user = userRepository.findByName(username).get();
         request.setAttribute("user",user);
-        return "home";
+        return "home/home";
     }
 
     @GetMapping("/user/logout/result")
     public String dispLogout() {
-        return "home";
+        return "home/home";
     }
 
-    // 내 정보 페이지
-    @GetMapping("/user/info")
-    public String dispMyInfo() {
-        return "/myinfo";
-    }
-
-    //어드민 페이지
-    @GetMapping("/admin")
-    public String dispAdmin() {
-        return "/admin";
-    }
-
-
-    @GetMapping("/")
-    public String getHome(HttpServletRequest request) {
-        return "home";
-    }
+//    // 내 정보 페이지
+//    @GetMapping("/user/info")
+//    public String dispMyInfo() {
+//        return "/myinfo";
+//    }
 
     @GetMapping("/adminpage")
     public String getAdminPage() {
-        return "adminpage";
+        return "home/adminpage";
     }
 
-    @GetMapping("/mypage")
+    @GetMapping("mypage")
     public String getMyPage(Model model) {
 
-        return "mypage";
+        return "home/mypage";
     }
 
 }

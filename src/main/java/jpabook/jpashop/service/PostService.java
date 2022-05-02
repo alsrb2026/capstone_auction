@@ -49,6 +49,11 @@ public class PostService {
         postRepository.view(id);
     }
 
+    //조회수 기준 top5 글 가져오기
+//    public List<Post> viewTop5(Long id) {
+//        postRepository.viewTop5(id);
+//    }
+
     public List<Post> findPosts() {
         return postRepository.findAll();
     }

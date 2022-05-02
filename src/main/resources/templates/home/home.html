@@ -94,7 +94,7 @@
               <a sec:authorize="isAuthenticated()">
                 <a class="btn btn-lg btn-secondary" th:href="@{/mypage}">마이페이지</a>
               </a>
-              <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/adminpage}">
+              <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/home/adminpage}">
                 <a class="btn btn-lg btn-secondary">관리자</a>
               </a>
 

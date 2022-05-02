@@ -62,6 +62,6 @@ public class MemberController {
                 .build();
 
         userRepositoryR.save(user);
-        return "loginPage";
+        return "home/loginPage";
     }
 }
