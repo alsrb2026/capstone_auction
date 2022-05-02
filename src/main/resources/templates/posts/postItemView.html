@@ -10,10 +10,10 @@
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <form th:object="${form}" method="post">
         <td>
-            <h2><a href="#" th:href="@{/post/{id}/edit (id=${form.id})}" class="btn btn-primary" role="button">수정</a></h2>
+            <h2><a id="modifyButton" href="#" th:href="@{/post/{id}/edit (id=${form.id})}" class="btn btn-primary" role="button">수정</a></h2>
         </td>
         <td>
-            <a href="#" th:href="@{/post/{id}/delete (id=${form.id})}" class="btn btn-delete" role="button">삭제</a>
+            <a id="deleteButton" href="#" th:href="@{/post/{id}/delete (id=${form.id})}" class="btn btn-delete" role="button">삭제</a>
         </td><br>
         <input type="hidden" th:field="*{id}" />
         <input type="hidden" th:field="*{postUserId}">
@@ -66,6 +66,19 @@
     const button = document.getElementById("button");
     const period = document.getElementById("period");
     const status = document.getElementById("status");
+
+    //게시글 작성 사용자가 아니면 수정,삭제 버튼 없애기
+    /*<![CDATA[*/
+    var postUserName =  [[${postUserName}]];
+    var loginUsername = [[${loginName}]];
+    /*]]>*/
+    console.log(postUserName);
+    console.log(loginUsername);
+    if(postUserName!==loginUsername) {
+        console.log("수정 삭제 금지");
+        document.getElementById('modifyButton').style.display = 'none';
+        document.getElementById('deleteButton').style.display = 'none';
+    }
 
     function check(){
         if(status.innerText === '입찰종료'){

@@ -2,10 +2,12 @@ package jpabook.jpashop.controller;
 
 import jpabook.jpashop.domain.UserEntity;
 import jpabook.jpashop.repository.UserRepository;
+import jpabook.jpashop.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,45 +17,50 @@ import javax.servlet.http.HttpServletRequest;
 public class HomeController {
 
     private final UserRepository userRepository;
-
-    /*@GetMapping("/signUp")
-    public String signUp() {
-        UserEntity user = UserEntity.builder()
-                .name("galid")
-                .password(passwordEncoder.encode("1234"))
-                .role("user")
-                .build();
-
-        System.out.println("save?");
-        userRepository.save(user);
-
-        return "redirect:/login";
-    }*/
-
-    @GetMapping("/login")
-    public String getLoginForm() {
-        return "loginPage";
-    }
+    private final PostService postService;
 
     @GetMapping("/")
     public String getHome(HttpServletRequest request) {
+        return "home/home";
+    }
+
+    @GetMapping("/login")
+    public String getLoginForm(HttpServletRequest request) {
+        return "home/loginPage";
+    }
+
+    // 로그인 성공하면 아래 작업하고 home으로 이동
+    @GetMapping("/user/login/result")
+    public String dispLoginResult(HttpServletRequest request) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = ((UserDetails)principal).getUsername();
         UserEntity user = userRepository.findByName(username).get();
+        request.setAttribute("user",user);
 
-        request.setAttribute("user",user);
-        request.setAttribute("user",user);
-        return "home";
+        return "home/home";
     }
+
+    @GetMapping("/user/logout/result")
+    public String dispLogout() {
+        return "home/home";
+    }
+
+//    // 내 정보 페이지
+//    @GetMapping("/user/info")
+//    public String dispMyInfo() {
+//        return "/myinfo";
+//    }
 
     @GetMapping("/adminpage")
     public String getAdminPage() {
-        return "adminpage";
+        return "home/adminpage";
     }
 
-//    @GetMapping("/home")
-//    public String getMain() {
-//        return "home";
-//    }
+    @GetMapping("mypage")
+    public String getMyPage(Model model) {
+
+        return "home/mypage";
+    }
+
 }
 

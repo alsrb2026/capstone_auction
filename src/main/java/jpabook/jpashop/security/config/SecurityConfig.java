@@ -10,15 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {
         webSecurity.ignoring().antMatchers(
                 "/resources/static/css/**", "/css/**", "/fonts/**", "/js/**", "/less/**", "/scss/**", "/images/**", "/resources/static/images/**", "/resources/static/js/**",  "/webjars/**");
     }
-
-
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -28,7 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .headers(headers -> headers .cacheControl(cache -> cache.disable()))
                 .authorizeRequests()
-                .antMatchers("/login","/members/new")
+                .antMatchers("/login","/members/new","/","/posts","/post/search",
+                        "/post/searchCategory/{keyword}","post/{id}/auction")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
