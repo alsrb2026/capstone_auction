@@ -1,5 +1,6 @@
 package jpabook.jpashop.controller;
 
+import jpabook.jpashop.domain.ChatMessage;
 import jpabook.jpashop.repository.UserRepository;
 import jpabook.jpashop.service.ChatMessageService;
 import jpabook.jpashop.service.ChatRoomService;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,9 +36,12 @@ public class RoomController {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = ((UserDetails) principal).getUsername();
-        Long id = userRepository.findByName(name).get().getUserId(); // 현재 입찰하려고 하는 사용자의 id
+        Long id = userRepository.findByName(name).get().getUserId(); // 현재 접속 중인 사용자 id
+
+        String connectedUserName = userRepository.findById(id).get().getNickname();
 
         mv.addObject("list", chatRoomService.findAllChatRooms(id));
+        mv.addObject("connectedUserName", connectedUserName);
 
         return mv;
     }
@@ -45,8 +52,19 @@ public class RoomController {
 
         log.info("# get Chat Room, roomID : " + roomId);
 
+
+        Date now = new Date();
+        log.info("# read chat message : " + now);
+
+        List<ChatMessage> chatList = chatMessageService.findChatMessages(roomId);
+
+        for(int i=0;i<chatList.size();i++){
+            chatList.get(i).setRecvTime(now);
+            chatList.get(i).setCheckRead(1);
+        }
+
         model.addAttribute("room", chatRoomService.findChatRoomById(roomId));
-        model.addAttribute("chatList", chatMessageService.findChatMessages(roomId));
+        model.addAttribute("chatList", chatList);
 
         return "room";
     }
@@ -55,8 +73,12 @@ public class RoomController {
     @PostMapping("/exitRoom")
     public String exit(String roomId){
 
-        chatRoomService.exitChatRoom(roomId);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = ((UserDetails) principal).getUsername();
+        Long id = userRepository.findByName(name).get().getUserId(); // 채팅방 나가려고 하는 사용자의 id
 
-        return "roomlist";
+        chatRoomService.exitChatRoom(roomId, id);
+
+        return "redirect:/";
     }
 }

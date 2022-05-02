@@ -30,7 +30,7 @@
                 </thead>
                 <tbody id="msgArea">
                 <tr th:each="chat : ${chatList}">
-                    <td th:text="${chat.sender} + ': ' + ${chat.message} + ' ' + ${#dates.format(chat.chatDate, 'HH:mm')}"></td>
+                    <td th:text="${chat.senderName} + ': ' + ${chat.message} + ' ' + ${#dates.format(chat.sendTime, 'HH:mm')}"></td>
                 </tr>
                 </tbody>
             </table>
@@ -42,11 +42,19 @@
 </div>
 </body>
 <script th:inline="javascript">
-var chat_id = 1;
+
     $(function(){
         var roomId = [[${room.roomId}]];
         var roomName = [[${room.name}]];
-        var username = getCookie('nickname');
+        var sender = getCookie('nickname');
+        var receiver;
+
+        if(sender == [[${room.regisName}]]){
+            receiver = [[${room.buyerName}]];
+        }
+        else if(sender == [[${room.buyerName}]]){
+            receiver = [[${room.regisName}]];
+        }
 
         var socket = new SockJS("/stomp/chat");
         var stomp = Stomp.over(socket);
@@ -56,23 +64,29 @@ var chat_id = 1;
             console.log("server connected...");
             stomp.subscribe("/sub/chat/room/" + roomId, function(chat){
                 var content = JSON.parse(chat.body);
-                var msgDate = sendMsgDate(content.chatDate);
-                $("#msgArea").append("<tr><td>" + content.sender + ": " + content.message + " " + msgDate + "</td></tr>");
+                var msgDate = sendMsgDate(content.sendTime);
+                $("#msgArea").append("<tr><td>" + content.senderName + ": " + content.message + " " + msgDate + "</td></tr>");
             })
         });
 
         $("#send").on("click", function(e){
             var msg = document.getElementById("msg");
             now = new Date();
-            stomp.send('/pub/chat/message', {}, JSON.stringify({chRoomId: roomId, sender: username, message: msg.value, chatDate: now}));
+            stomp.send('/pub/chat/message', {}, JSON.stringify({
+                chRoomId: roomId,
+                senderName: sender,
+                receiverName: receiver,
+                sendTime: now,
+                message: msg.value,
+                checkRead: 0
+             }));
             msg.value = "";
-
-
         });
 
         $("#exit").on("click", function(e) {
             if(stompClient !== null){
                 if(confirm("채팅방을 나가시겠습니까?")){
+                    $("#msgArea").append("<tr><td>" + username + "님이 나가셨습니다." + "</td></tr>");
                     stompClient.disconnect();
                 }
                 else{

@@ -229,6 +229,9 @@ public class PostController {
         String name = ((UserDetails) principal).getUsername();
         Long id = userRepository.findByName(name).get().getUserId(); // 현재 입찰하려고 하는 사용자의 id
 
+        String regisName = userRepository.findById(form.getPostUserId()).get().getNickname(); // 판매자 닉네임
+        String buyerName = userRepository.findById(id).get().getNickname(); // 구매자 닉네임
+
         Post post = postRepository.findOne(form.getId());
 
         // 1. 경매에 참여할 수 있는지 없는지 부터 체크
@@ -245,9 +248,13 @@ public class PostController {
                     post.setCurrentBidId(id);
                     post.setStatus("낙찰됨");
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
-                    chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id);
+
+
+                    chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id
+                    , regisName, buyerName);
 
                     model.addAttribute("list", chatRoomService.findAllChatRooms(id));
+                    model.addAttribute("connectedUserName", buyerName);
 
                     return "/roomlist";
                 }

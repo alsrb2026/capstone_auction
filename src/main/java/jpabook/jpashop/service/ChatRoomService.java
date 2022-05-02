@@ -16,8 +16,8 @@ public class ChatRoomService {
 
     private final ChatRoomRepository chatRoomRepository;
 
-    public ChatRoom createChatRoom(String name, Long id1, Long id2) {
-        return chatRoomRepository.createChatRoom(name, id1, id2);
+    public ChatRoom createChatRoom(String name, Long id1, Long id2, String regisName, String buyerName) {
+        return chatRoomRepository.createChatRoom(name, id1, id2, regisName, buyerName);
     }
 
     public List<ChatRoom> findAllChatRooms(Long id){
@@ -29,8 +29,8 @@ public class ChatRoomService {
     }
 
     // 채팅방 삭제가 아니라 db에서 삭제 말고 사용자에게 안보이도록 권한을 없애는 방식으로 해야함.
-    public void exitChatRoom(String roomId){
-
+    public void exitChatRoom(String roomId, Long id){
+        chatRoomRepository.exitRoom(roomId, id);
     }
 }
 
