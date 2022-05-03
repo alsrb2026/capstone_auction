@@ -74,6 +74,7 @@
     /*]]>*/
     console.log(postUserName);
     console.log(loginUsername);
+
     if(postUserName!==loginUsername) {
         console.log("수정 삭제 금지");
         document.getElementById('modifyButton').style.display = 'none';
@@ -96,8 +97,9 @@
     }
 
     function bid(){
-        var buyId = getCookie('id');
+        var buyId = [[${session.id}]];
         var regisId = [[${form.postUserId}]];
+
         if(buyId != regisId){
             if(confirm("입찰하시겠습니까?")){
                 alert("입찰에 성공했습니다");
@@ -110,22 +112,6 @@
             alert("자신의 물품에 입찰할 수 없습니다.");
             event.preventDefault();
         }
-    }
-
-    function getCookie(cookieName){
-        cookieName = cookieName + '=';
-        var cookieData = document.cookie;
-        var start = cookieData.indexOf(cookieName);
-        var value = '';
-        if(start != -1){
-            start += cookieName.length;
-            var end = cookieData.indexOf(';', start);
-            if(end == -1){
-                end = cookieData.length;
-            }
-            value = cookieData.substring(start, end);
-        }
-        return unescape(value);
     }
 </script>
 </html>

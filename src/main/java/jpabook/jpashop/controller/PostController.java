@@ -47,8 +47,6 @@ public class PostController {
 
         Long id = userRepository.findByName(name).get().getUserId(); // 상품 등록한 user id 를 repository에서 조회해서 넣었음.
 
-
-
         post = makePost(post,id,name,form.getTitle(),form.getContents(),form.getProductName(),
                 form.getCategory(),0,form.getStartBid(),form.getWinningBid(),form.getUnitBid(),
                 form.getStartBid(),Timestamp.valueOf(LocalDateTime.now()),form.getAuctionPeriod(),
@@ -274,7 +272,6 @@ public class PostController {
         @ModelAttribute("form")  @PathVariable("id") Long regisIdPostForm,
         PostForm form,Model model) {
 
-
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = ((UserDetails) principal).getUsername();
         Long id = userRepository.findByName(name).get().getUserId(); // 현재 입찰하려고 하는 사용자의 id
@@ -286,7 +283,7 @@ public class PostController {
 
         post.setId(form.getId());
 
-        makePost(post,id,name,form.getTitle(),form.getContents(),form.getProductName(),
+        makePost(post,form.getPostUserId(),name,form.getTitle(),form.getContents(),form.getProductName(),
                 form.getCategory(),0,form.getStartBid(),form.getWinningBid(),form.getUnitBid(),
                 form.getStartBid(),Timestamp.valueOf(LocalDateTime.now()),form.getAuctionPeriod(),
                 "입찰 중" ,0L);
@@ -306,7 +303,6 @@ public class PostController {
                     post.setCurrentBidId(id);
                     post.setStatus("낙찰됨");
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
-
 
                     chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id
                     , regisName, buyerName);

@@ -12,7 +12,7 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    password: a8798233a
+    password: js082917
     url: jdbc:mysql://localhost:3306/csemall?useSSL=false&allowPublicKeyRetrieval=true?serverTimezone=Asia/Seoul
     username: root
 
@@ -32,7 +32,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       dialect:
         org.hibernate.dialect.MySQL5InnoDBDialect
