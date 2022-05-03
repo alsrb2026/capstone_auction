@@ -9,8 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String getHome(HttpServletRequest request) {
+
         return "home/home";
     }
 
@@ -30,15 +33,20 @@ public class HomeController {
     }
 
     // 로그인 성공하면 아래 작업하고 home으로 이동
-    @GetMapping("/user/login/result")
+    /*
+    @PostMapping("/doLogin")
     public String dispLoginResult(HttpServletRequest request) {
+
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = ((UserDetails)principal).getUsername();
         UserEntity user = userRepository.findByName(username).get();
+
+        System.out.println("하핳" + user.getUserId());
+
         request.setAttribute("user",user);
 
         return "home/home";
-    }
+    }*/
 
     @GetMapping("/user/logout/result")
     public String dispLogout() {
