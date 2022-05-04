@@ -4,9 +4,8 @@ import jpabook.jpashop.domain.UserEntity;
 import jpabook.jpashop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.ui.Model;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

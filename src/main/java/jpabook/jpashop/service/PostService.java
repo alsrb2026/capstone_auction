@@ -24,7 +24,7 @@ public class PostService {
     @Transactional
     public void updatePost(Long id, String title, String contents,
                            String productName, String category, int startBid,
-                           int winningBid, int unitBid, int currentBid,
+                           int winningBid, int unitBid, int nextBid,
                            int auctionPeriod, String status, Long currentBidId ) {
         Post post = postRepository.findOne(id);
         post.setTitle(title);
@@ -34,7 +34,7 @@ public class PostService {
         post.setStartBid(startBid);
         post.setWinningBid(winningBid);
         post.setUnitBid(unitBid);
-        post.setCurrentBid(currentBid);
+        post.setNextBid(nextBid);
         post.setAuctionPeriod(auctionPeriod);
         post.setStatus(status);
         post.setCurrentBidId(currentBidId);
