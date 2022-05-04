@@ -39,8 +39,8 @@
             <input type="hidden" th:field="*{startBid}">
         </div>
 
-        다음 입찰가 : <p id="currentBid" th:text="*{currentBid}"></p>
-        <input type="hidden" th:field="*{currentBid}">
+        다음 입찰가 : <p id="currentBid" th:text="*{nextBid}"></p>
+        <input type="hidden" th:field="*{nextBid}">
 
         낙찰가 : <p id="winningBid" th:text="*{winningBid}"></p>
         <input type="hidden" th:field="*{winningBid}">
@@ -56,16 +56,20 @@
         올린시간 : <p id="regisTime" th:text="*{regisTime}"></p>
         <input type="hidden" th:field="*{regisTime}">
         <p>
-            <button id="button" type="submit" onclick="bid()">입찰하기</button>
+            <button type="submit" th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
+            <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
         </p>
+    </form>
+    <form action="/auction/buy" method="post">
+        <input type="hidden" th:field="${form.id}">
+        <button type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>
+        <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">즉시 구매</button>
     </form>
 </div>
 </body>
 <script th:inline="javascript">
-
-    const button = document.getElementById("button");
-    const period = document.getElementById("period");
-    const status = document.getElementById("status");
+    const period = [[${form.auctionPeriod}]];
+    const status = [[${form.status}]];
 
     //게시글 작성 사용자가 아니면 수정,삭제 버튼 없애기
     /*<![CDATA[*/
@@ -82,13 +86,14 @@
     }
 
     function check(){
-        if(status.innerText === '입찰종료'){
+        if(status === '입찰 종료'){
             alert("입찰 종료된 상품입니다.");
-            button.disabled = true;
         }
-        else if(status.innerText === '낙찰됨'){
+        else if(status === '낙찰됨'){
             alert("낙찰된 상품입니다.");
-            button.disabled = true;
+        }
+        else if(status === '구매 완료'){
+            alert("구매 완료된 상품입니다.");
         }
         else{
             //calcDay();
@@ -97,10 +102,10 @@
     }
 
     function bid(){
-        var buyId = [[${session.id}]];
+        var aucId = [[${session.id}]];
         var regisId = [[${form.postUserId}]];
 
-        if(buyId != regisId){
+        if(aucId != regisId){
             if(confirm("입찰하시겠습니까?")){
                 alert("입찰에 성공했습니다");
             }
@@ -109,7 +114,24 @@
             }
         }
         else{
-            alert("자신의 물품에 입찰할 수 없습니다.");
+            alert("자신의 물품은 입찰할 수 없습니다.");
+            event.preventDefault();
+        }
+    }
+    function buy(){
+        var buyId = [[${session.id}]];
+        var regisId = [[${form.postUserId}]];
+
+        if(buyId != regisId){
+            if(confirm("즉시 구매하시겠습니까?")){
+                alert("성공적으로 구매되었습니다.");
+            }
+            else{
+                event.preventDefault();
+            }
+        }
+        else{
+            alert("자신의 물품은 구매할 수 없습니다.");
             event.preventDefault();
         }
     }
