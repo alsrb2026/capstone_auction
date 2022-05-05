@@ -46,7 +46,7 @@
     $(function(){
         var roomId = [[${room.roomId}]];
         var roomName = [[${room.name}]];
-        var sender = getCookie('nickname');
+        var sender = [[${session.nickname}]];
         var receiver;
 
         if(sender == [[${room.regisName}]]){

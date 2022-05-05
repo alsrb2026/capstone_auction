@@ -27,7 +27,7 @@
         <th>시작가</th>
         <th>낙찰가</th>
         <th>입찰 단위</th>
-        <th>현재 입찰가</th>
+        <th>다음 입찰가</th>
         <th>경매 기간</th>
         <th>상품 상태</th>
         <th>등록 시간</th>
@@ -48,7 +48,7 @@
         <td th:text="${board.startBid}"></td>
         <td th:text="${board.winningBid}"></td>
         <td th:text="${board.unitBid}"></td>
-        <td th:text="${board.currentBid}"></td>
+        <td th:text="${board.nextBid}"></td>
         <td th:text="${board.auctionPeriod}"></td>
         <td th:text="${board.status}"></td>
         <td th:text="${#dates.format(board.regisTime, 'yyyy년 MM월 dd일 HH시 mm분')}"></td>

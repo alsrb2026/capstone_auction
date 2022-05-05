@@ -13,7 +13,7 @@
 
 <div class="msg-container">
     <div class="msg-list">
-        <h4>Chat List</h4>
+        <h4>[[${session.nickname}]]의 톡방</h4>
         <div th:each="room : ${list}">
             <div class="chatListBox">
                 <div type="button" class="chatRoom" th:onclick="|location.href='@{/room(roomId=${room.roomId})}'|">
@@ -32,35 +32,15 @@
                     </div>
                 </div>
             </div>
-            <!--
-            <li><a th:href="@{/room(roomId=${room.roomId})}">[[${room.name}]]</a></li>
-            -->
         </div>
     </div>
 </div>
 <script th:inline="javascript">
     $(function(){
-        var id = getCookie('id');
-        var username = getCookie('nickname');
-
+        var id = [[${session.id}]];
+        var username = [[${session.nickname}]];
         MessageList(username);
     })
-
-    function getCookie(cookieName){
-        cookieName = cookieName + '=';
-        var cookieData = document.cookie;
-        var start = cookieData.indexOf(cookieName);
-        var value = '';
-        if(start != -1){
-            start += cookieName.length;
-            var end = cookieData.indexOf(';', start);
-            if(end == -1){
-                end = cookieData.length;
-            }
-            value = cookieData.substring(start, end);
-        }
-        return unescape(value);
-    }
 
     function MessageList(username){
 

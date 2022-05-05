@@ -34,6 +34,7 @@ public class ChatController {
     @MessageMapping(value = "/chat/message")
     public void message(ChatMessage message) throws Exception {
         message.setMessage(message.getMessage());
+        Thread.sleep(250); // 텀을 주지 않으면, senderName에 받는 사람 값이 들어가는 경우가 있음.
         template.convertAndSend("/sub/chat/room/" + message.getChRoomId(), message);
         chatMessageService.saveChatMessage(message);
     }

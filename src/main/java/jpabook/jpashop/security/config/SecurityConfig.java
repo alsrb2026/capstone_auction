@@ -1,5 +1,7 @@
 package jpabook.jpashop.security.config;
 
+import jpabook.jpashop.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -8,7 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final UserRepository userRepository;
 
     @Override
     public void configure(WebSecurity webSecurity) throws Exception {
@@ -35,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/doLogin")
                 .usernameParameter("id")
                 .passwordParameter("pw")
-                .successHandler(new MyLoginSuccessHandler())
+                .successHandler(new MyLoginSuccessHandler(userRepository))
                 .and()
                 .logout()
                 .logoutUrl("/doLogout")
