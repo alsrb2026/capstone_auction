@@ -291,7 +291,7 @@ public class PostController {
         model.addAttribute("list", chatRoomService.findAllChatRooms(id));
         model.addAttribute("connectedUserName", buyerName);
 
-        return "/roomlist";
+        return "/roomList";
     }
 
     @Transactional

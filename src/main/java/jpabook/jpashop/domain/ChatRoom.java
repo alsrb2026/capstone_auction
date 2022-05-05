@@ -27,6 +27,7 @@ public class ChatRoom {
     private Long auctionUserId;
     private String regisName;
     private String buyerName;
+    private int unreadMsg = 0; // 읽지 않은 메시지 개수는 초기 값 0으로 설정.
     public static ChatRoom create(String name, Long id1, Long id2, String regisName, String buyerName) {
         // id1 : 판매자, id2 : 구매자
         ChatRoom room = new ChatRoom();

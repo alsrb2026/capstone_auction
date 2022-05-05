@@ -1,6 +1,7 @@
 package jpabook.jpashop.controller;
 
 import jpabook.jpashop.domain.ChatMessage;
+import jpabook.jpashop.domain.ChatRoom;
 import jpabook.jpashop.repository.UserRepository;
 import jpabook.jpashop.service.ChatMessageService;
 import jpabook.jpashop.service.ChatRoomService;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
@@ -29,18 +32,25 @@ public class RoomController {
     private final UserRepository userRepository;
 
     //채팅방 목록 조회
-    @GetMapping(value = "/roomlist")
-    public ModelAndView rooms(){
+    @GetMapping(value = "/roomList")
+    public ModelAndView rooms(HttpServletRequest request){
 
-        ModelAndView mv = new ModelAndView("/roomlist");
+        int count = 0; // receiver 가 읽지 않은 메시지 개수.
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String name = ((UserDetails) principal).getUsername();
-        Long id = userRepository.findByName(name).get().getUserId(); // 현재 접속 중인 사용자 id
+        ModelAndView mv = new ModelAndView("/roomList");
+        HttpSession session = request.getSession();
+
+        Long id = (Long)session.getAttribute("id"); // 현재 접속 중인 사용자 id
 
         String connectedUserName = userRepository.findById(id).get().getNickname();
 
-        mv.addObject("list", chatRoomService.findAllChatRooms(id));
+        List<ChatRoom> roomList  = chatRoomService.findAllChatRooms(id);
+
+        for(int i = 0 ;i < roomList.size() ;i++ ){
+
+        }
+
+        mv.addObject("list", roomList);
         mv.addObject("connectedUserName", connectedUserName);
 
         return mv;
