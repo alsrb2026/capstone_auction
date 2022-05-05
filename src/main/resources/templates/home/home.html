@@ -7,10 +7,10 @@
     <title>도전경매</title>
 
 
-    <a class="btn btn-lg btn-secondary" href="/post/searchCategory/book">도서</a>
-    <a class="btn btn-lg btn-secondary" href="/post/searchCategory/studyMaterial">학습자료</a>
-    <a class="btn btn-lg btn-secondary" href="/post/searchCategory/electronics">전자기기</a>
-    <a class="btn btn-lg btn-secondary" href="/post/searchCategory/daily">생필품</a>
+    <a class="" href="/post/searchCategory/book">도서</a>
+    <a class="" href="/post/searchCategory/studyMaterial">학습자료</a>
+    <a class="" href="/post/searchCategory/electronics">전자기기</a>
+    <a class="" href="/post/searchCategory/daily">생필품</a>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -54,7 +54,7 @@
   </head>
   <body>
     <div class="container">
-      <div class="jumbotron">
+      <div>
         <div class="top-bar">
           <div class="title">
             <a href="/"><img
@@ -65,49 +65,36 @@
 
           <div class="search-from">
             <form action="/post/search" method="GET">
-              <div>
-                <input name="keyword" type="text" placeholder="내가 찾는 도서, 전자기기">
-              </div>
-              <button style="background-color: #80bdff">검색</button>
+              <input class="search-box" name="keyword" type="text" placeholder="내가 찾는 도서, 전자기기">
+              <input type="submit" class="search-btn" value="검색">
             </form>
           </div>
-          <div class="loginbox">
-<<<<<<< HEAD:src/main/resources/templates/home.html
-            <td class="welcome" th:text="|${nickname}님, 환영합니다.|"></td>
-            <a class="btn btn-lg btn-secondary logout-btn" href="/doLogout">로그 아웃</a>
-            |
-            <a class="btn btn-lg btn-secondary" href="/adminpage"
-              >어드민페이지</a
-            >
-            <a class="btn btn-lg btn-secondary" href="/members/new">회원가입</a>
-=======
-            <!--<td th:text="|${user.nickname}님, 환영합니다.|"></td>-->
-            <div class="nav-banner">
-              <a href="roomlist"><div>채팅목록</div></a>
-              <a href="/posts/new"><div>경매등록</div></a>
-              <a href="/posts"><div>거래하기</div></a>
-              <a href="#"><div>공지사항</div></a>
-            </div>
 
+          <div class="nav-banner">
+            <a href="/posts/new">물품 등록</a>
+            <a href="/posts">물품 거래</a>
+            <a href="roomlist">채팅 목록</a>
+          </div>
+          <div class="loginbox">
+<!--            <td th:text="|${user.nickname}님, 환영합니다.|"></td>-->
               <!-- 로그인 하지 않은 사용자면 로그인버튼 보이게 -->
               <a sec:authorize="isAnonymous()">
-                <a class="btn btn-lg btn-secondary logout-btn" th:href="@{/login}">로그인</a>
+                <a class="loginbox-btn" th:href="@{/login}">로그인</a>
               </a>
               <!-- 로그인 한 사용자면 로그아웃 버튼 보이게 -->
               <a sec:authorize="isAuthenticated()">
-                <a class="btn btn-lg btn-secondary" th:href="@{/doLogout}">로그 아웃</a>
+                <a class="loginbox-btn" th:href="@{/doLogout}">로그 아웃</a>
               </a>
               <a sec:authorize="isAnonymous()">
-                <a class="btn btn-lg btn-secondary" th:href="@{/members/new}">회원가입</a>
+                <a class="loginbox-btn" th:href="@{/members/new}">회원가입</a>
               </a>
               <a sec:authorize="isAuthenticated()">
-                <a class="btn btn-lg btn-secondary" th:href="@{/mypage}">마이페이지</a>
+                <a class="loginbox-btn" th:href="@{/mypage}">마이페이지</a>
               </a>
               <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/home/adminpage}">
-                <a class="btn btn-lg btn-secondary">관리자</a>
+                <a class="loginbox-btn">관리자</a>
               </a>
 
->>>>>>> be60830cea7c86a2797a5a3270f3c1fe218c10b1:src/main/resources/templates/home/home.html
           </div>
         </div>
       </div>
@@ -159,11 +146,6 @@
           <img class="r-sec_content-img" src="./images/그림2.png" />
         </div>
       </div>
-    </div>
-    <div class="nav-banner">
-      <a href="/posts/new"><div>경매등록</div></a>
-      <a href="/posts"><div>거래하기</div></a>
-      <a href="#"><div>공지사항</div></a>
     </div>
   </body>
 </html>

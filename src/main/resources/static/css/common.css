@@ -45,6 +45,7 @@ button {
 .title {
   font-size: 45px;
   font-weight: bold;
+  font-style: italic;
 }
 .title a:hover{
   text-decoration: none;

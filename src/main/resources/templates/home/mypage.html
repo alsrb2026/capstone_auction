@@ -2,19 +2,29 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <script src="/webjars/jquery/jquery.min.js"></script>
-<head th:replace="fragments/header :: header">
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrinkto-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css" integrity="sha384-
+ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <!-- Custom styles for this template -->
+    <link href="/css/jumbotron-narrow.css" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+            rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/common.css" />
+    <link rel="stylesheet" href="../css/mypage.css" />
+    <title>경매</title>
 </head>
 <body>
-<div class="title">
-    <a href="/"><img
-            src="images/premium-icon-hammer-2547559.png"
-            id="iconimg"
-    />도전경매</a>
-</div>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <a class="btn btn-lg btn-secondary" href="/post/myPost">내 게시글</a>
 </body>
 </html>
