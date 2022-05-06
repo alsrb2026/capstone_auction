@@ -3,6 +3,13 @@
   top: 5px;
   right: 20px;
 }
+.icon{
+  position: relative;
+  width: 20px;
+  height: 20px;
+  top: 2px;
+  right: 5px;
+}
 .loginbox-btn::after{
   content: " | ";
 }
