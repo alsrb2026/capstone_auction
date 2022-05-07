@@ -4,11 +4,13 @@
   right: 20px;
 }
 .icon{
+
   position: relative;
   width: 20px;
   height: 20px;
   top: 2px;
   right: 5px;
+  margin-left: 5px;
 }
 .loginbox-btn::after{
   content: " | ";
@@ -91,6 +93,7 @@
     }
     #posts:hover{
       cursor: grab;
+      border-radius: 10px 10px 0 0;
     }
 
     #category-box{
@@ -101,6 +104,7 @@
       top:50px;
       left:120px;
       background: rgb(230,230,230);
+      border-radius: 0 0 10px 10px;
     }
     #category-box a{
       padding-top: 10px;
