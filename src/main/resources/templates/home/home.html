@@ -2,45 +2,39 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <script src="/webjars/jquery/jquery.min.js"></script>
-  <head th:replace="fragments/header :: header">
-  <head>
-    <title>도전경매</title>
+<head>
+  <title>도전경매</title>
 
-    <a class="" href="/post/searchCategory/book">도서</a>
-    <a class="" href="/post/searchCategory/studyMaterial">학습자료</a>
-    <a class="" href="/post/searchCategory/electronics">전자기기</a>
-    <a class="" href="/post/searchCategory/daily">생필품</a>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+          rel="stylesheet"
+  />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+          rel="stylesheet"
+          type="text/css"
+          href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
+  />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
-      rel="stylesheet"
-    />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"
-    />
-
-    <link rel="stylesheet" type="text/css" href="/css/main.css" />
-    <link rel="stylesheet" type="text/css" href="/css/common.css" />
-    <script
-      src="https://kit.fontawesome.com/20515282ae.js"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      type="text/javascript"
-      src="//code.jquery.com/jquery-1.11.0.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
-    ></script>
-    <script>
+  <link rel="stylesheet" type="text/css" href="/css/main.css" />
+  <link rel="stylesheet" type="text/css" href="/css/common.css" />
+  <script
+          src="https://kit.fontawesome.com/20515282ae.js"
+          crossorigin="anonymous"
+  ></script>
+  <script
+          type="text/javascript"
+          src="//code.jquery.com/jquery-1.11.0.min.js"
+  ></script>
+  <script
+          type="text/javascript"
+          src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
+  ></script>
+  <script>
       $(document).ready(function () {
         $(".slick-sample").slick({
           autoplay: true,
@@ -50,101 +44,133 @@
         });
       });
     </script>
-  </head>
-  <body>
-    <div class="container">
-      <div>
-        <div class="top-bar">
-          <div class="title">
-            <a href="/"><img
+</head>
+<body>
+<div class="container">
+  <div>
+    <div class="top-bar">
+      <div class="title">
+        <a href="/"><img
                 src="images/premium-icon-hammer-2547559.png"
                 id="iconimg"
-              />도전경매</a>
-          </div>
+        />도전경매</a>
+      </div>
 
-          <div class="search-from">
-            <form action="/post/search" method="GET">
-              <input class="search-box" name="keyword" type="text" placeholder="내가 찾는 도서, 전자기기">
-              <input type="submit" class="search-btn" value="검색">
-            </form>
-          </div>
+      <div class="search-from">
+        <form action="/post/search" method="GET">
+          <input class="search-box" name="keyword" type="text" placeholder="내가 찾는 도서, 전자기기">
+          <input type="submit" class="search-btn" value="검색">
+        </form>
+      </div>
 
-          <div class="nav-banner">
-            <a href="/posts/new">물품 등록</a>
-            <a href="/posts">물품 거래</a>
-            <a href="/roomList">채팅 목록</a>
-          </div>
-          <div class="loginbox">
-<!--            <td th:text="|${user.nickname}님, 환영합니다.|"></td>-->
-              <!-- 로그인 하지 않은 사용자면 로그인버튼 보이게 -->
-              <a sec:authorize="isAnonymous()">
-                <a class="loginbox-btn" th:href="@{/login}">로그인</a>
-              </a>
-              <!-- 로그인 한 사용자면 로그아웃 버튼 보이게 -->
-              <a sec:authorize="isAuthenticated()">
-                <a class="loginbox-btn" th:href="@{/doLogout}">로그 아웃</a>
-              </a>
-              <a sec:authorize="isAnonymous()">
-                <a class="loginbox-btn" th:href="@{/members/new}">회원가입</a>
-              </a>
-              <a sec:authorize="isAuthenticated()">
-                <a class="loginbox-btn" th:href="@{/mypage}">마이페이지</a>
-              </a>
-              <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/home/adminpage}">
-                <a class="loginbox-btn">관리자</a>
-              </a>
-
-          </div>
+      <div class="nav-banner">
+        <a href="/posts/new"><img class="icon" src="images/contact-form.png"/>물품 등록</a>
+        <div id="posts"><img class="icon" src="images/list.png"/>물품 거래</div>
+        <div id="category-box" style="display: none">
+          <a href="/posts">전체 보기</a>
+          <a href="/post/searchCategory/book">도서</a>
+          <a href="/post/searchCategory/studyMaterial">학습자료</a>
+          <a href="/post/searchCategory/electronics">전자기기</a>
+          <a href="/post/searchCategory/daily">생필품</a>
         </div>
+        <a href="roomlist"><img class="icon" src="images/chat.png"/>채팅 목록</a>
+      </div>
+      <div class="loginbox">
+        <!--            <td th:text="|${user.nickname}님, 환영합니다.|"></td>-->
+        <!-- 로그인 하지 않은 사용자면 로그인버튼 보이게 -->
+        <a sec:authorize="isAnonymous()">
+          <a class="loginbox-btn" th:href="@{/login}">로그인</a>
+        </a>
+        <!-- 로그인 한 사용자면 로그아웃 버튼 보이게 -->
+        <a sec:authorize="isAuthenticated()">
+          <a class="loginbox-btn" th:href="@{/doLogout}">로그 아웃</a>
+        </a>
+        <a sec:authorize="isAnonymous()">
+          <a class="loginbox-btn" th:href="@{/members/new}">회원가입</a>
+        </a>
+        <a sec:authorize="isAuthenticated()">
+          <a class="loginbox-btn" th:href="@{/mypage}">마이페이지</a>
+        </a>
+        <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/home/adminpage}">
+          <a class="loginbox-btn">관리자</a>
+        </a>
+
       </div>
     </div>
-    <div class="fir_content">
-      <div class="l-fir_content">
-        <div class="l-fir_content-text">
-          <div><span class="large-text">도</span>서와</div>
-          <div><span class="large-text">전</span>자기기</div>
-        </div>
-        <img src="images/Camera.jpeg" />
-      </div>
-      <div class="r-fir_content">
-        <img src="images/Desk.jpeg" />
-        <div class="r-fir_content-text">
-          <div># 대학생 필수품</div>
-          <div>필수 경매 웹 사이트</div>
-        </div>
-      </div>
+  </div>
+</div>
+<div class="fir_content">
+  <div class="l-fir_content">
+    <div class="l-fir_content-text">
+      <div><span class="large-text">도</span>서와</div>
+      <div><span class="large-text">전</span>자기기</div>
     </div>
-
-    <div class="slide">
-
-      <div class="slick-sample">
-        <img src="/images/slide1.png" />
-        <img src="/images/slide2.png" />
-        <img src="/images/slide3.png" />
-      </div>
-
-      <button type="button" aria-label="이전" id="prevArrow"></button>
-      <button type="button" aria-label="다음" id="nextArrow"></button>
+    <img src="images/Camera.jpeg" />
+  </div>
+  <div class="r-fir_content">
+    <img src="images/Desk.jpeg" />
+    <div class="r-fir_content-text">
+      <div># 대학생 필수품</div>
+      <div>필수 경매 웹 사이트</div>
     </div>
+  </div>
+</div>
 
-    <div class="sec_content">
-      <div>
-        <img class="l-sec_content-img" src="./images/pic1.png" />
-      </div>
-      <div class="r-sec_content">
-        <div class="r-sec_content-textbox">
-          <div class="r-sec_content-text1">둘 도 없는 중고 상품</div>
-          <div class="r-sec_content-text2">고민하지 말고 바로 구매 하세요</div>
-          <div class="r-sec_content-text3">Enjoy your purchase</div>
-        </div>
-        <div class="r-sec_content-textbox">
-          <div class="r-sec_content-text1">학생과 학생의 거래</div>
-          <div class="r-sec_content-text2">도전 경매로 안전 경매 도전!</div>
-        </div>
-        <div>
-          <img class="r-sec_content-img" src="./images/pic2.png" />
-        </div>
-      </div>
+<div class="slide">
+
+  <div class="slick-sample">
+    <img src="/images/slide1.png" />
+    <img src="/images/slide2.png" />
+    <img src="/images/slide3.png" />
+  </div>
+
+  <button type="button" aria-label="이전" id="prevArrow"></button>
+  <button type="button" aria-label="다음" id="nextArrow"></button>
+</div>
+
+<div class="sec_content">
+  <div>
+    <img class="l-sec_content-img" src="/images/pic1.png" />
+  </div>
+  <div class="r-sec_content">
+    <div class="r-sec_content-textbox">
+      <div class="r-sec_content-text1">둘 도 없는 중고 상품</div>
+      <div class="r-sec_content-text2">고민하지 말고 바로 구매 하세요</div>
+      <div class="r-sec_content-text3">Enjoy your purchase</div>
     </div>
-  </body>
+    <div class="r-sec_content-textbox">
+      <div class="r-sec_content-text1">학생과 학생의 거래</div>
+      <div class="r-sec_content-text2">도전 경매로 안전 경매 도전!</div>
+    </div>
+    <div>
+      <img class="r-sec_content-img" src="/images/pic2.png" />
+    </div>
+  </div>
+</div>
+</body>
+<script>
+  const posts = document.getElementById('posts');
+  const category = document.getElementById('category-box');
+
+  posts.addEventListener('mouseover',function(){
+      category.style.display = 'flex';
+      posts.style.background = 'rgb(230, 230, 230)';
+  });
+  category.addEventListener('mouseover',function(){
+      category.style.display = 'flex';
+      posts.style.background = 'rgb(230, 230, 230)';
+  });
+
+  posts.addEventListener('mouseout',function(){
+      category.style.display = 'none';
+      posts.style.background = 'white';
+  });
+  category.addEventListener('mouseout',function(){
+      category.style.display = 'none';
+      posts.style.background = 'white';
+  });
+
+</script>
+<script th:inline="javascript">
+</script>
 </html>
