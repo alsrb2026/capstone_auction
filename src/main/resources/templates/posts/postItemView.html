@@ -87,13 +87,13 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
         <div>
             <div>
-                <button type="submit" th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
+                <button id="bidButton" type="submit" th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
                 <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
             </div>
         </form>
         <form action="/auction/buy" method="post">
             <input type="hidden" th:field="${form.id}">
-            <button type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>
+            <button id="buyButton" type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>
             <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">즉시 구매</button>
         </form>
     </div>
@@ -103,16 +103,20 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     const period = [[${form.auctionPeriod}]];
     const status = [[${form.status}]];
 
-    //게시글 작성 사용자가 아니면 수정,삭제 버튼 없애기
+
     /*<![CDATA[*/
     var postUserName =  [[${postUserName}]];
     var loginUsername = [[${loginName}]];
     /*]]>*/
-    console.log(postUserName);
-    console.log(loginUsername);
 
+    //게시글 작성 사용자면 입찰하기, 즉시구매 버튼 없애기
+    if(postUserName===loginUsername) {
+        document.getElementById('bidButton').style.display = 'none';
+        document.getElementById('buyButton').style.display = 'none';
+    }
+
+    //게시글 작성 사용자가 아니면 수정,삭제 버튼 없애기
     if(postUserName!==loginUsername) {
-        console.log("수정 삭제 금지");
         document.getElementById('modifyButton').style.display = 'none';
         document.getElementById('deleteButton').style.display = 'none';
     }

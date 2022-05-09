@@ -1,4 +1,4 @@
-package jpabook.jpashop.controller;
+package jpabook.jpashop.Form;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class UserForm {//test3
+public class UserForm {
     @NotEmpty(message = "회원 이름은 필수 입니다")
     private String id;
     private String nickname;

@@ -76,8 +76,9 @@
         <a href="roomlist"><img class="icon" src="images/chat.png"/>채팅 목록</a>
       </div>
       <div class="loginbox">
-        <!--            <td th:text="|${user.nickname}님, 환영합니다.|"></td>-->
-        <!-- 로그인 하지 않은 사용자면 로그인버튼 보이게 -->
+        <a sec:authorize="isAuthenticated()">
+         <td th:text="|${session.nickname}님, 환영합니다.|"></td>
+        </a>
         <a sec:authorize="isAnonymous()">
           <a class="loginbox-btn" th:href="@{/login}">로그인</a>
         </a>

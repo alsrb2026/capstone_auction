@@ -17,8 +17,11 @@ public class UserEntity {
     private long userId;
 
     private String name;
+
     private String nickname;
+
     private String password;
+
     private String role;
 
     @Builder

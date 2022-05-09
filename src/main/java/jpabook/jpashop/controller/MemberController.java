@@ -1,5 +1,6 @@
 package jpabook.jpashop.controller;
 
+import jpabook.jpashop.Form.UserForm;
 import jpabook.jpashop.domain.UserEntity;
 import jpabook.jpashop.repository.UserRepository;
 import jpabook.jpashop.repository.UserRepositoryR;
@@ -23,9 +24,9 @@ import javax.validation.Valid;
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
+
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -54,6 +55,17 @@ public class MemberController {
         String nickname = form.getNickname();
         String passwd = form.getPasswd();
 
+//        UserEntity dbUser = userRepositoryR.findByNickname(nickname);
+//        String dbNickname = dbUser.getNickname();
+//        System.out.println("dbNIckname = "+ dbNickname);
+//        if(dbNickname!=null){
+//            System.out.println("중복");
+//        } else {
+//            System.out.println("중복없음");
+//        }
+
+        //if(nickname.equals())
+
         UserEntity user = UserEntity.builder()
                 .name(name)
                 .nickname(nickname)
@@ -64,4 +76,9 @@ public class MemberController {
         userRepositoryR.save(user);
         return "home/loginPage";
     }
+
+//    @GetMapping("/user-nicknames/{nickname}/exists")
+//    public ResponseEntity<Boolean> checkNicknameDuplicate(@PathVariable String nickname) {
+//        return ResponseEntity.ok(userService.checkNicknameDuplicate(nickname));
+//    }
 }
