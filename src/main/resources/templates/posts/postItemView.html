@@ -78,11 +78,17 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
         올린시간 : <p id="regisTime" th:text="*{regisTime}"></p>
         <input type="hidden" th:field="*{regisTime}">
-        <p>
-            <button type="submit" th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
-            <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
-        </p>
+
+        <button type="submit" th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
+        <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
     </form>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
     <form action="/auction/buy" method="post">
         <input type="hidden" th:field="${form.id}">
         <button type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>

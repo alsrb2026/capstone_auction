@@ -1,11 +1,16 @@
 package jpabook.jpashop.controller;
 
 import jpabook.jpashop.domain.ChatMessage;
+import jpabook.jpashop.domain.ChatRoom;
 import jpabook.jpashop.service.ChatMessageService;
+import jpabook.jpashop.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,7 +28,6 @@ public class ChatController {
     @MessageMapping(value = "/chat/message")
     public void message(ChatMessage message) throws Exception {
         message.setMessage(message.getMessage());
-        Thread.sleep(250); // 텀을 주지 않으면, senderName에 받는 사람 값이 들어가는 경우가 있음.
         template.convertAndSend("/sub/chat/room/" + message.getChRoomId(), message);
         chatMessageService.saveChatMessage(message);
     }
