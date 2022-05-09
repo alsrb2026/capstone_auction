@@ -27,17 +27,16 @@ public class ChatRoom {
     private Long auctionUserId;
     private String regisName;
     private String buyerName;
+
     public static ChatRoom create(String name, Long id1, Long id2, String regisName, String buyerName) {
         // id1 : 판매자, id2 : 구매자
         ChatRoom room = new ChatRoom();
-
         room.roomId = UUID.randomUUID().toString();
         room.name = name;
         room.regisUserId = id1;
         room.auctionUserId = id2;
         room.regisName = regisName;
         room.buyerName = buyerName;
-
         return room;
     }
 }
