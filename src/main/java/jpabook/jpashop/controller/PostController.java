@@ -3,10 +3,12 @@ package jpabook.jpashop.controller;
 import jpabook.jpashop.Form.PostForm;
 import jpabook.jpashop.domain.Pagination;
 import jpabook.jpashop.domain.Post;
+import jpabook.jpashop.domain.UserEntity;
 import jpabook.jpashop.repository.PostRepository;
 import jpabook.jpashop.repository.UserRepository;
 import jpabook.jpashop.service.ChatRoomService;
 import jpabook.jpashop.service.PostService;
+import jpabook.jpashop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
@@ -30,6 +31,7 @@ public class PostController {
     private final PostService postService;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
     private final ChatRoomService chatRoomService;
 
     @GetMapping("/posts/new")
@@ -113,7 +115,6 @@ public class PostController {
         int pageSize = pagination.getPageSize();
 
         List<Post> searchboardList = postService.findCategoryListPaging(startIndex, pageSize, keyword);
-
         model.addAttribute("boardList", searchboardList);
         model.addAttribute("pagination", pagination);
 
@@ -121,9 +122,17 @@ public class PostController {
     }
 
     @GetMapping("/post/myPost") //내 게시글 목록은 검색창, 페이징 없음
-    public String searchMyPost(Model model) {
-        List<Post> posts = postService.findPosts();
-        model.addAttribute("boardList", posts);
+    public String searchMyPost(@RequestParam(defaultValue = "1") int page, Model model) {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String nickname = ((UserDetails) principal).getUsername();
+
+        //현재 로그인한 사용자정보 가져와서
+        UserEntity myId = userService.findIdByNickname(nickname);
+        //사용자의 id값 가져오기
+        List<Post> myPosts = postService.findMyListPaging(myId.getUserId());
+
+        model.addAttribute("boardList", myPosts);
         return "posts/myPostList";
     }
 
@@ -153,7 +162,7 @@ public class PostController {
 
         form.setId(post.getId());
         form.setPostUserId(post.getPostUserId());
-        form.setPostUserName(form.getPostUserName());
+        form.setPostUserName(post.getPostUserName());
         form.setTitle(post.getTitle());
         form.setContents(post.getContents());
         form.setProductName(post.getProductName());

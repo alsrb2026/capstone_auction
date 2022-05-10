@@ -89,8 +89,8 @@ public class PostService {
     }
 
     //내가 쓴 게시글
-    public List<Post> findMyListPaging(int startIndex, int pageSize, Long myId) {
-        return postRepository.findMyListPaging(startIndex, pageSize, myId);
+    public List<Post> findMyListPaging(Long myId) {
+        return postRepository.findMyListPaging(myId);
     }
 }
 

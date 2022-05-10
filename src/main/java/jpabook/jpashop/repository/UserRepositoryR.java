@@ -13,9 +13,9 @@ public class UserRepositoryR {
 
     private final EntityManager em;
 
-    public UserEntity findByName(String name) {
-        return em.createQuery("select m from UserEntity m where m.name = :name",
-                           UserEntity.class).setParameter("name", name)
+    public UserEntity findIdByNickname(String nickname) {
+        return em.createQuery("select m from UserEntity m where m.nickname = :nickname",
+                           UserEntity.class).setParameter("nickname", nickname)
                .getSingleResult();
     }
 

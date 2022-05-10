@@ -72,11 +72,10 @@ public class PostRepository {
                 .getResultList();
     }
 //내 게시글인지 어떻게 판단할래? JOIN해서? 아니면 id값? -> Post에 postUserId필드가 있음 이거 활용
-    public List<Post> findMyListPaging(int startIndex, int pageSize, Long myId) {
+    public List<Post> findMyListPaging(Long myId) {
+        System.out.println("id테스트"+myId);
         return em.createQuery("select b from Post b where b.postUserId = :myId", Post.class)
                 .setParameter("myId",myId)
-                .setFirstResult(startIndex)
-                .setMaxResults(pageSize)
                 .getResultList();
     }
 
