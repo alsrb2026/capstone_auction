@@ -82,13 +82,17 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 </div>
                 <input type="hidden" th:field="*{auctionPeriod}">
 
+                <div class="status form-groups">
+                    입찰상태 : <div id="status" th:text="*{status}"></div>
+                    <input type="hidden" th:field="*{status}">
+                </div>
                 <div class="regisTime form-groups">
-                    올린시간 : <div id="regisTime" th:text="*{regisTime}"></div>
+                    올린시간 : <div id="regisTime" th:text="*{#dates.format(regisTime, 'yyyy-MM-dd HH:mm')}"></div>
                     <input type="hidden" th:field="*{regisTime}">
                 </div>
                 <div style="display:flex; align-items:center">
                     <div class="bid-btn">
-                        <button type="submit" th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
+                        <button type="submit" id='bidButton' th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
                         <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
                     </div>
                     <div class="edit-box">
@@ -101,8 +105,8 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             </form>
         <form action="/auction/buy" method="post">
             <input type="hidden" th:field="${form.id}">
-            <button class="buy-btn" type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>
-            <button class="buy-btn" type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">즉시 구매</button>
+            <button class="buy-btn" id='buyButton' type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>
+            <button class="buy-btn" type="submit" th:if="${form.status != '입찰 중'}" onclick="buy()" disabled="disabled">즉시 구매</button>
         </form>
         </div>
     </div>
@@ -111,6 +115,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 <script th:inline="javascript">
     const period = [[${form.auctionPeriod}]];
     const status = [[${form.status}]];
+    const regisTime = [[${form.regisTime}]];
 
 
     /*<![CDATA[*/
@@ -141,21 +146,41 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             alert("구매 완료된 상품입니다.");
         }
         else{
-            //calcDay();
-            //setInterval(calcDay, 1000);
+            calcDay();
+            setInterval(calcDay, 1000);
         }
     }
+    function calcDay(){
+        const today = new Date();
+        const regisDay = new Date(regisTime);
 
+        const distance = today.getTime() - regisDay.getTime();
+        const time = Math.floor(period * 60 * 1000 * 60);
+
+        if(distance >= time){
+            document.getElementById("buyButton").disabled = true;
+            document.getElementById("bidButton").disabled = true;
+        }
+        else{
+
+        }
+    }
     function bid(){
         var aucId = [[${session.id}]];
         var regisId = [[${form.postUserId}]];
+        var currentBidId = [[${form.currentBidId}]];
 
         if(aucId != regisId){
-            if(confirm("입찰하시겠습니까?")){
-                alert("입찰에 성공했습니다");
+            if(aucId != currentBidId){
+                if(confirm("입찰하시겠습니까?")){
+                    alert("입찰에 성공했습니다");
+                }
+                else{
+                    event.preventDefault();
+                }
             }
             else{
-                event.preventDefault();
+                alert("같은 물품에 두 번 이상 입찰할 수 없습니다.");
             }
         }
         else{
