@@ -4,7 +4,6 @@
 <head>
 </head>
 <body>
-
 <br/>
 <br/>
 <br/>
@@ -19,11 +18,18 @@
                 <div type="button" class="chatRoom" th:onclick="|location.href='@{/room(roomId=${room.roomId})}'|">
                     <div class="roomDetails">
                         <div class="profile">
-                            <div th:if="${room.regisName == connectedUserName}">
+                            <div th:if="${room.regisName == session.nickname}">
                                 <h5>[[${room.buyerName}]]님과의 채팅방</h5>
                             </div>
-                            <div th:if="${room.buyerName == connectedUserName}">
+                            <div th:if="${room.buyerName == session.nickname}">
                                 <h5>[[${room.regisName}]]님과의 채팅방</h5>
+                            </div>
+                            <div th:each="unRead : ${unReadMsgList}">
+                                <div th:if="${unRead.roomId == room.roomId}">
+                                    <div th:if="${unRead.count != 0}">
+                                        <h6>읽지 않은 채팅 메시지 : [[${unRead.count}]]</h6>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="chat">
