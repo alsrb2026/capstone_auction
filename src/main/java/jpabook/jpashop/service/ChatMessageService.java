@@ -22,4 +22,5 @@ public class ChatMessageService {
     public List<ChatMessage> findChatMessages(String id){
         return chatMessageRepository.findAll(id);
     }
+    public int findUnReadMsg(String roomId, String recName) { return chatMessageRepository.findUnReadMsg(roomId, recName); }
 }

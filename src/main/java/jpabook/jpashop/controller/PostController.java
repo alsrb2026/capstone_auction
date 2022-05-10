@@ -262,9 +262,22 @@ public class PostController {
         form.setStatus(post.getStatus());
         form.setCurrentBidId(post.getCurrentBidId());
 
+        String nickname;
+        String userId;
+        if(form.getCurrentBidId() == 0){
+            nickname = "";
+            userId = "";
+        }else{
+            nickname = userRepository.findById(form.getCurrentBidId()).get().getNickname();
+            userId = userRepository.findById(form.getCurrentBidId()).get().getName();
+        }
+
         model.addAttribute("form", form);
         model.addAttribute("postUserName",post.getPostUserName());
         model.addAttribute("loginName",name);
+        model.addAttribute("bidUserName", nickname);
+        model.addAttribute("bidUserId", userId);
+
         return "posts/postItemView";
     }
 
@@ -292,7 +305,7 @@ public class PostController {
         model.addAttribute("list", chatRoomService.findAllChatRooms(id));
         model.addAttribute("connectedUserName", buyerName);
 
-        return "/roomlist";
+        return "/roomList";
     }
 
     @Transactional

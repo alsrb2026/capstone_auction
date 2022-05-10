@@ -79,17 +79,21 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             올린시간 : <div id="regisTime" th:text="*{regisTime}"></div>
             <input type="hidden" th:field="*{regisTime}">
         </div>
+        <div>
+            가장 최근 입찰한 사용자 : <p th:if="${bidUserName == ''}">없음</p>
+            <p th:if="${bidUserName != ''}">[[${bidUserId}]] ([[${bidUserName}]])</p>
+        </div>
         <div class="edit-box">
-            <h2><a id="modifyButton" href="#" th:href="@{/post/{id}/edit (id=${form.id})}" class="btn btn-primary" role="button">수정</a>
+            <h2><a id="modifyButton" href="#" th:href="@{/post/{id}/edit (id=${form.id})}" class="btn btn-primary" role="button">수정</a></h2>
        
             <a id="deleteButton" href="#" th:href="@{/post/{id}/delete (id=${form.id})}" class="btn btn-delete" role="button">삭제</a>
         </div>
-
         <div>
             <div>
                 <button id="bidButton" type="submit" th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
                 <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
             </div>
+        </div>
         </form>
         <form action="/auction/buy" method="post">
             <input type="hidden" th:field="${form.id}">
