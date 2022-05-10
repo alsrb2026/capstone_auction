@@ -15,13 +15,13 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
             rel="stylesheet"
     />
-    <link href="/css/jumbotron-narrow.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/css/common.css" />
     <link rel="stylesheet" type="text/css" href="/css/postItemView.css" />
     <title>경매</title>
 </head>
 <body onload="check()">
 <div class="container">
+    <div style="position: relative; width: 850px">
     <div class="top-bar">
         <div class="title">
             <a href="/"
@@ -32,74 +32,79 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             >
         </div>
     </div>
-    <form class= product-info th:object="${form}" method="post">
-        
-        <input type="hidden" th:field="*{id}" />
-        <input type="hidden" th:field="*{postUserId}">
-        <input type="hidden" th:field="*{currentBidId}">
-        <div class="cateogry">
-            카테고리 : <div th:text="*{category}"></div>
-            <input type="hidden" th:field="*{category}">
-        </div>
-        
-        <div class="productName">
-            상품명 : <div th:text="*{productName}"></div>
-            <input type="hidden" th:field="*{productName}">
-        </div>
-        <div class="product-title">
-            제목 : <div th:text="*{title}"></div>
-            <input type="hidden" th:field="*{title}">
-        </div>
-        <div class="contesnts">
-            내용 : <div th:text="*{contents}"></div>
-            <input type="hidden" th:field="*{contents}">
-        </div>
+        <form class= product-info th:object="${form}" method="post">
 
-        <input type="hidden" th:field="*{status}">
-
-        <div class="startBid">
-            시작가 : <div id="startBid" th:text="*{startBid}"></div>
-            <input type="hidden" th:field="*{startBid}">
-        </div>
-
-        <input type="hidden" th:field="*{nextBid}">
-
-        <div class="winningBid">
-            낙찰가 : <div id="winningBid" th:text="*{winningBid}"></div>
-            <input type="hidden" th:field="*{winningBid}">
-        </div>
-        <div class="unitBid">
-            입찰단위 : <div id="unit" th:text="*{unitBid}"></div>
-            <input type="hidden" th:field="*{unitBid}">
-        </div>
-        
-        <input type="hidden" th:field="*{auctionPeriod}">
-        
-        <div class="regisTime">
-            올린시간 : <div id="regisTime" th:text="*{regisTime}"></div>
-            <input type="hidden" th:field="*{regisTime}">
-        </div>
-        <div>
-            가장 최근 입찰한 사용자 : <p th:if="${bidUserName == ''}">없음</p>
-            <p th:if="${bidUserName != ''}">[[${bidUserId}]] ([[${bidUserName}]])</p>
-        </div>
-        <div class="edit-box">
-            <h2><a id="modifyButton" href="#" th:href="@{/post/{id}/edit (id=${form.id})}" class="btn btn-primary" role="button">수정</a></h2>
-       
-            <a id="deleteButton" href="#" th:href="@{/post/{id}/delete (id=${form.id})}" class="btn btn-delete" role="button">삭제</a>
-        </div>
-        <div>
-            <div>
-                <button type="submit" th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
-                <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
+            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{postUserId}">
+            <input type="hidden" th:field="*{currentBidId}">
+            <div class="post-box">
+            <div class="img-box">
+                <img class="post-img" src="http://image.kyobobook.co.kr/images/book/xlarge/045/x9791188840045.jpg"/>
             </div>
-        </div>
-        </form>
+            <div class="post-content">
+                <div class="product-title form-groups">
+                    <div th:text="*{title}"></div>
+                    <input type="hidden" th:field="*{title}">
+                </div>
+                <div class="form-groups">
+                    <div class="productName">
+                        상품명 : <div th:text="*{productName}"></div>
+                        <input type="hidden" th:field="*{productName}">
+                    </div>
+                    <div class="category">
+                        카테고리 : <div th:text="*{category}"></div>
+                        <input type="hidden" th:field="*{category}">
+                    </div>
+                </div>
+
+                <div class="content form-groups">
+                    내용<br> <div th:text="*{contents}"></div>
+                    <input type="hidden" th:field="*{contents}">
+                </div>
+
+                <input type="hidden" th:field="*{status}">
+                <div class="form-groups form-contain"/>
+                    <div class="startBid">
+                        시작가 : <div id="startBid" th:text="*{startBid}"></div>
+                        <input type="hidden" th:field="*{startBid}">
+                    </div>
+
+                    <input type="hidden" th:field="*{nextBid}">
+
+                    <div class="winningBid">
+                        즉시구매가 : <div id="winningBid" th:text="*{winningBid}"></div>
+                        <input type="hidden" th:field="*{winningBid}">
+                    </div>
+                    <div class="unitBid">
+                        입찰단위 : <div id="unit" th:text="*{unitBid}"></div>
+                        <input type="hidden" th:field="*{unitBid}">
+                    </div>
+                </div>
+                <input type="hidden" th:field="*{auctionPeriod}">
+
+                <div class="regisTime form-groups">
+                    올린시간 : <div id="regisTime" th:text="*{regisTime}"></div>
+                    <input type="hidden" th:field="*{regisTime}">
+                </div>
+                <div style="display:flex; align-items:center">
+                    <div class="bid-btn">
+                        <button type="submit" th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
+                        <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
+                    </div>
+                    <div class="edit-box">
+                        <a id="modifyButton" href="#" th:href="@{/post/{id}/edit (id=${form.id})}"  role="button">수정</a>
+
+                        <a id="deleteButton" href="#" th:href="@{/post/{id}/delete (id=${form.id})}"  role="button">삭제</a>
+                    </div>
+                </div>
+            </div>
+            </form>
         <form action="/auction/buy" method="post">
             <input type="hidden" th:field="${form.id}">
-            <button type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>
-            <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">즉시 구매</button>
+            <button class="buy-btn" type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>
+            <button class="buy-btn" type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">즉시 구매</button>
         </form>
+        </div>
     </div>
 </div>
 </body>

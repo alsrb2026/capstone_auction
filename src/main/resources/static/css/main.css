@@ -108,8 +108,12 @@
     }
     #category-box a{
       padding-top: 10px;
+      padding-left: 5px;
+      width: 100px;
+      text-align: left;
+    }
+    #category-box a:nth-child(1){
       text-align: center;
-
     }
 .sec_content {
   display: none;
