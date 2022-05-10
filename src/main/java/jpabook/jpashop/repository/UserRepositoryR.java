@@ -14,14 +14,20 @@ public class UserRepositoryR {
     private final EntityManager em;
 
     public UserEntity findByName(String name) {
-        return em.createQuery("select m from UserEntity m where m.name = name",
+        return em.createQuery("select m from UserEntity m where m.name = :name",
                            UserEntity.class).setParameter("name", name)
                .getSingleResult();
     }
 
     public UserEntity findById(Long id){
-        return em.createQuery("select m from UserEntity m where m.userId = id",
+        return em.createQuery("select m from UserEntity m where m.userId = :id",
                         UserEntity.class).setParameter("id", id)
+                .getSingleResult();
+    }
+
+    public UserEntity findByNickname(String nickname) {
+        return em.createQuery("select m from UserEntity m where m.nickname = :nickname", UserEntity.class)
+                .setParameter("nickname", nickname)
                 .getSingleResult();
     }
 

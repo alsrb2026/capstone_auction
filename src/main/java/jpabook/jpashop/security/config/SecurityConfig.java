@@ -25,7 +25,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf()
-
                 .disable()
                 .headers(headers -> headers .cacheControl(cache -> cache.disable()))
                 .authorizeRequests()

@@ -68,16 +68,17 @@
         <div id="posts"><img class="icon" src="images/list.png"/>물품 거래</div>
         <div id="category-box" style="display: none">
           <a href="/posts">전체 보기</a>
-          <a href="/post/searchCategory/book">도서</a>
-          <a href="/post/searchCategory/studyMaterial">학습자료</a>
-          <a href="/post/searchCategory/electronics">전자기기</a>
-          <a href="/post/searchCategory/daily">생필품</a>
+          <a href="/post/searchCategory/book"><img class="icon" src="images/book.png"/>도서</a>
+          <a href="/post/searchCategory/studyMaterial"><img class="icon" src="images/document.png"/>학습자료</a>
+          <a href="/post/searchCategory/electronics"><img class="icon" src="images/tablet.png"/>전자기기</a>
+          <a href="/post/searchCategory/daily"><img class="icon" src="images/toilet-paper.png"/>생필품</a>
         </div>
         <a href="roomlist"><img class="icon" src="images/chat.png"/>채팅 목록</a>
       </div>
       <div class="loginbox">
-        <!--            <td th:text="|${user.nickname}님, 환영합니다.|"></td>-->
-        <!-- 로그인 하지 않은 사용자면 로그인버튼 보이게 -->
+        <a sec:authorize="isAuthenticated()">
+         <td th:text="|${session.nickname}님, 환영합니다.|"></td>
+        </a>
         <a sec:authorize="isAnonymous()">
           <a class="loginbox-btn" th:href="@{/login}">로그인</a>
         </a>
