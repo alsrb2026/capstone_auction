@@ -145,7 +145,6 @@ public class PostController {
 
         String name = (String)session.getAttribute("accountId"); // 05-04. 세션에서 접속 사용자 아이디 불러오는 것으로 수정.
 
-
         //자신의 게시글이 아니면 수정,삭제 버튼이 안보이게 해놨지만 만약을 대비해 서버에서 한번 더 체크
         //로그인 한 사용자 name과 글 작성자 name과 다르면 수정 못하게 이전페이지로 보내기
         if(!name.equals(post.getPostUserName())) {
@@ -261,7 +260,7 @@ public class PostController {
         form.setAuctionPeriod(post.getAuctionPeriod());
         form.setStatus(post.getStatus());
         form.setCurrentBidId(post.getCurrentBidId());
-
+/*
         String nickname;
         String userId;
         if(form.getCurrentBidId() == 0){
@@ -271,13 +270,14 @@ public class PostController {
             nickname = userRepository.findById(form.getCurrentBidId()).get().getNickname();
             userId = userRepository.findById(form.getCurrentBidId()).get().getName();
         }
-
+*/
         model.addAttribute("form", form);
         model.addAttribute("postUserName",post.getPostUserName());
         model.addAttribute("loginName",name);
+/*
         model.addAttribute("bidUserName", nickname);
         model.addAttribute("bidUserId", userId);
-
+*/
         return "posts/postItemView";
     }
 
