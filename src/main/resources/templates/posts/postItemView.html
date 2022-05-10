@@ -82,13 +82,17 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 </div>
                 <input type="hidden" th:field="*{auctionPeriod}">
 
+                <div class="status form-groups">
+                    입찰상태 : <div id="status" th:text="*{status}"></div>
+                    <input type="hidden" th:field="*{status}">
+                </div>
                 <div class="regisTime form-groups">
-                    올린시간 : <div id="regisTime" th:text="*{regisTime}"></div>
+                    올린시간 : <div id="regisTime" th:text="*{#dates.format(regisTime, 'yyyy-MM-dd HH:mm')}"></div>
                     <input type="hidden" th:field="*{regisTime}">
                 </div>
                 <div style="display:flex; align-items:center">
                     <div class="bid-btn">
-                        <button type="submit" th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
+                        <button type="submit" id='bidButton' th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
                         <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
                     </div>
                     <div class="edit-box">
@@ -101,14 +105,11 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             </form>
         <form action="/auction/buy" method="post">
             <input type="hidden" th:field="${form.id}">
-            <button class="buy-btn" type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>
-            <button class="buy-btn" type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">즉시 구매</button>
+            <button class="buy-btn" id='buyButton' type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>
+            <button class="buy-btn" type="submit" th:if="${form.status != '입찰 중'}" onclick="buy()" disabled="disabled">즉시 구매</button>
         </form>
         </div>
     </div>
-</div>
-<div>
-    <p id="lalalal">하하하하</p>
 </div>
 </body>
 <script th:inline="javascript">
@@ -157,12 +158,11 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         const time = Math.floor(period * 60 * 1000 * 60);
 
         if(distance >= time){
-
+            document.getElementById("buyButton").disabled = true;
+            document.getElementById("bidButton").disabled = true;
         }
         else{
-            $("#lalala").val('tgt');
-            $("#buyBtn").prop("disabled");
-            $("#aucBtn").prop("disabled");
+
         }
     }
     function bid(){
