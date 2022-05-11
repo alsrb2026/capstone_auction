@@ -59,7 +59,6 @@ public class RoomController {
 
         List<UnreadMsg> unReadMsgList = new ArrayList<>();
 
-
         for(int i=0;i<roomList.size(); i++){
             String roomId = roomList.get(i).getRoomId();
             List<ChatMessage> chatList = chatMessageService.findChatMessages(roomId);
@@ -89,6 +88,7 @@ public class RoomController {
         Date now = new Date();
         log.info("# read chat message : " + now);
 
+
         List<ChatMessage> chatList = chatMessageService.findChatMessages(roomId);
 
         for(int i=0;i<chatList.size();i++){
@@ -104,14 +104,13 @@ public class RoomController {
 
     // 채팅방 나가는 동시에 리스트에서 삭제
     @PostMapping("/exitRoom")
-    public String exit(String roomId){
+    public String exit(ChatRoom chatRoom, HttpServletRequest request){
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String name = ((UserDetails) principal).getUsername();
-        Long id = userRepository.findByName(name).get().getUserId(); // 채팅방 나가려고 하는 사용자의 id
+        HttpSession session = request.getSession();
+        Long id = (Long)session.getAttribute("id"); // 채팅방 나가려고 하는 사용자의 id
 
-        chatRoomService.exitChatRoom(roomId, id);
+        chatRoomService.exitChatRoom(chatRoom.getRoomId(), id);
 
-        return "redirect:/";
+        return "home/home";
     }
 }

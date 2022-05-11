@@ -318,6 +318,33 @@ public class PostController {
     }
 
     @Transactional
+    @PostMapping("/post/timeExpired")
+    public String timeExpired(PostForm form, HttpServletRequest request){
+
+        HttpSession session = request.getSession();
+        Long id = (Long)session.getAttribute("id");
+
+        String regisName, buyerName;
+
+        if(id == form.getPostUserId()){
+            regisName = (String)session.getAttribute("nickname");
+            buyerName = userRepository.findById(form.getCurrentBidId()).get().getNickname();
+
+            chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id
+                    , regisName, buyerName);
+            return "roomList";
+        }
+        if(id == form.getCurrentBidId()){
+            regisName =  userRepository.findById(form.getPostUserId()).get().getNickname();
+            buyerName = (String)session.getAttribute("nickname");
+            chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id
+                    , regisName, buyerName);
+            return "roomList";
+        }
+
+        return "posts/postList";
+    }
+    @Transactional
     @PostMapping("/post/{id}/auction") // id에 해당하는 물품 입찰.
     public String auctionItem(@RequestParam(defaultValue = "1") int page, HttpServletRequest request,
                               @ModelAttribute("form")  @PathVariable("id") Long regisIdPostForm, PostForm form,Model model) {
