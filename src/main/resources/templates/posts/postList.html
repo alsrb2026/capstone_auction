@@ -2,59 +2,48 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+            rel="stylesheet"
+    />
     <meta charset="UTF-8">
     <title>paging</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" href="/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="/css/postList.css" />
 </head>
 <body>
-<table class="table table-striped">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <thead class="thead-dark">
-
-    <form action="/post/search" method="GET">
-        <div>
-            <input name="keyword" type="text" placeholder="검색어를 입력해주세요">
+    <div class="search-form">
+        <form action="/post/search" method="GET">
+            <input class="search-box" name="keyword" type="text" placeholder="내가 찾는 도서, 전자기기">
+            <input type="submit" class="search-btn" value="검색">
+        </form>
+    </div>
+    <div class="container">
+    <div class="product-list">
+        <div class="product-box" th:each="board : ${boardList}">
+            <div style="display: flex; justify-content: center;">
+                <img class="product-img" src="https://www.missioninfra.net/img/noimg/noimg_4x3.gif"/>
+            </div>
+            <div class="product-info">
+                <div>
+                    <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
+                        <span class="p-title" th:text="${board.title}"></span>
+                    </a>
+                </div>
+                <div><span>상품명 : </span><span class="name" th:text="${board.productName}"></span></div>
+                <div><span>현재가 : </span><span class="nextBid" th:text="${board.nextBid}"></span></div>
+                <div><span>즉시구매가 : </span><span class="winningBid" th:text="${board.winningBid}"></span></div>
+                <div th:text="${board.auctionPeriod}"></div>
+                <div><span>상태 : </span><span class="status" th:text="${board.status}"></span></div>
+                <div><span>등록기간 : </span><span th:text="${#dates.format(board.regisTime, 'MM/dd HH:mm')}"></span></div>
+            </div>
         </div>
-        <button>검색</button>
-    </form>
-
-    <tr>
-        <th>#</th>
-        <th>작성자</th>
-        <th>제목</th>
-        <th>내용</th>
-        <th>상품명</th>
-        <th>시작가</th>
-        <th>낙찰가</th>
-        <th>입찰 단위</th>
-        <th>다음 입찰가</th>
-        <th>경매 기간</th>
-        <th>상품 상태</th>
-        <th>등록 시간</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="board : ${boardList}">
-        <th scope="row" th:text="${boardStat.index + 1}">1</th>
-        <td th:text="${board.getPostUserId()}"></td>
-        <td>
-            <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
-                <h2><span th:text="${board.title}"></span></h2>
-            </a>
-        </td>
-        <td th:text="${board.contents}"></td>
-        <td th:text="${board.productName}"></td>
-        <td th:text="${board.startBid}"></td>
-        <td th:text="${board.winningBid}"></td>
-        <td th:text="${board.unitBid}"></td>
-        <td th:text="${board.nextBid}"></td>
-        <td th:text="${board.auctionPeriod}"></td>
-        <td th:text="${board.status}"></td>
-        <td th:text="${#dates.format(board.regisTime, 'yyyy년 MM월 dd일 HH시 mm분')}"></td>
-    </tr>
-    </tbody>
-</table>
+    </div>
+    </div>
 <nav aria-label="Page navigation example ">
     <ul class="pagination">
         <li class="page-item">
