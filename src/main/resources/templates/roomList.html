@@ -2,13 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <script src="/webjars/jquery/jquery.min.js"></script>
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+            rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="/css/common.css" />
 </head>
 <body>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
 
 <div class="msg-container">
     <div class="msg-list">
