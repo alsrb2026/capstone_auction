@@ -164,12 +164,27 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         else if(distance == time){
 
             var form = {
-
-            }
+                id: [[${form.id}]],
+                postUserId: [[${form.postUserId}]],
+                postUserName: [[${form.postUserName}]],
+                title: [[${form.title}]],
+                contents: [[${form.contents}]],
+                productName: [[${form.productName}]],
+                category: [[${form.category}]],
+                view: [[${form.view}]],
+                startBid: [[${form.startBid}]],
+                winningBid: [[${form.winningBid}]],
+                unitBid: [[${form.unitBid}]],
+                nextBid: [[${form.nextBid}]],
+                regisTime: [[${form.regisTime}]],
+                auctionPeriod: [[${form.auctionPeriod}]],
+                status: [[${form.status}]],
+                currentBidId: [[${form.currentBidId}]]
+            };
             $.ajax({
-                type: "post",
+                type: "POST",
                 url: "/post/timeExpired",
-                data: ,
+                data: form,
                 success: function(res){
 
                 },

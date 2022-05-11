@@ -59,12 +59,10 @@ public class RoomController {
 
         List<UnreadMsg> unReadMsgList = new ArrayList<>();
 
-
-
         for(int i=0;i<roomList.size(); i++){
             String roomId = roomList.get(i).getRoomId();
             List<ChatMessage> chatList = chatMessageService.findChatMessages(roomId);
-            if(connectedUserName.equals(chatList.get(chatList.size() - 1).getReceiverName())){
+            if(chatList.size() != 0 && connectedUserName.equals(chatList.get(chatList.size() - 1).getReceiverName())){
                 count = chatMessageService.findUnReadMsg(roomId, connectedUserName);
             }
             else{
@@ -113,6 +111,6 @@ public class RoomController {
 
         chatRoomService.exitChatRoom(roomId, id);
 
-        return "redirect:/";
+        return "home/home";
     }
 }
