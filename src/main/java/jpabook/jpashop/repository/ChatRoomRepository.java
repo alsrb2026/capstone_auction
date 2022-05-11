@@ -38,8 +38,10 @@ public class ChatRoomRepository {
 
     public void exitRoom(String roomId, Long id){
 
-        ChatRoom chatRoom = (ChatRoom) em.createQuery("select c from ChatRoom c where c.roomId = roomId", ChatRoom.class)
-                .setParameter("roomId", roomId);
+        ChatRoom chatRoom = (ChatRoom) em.createQuery("select c from ChatRoom c where c.roomId = :roomId", ChatRoom.class)
+                .setParameter("roomId", roomId)
+                .getSingleResult();
+
         // 사용자가 나가려고 하는 채팅방을 레포지토리에서 찾아서 auctionUserId인지 regisUserId인지 찾고 해당 필드를 0으로 만들어준다.
         if(chatRoom.getAuctionUserId() == id){
             chatRoom.setAuctionUserId(0L);

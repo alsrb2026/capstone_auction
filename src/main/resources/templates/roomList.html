@@ -14,7 +14,7 @@
     <div class="msg-list">
         <h4>[[${session.nickname}]]의 톡방</h4>
         <div th:each="room : ${list}">
-            <div class="chatListBox">
+            <div class="chatList_box">
                 <div type="button" class="chatRoom" th:onclick="|location.href='@{/room(roomId=${room.roomId})}'|">
                     <div class="roomDetails">
                         <div class="profile">

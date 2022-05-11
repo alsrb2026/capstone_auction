@@ -157,12 +157,41 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         const distance = today.getTime() - regisDay.getTime();
         const time = Math.floor(period * 60 * 1000 * 60);
 
-        if(distance >= time){
+        if(distance > time){
             document.getElementById("buyButton").disabled = true;
             document.getElementById("bidButton").disabled = true;
         }
-        else{
+        else if(distance == time){
 
+            var form = {
+                id: [[${form.id}]],
+                postUserId: [[${form.postUserId}]],
+                postUserName: [[${form.postUserName}]],
+                title: [[${form.title}]],
+                contents: [[${form.contents}]],
+                productName: [[${form.productName}]],
+                category: [[${form.category}]],
+                view: [[${form.view}]],
+                startBid: [[${form.startBid}]],
+                winningBid: [[${form.winningBid}]],
+                unitBid: [[${form.unitBid}]],
+                nextBid: [[${form.nextBid}]],
+                regisTime: [[${form.regisTime}]],
+                auctionPeriod: [[${form.auctionPeriod}]],
+                status: [[${form.status}]],
+                currentBidId: [[${form.currentBidId}]]
+            };
+            $.ajax({
+                type: "POST",
+                url: "/post/timeExpired",
+                data: form,
+                success: function(res){
+
+                },
+                error: function(){
+                    alert("입찰 실패");
+                }
+            });
         }
     }
     function bid(){
