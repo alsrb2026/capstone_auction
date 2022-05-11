@@ -76,7 +76,7 @@
         <a href="roomlist"><img class="icon" src="images/chat.png"/>채팅 목록</a>
       </div>
       <div class="loginbox">
-        <a sec:authorize="isAuthenticated()">
+        <a class="welcome" sec:authorize="isAuthenticated()">
          <td th:text="|${session.nickname}님, 환영합니다.|"></td>
         </a>
         <a sec:authorize="isAnonymous()">

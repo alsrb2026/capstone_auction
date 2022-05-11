@@ -24,6 +24,9 @@
   width: 450px;
   padding: 10px;
 }
+.price-box div{
+  width: 33%;
+}
 .form-groups{
   width: 100%;
   height: 50px;

@@ -3,6 +3,9 @@
   top: 5px;
   right: 20px;
 }
+.welcome{
+  margin-right: 20px;
+}
 .icon{
 
   position: relative;
@@ -190,7 +193,8 @@
     width: 30vw;
     height: 50px;
     border: 1px solid rgb(213, 213, 213);
-    padding-left: 20px
+    padding-left: 20px;
+    font-size: 20px;
   }
   .search-btn{
     display: inline;
