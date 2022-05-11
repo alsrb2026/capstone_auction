@@ -17,14 +17,33 @@
 .search-form{
   height: 50px;
 }
+
 .product-box{
-  background: aliceblue;
   height: 400px;
+  padding: 10px;
+}
+.icon{
+  position: relative;
+  width: 20px;
+  height: 20px;
+  top: 2px;
+  right: 5px;
+  margin-left: 5px;
+}
+.nav-banner{
+  display: flex;
+  height: 50px;
+}
+.nav-banner a{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
 }
 .product-list{
   display: grid;
   grid-template-columns: 100%;
-  gap: 20px;
+  gap: 20px 40px;
   margin-bottom: 30px;
 }
 .product-img{
@@ -45,7 +64,17 @@
 .p-title{
   font-size: 25px;
 }
-.name{
+.top-box{
+  width: 100%;
+  border-bottom: solid 1px black;
+  padding-left: 10px;
+}
+.nav-box{
+  width: 100%;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 @media (min-width: 768px) {
 .product-list{
