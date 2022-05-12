@@ -45,6 +45,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 <div class="product-title form-groups">
                     <div th:text="*{title}"></div>
                     <input type="hidden" th:field="*{title}">
+                    <input type="hidden" th:field="*{view}">
                 </div>
                 <div class="form-groups">
                     <div class="productName">
@@ -87,12 +88,12 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     <input type="hidden" th:field="*{status}">
                 </div>
                 <div class="regisTime form-groups">
-                    올린시간 : <div id="regisTime" th:text="*{#dates.format(regisTime, 'yyyy-MM-dd HH:mm')}"></div>
+                    마감 기한 : <div id="regisTime"></div>
                     <input type="hidden" th:field="*{regisTime}">
                 </div>
                 <div style="display:flex; align-items:center">
                     <div class="bid-btn">
-                        <button type="submit" id='bidButton' th:if="${form.status == '입찰 중'}" onclick="bid()">입찰하기</button>
+                        <button type="submit" id='bidButton' th:if="${form.status == '입찰 중' && form.postUserId != session.id}" onclick="bid()">입찰하기</button>
                         <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
                     </div>
                     <div class="edit-box">
@@ -105,7 +106,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             </form>
         <form action="/auction/buy" method="post">
             <input type="hidden" th:field="${form.id}">
-            <button class="buy-btn" id='buyButton' type="submit" th:if="${form.status == '입찰 중'}" onclick="buy()">즉시 구매</button>
+            <button class="buy-btn" id='buyButton' type="submit" th:if="${form.status == '입찰 중' && form.postUserId != session.id}" onclick="buy()">즉시 구매</button>
             <button class="buy-btn" type="submit" th:if="${form.status != '입찰 중'}" onclick="buy()" disabled="disabled">즉시 구매</button>
         </form>
         </div>
@@ -115,13 +116,23 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 <script th:inline="javascript">
     const period = [[${form.auctionPeriod}]];
     const status = [[${form.status}]];
-    const regisTime = [[${form.regisTime}]];
-
+    var regisTime = new Date([[${form.regisTime}]]);
 
     /*<![CDATA[*/
     var postUserName =  [[${postUserName}]];
     var loginUsername = [[${loginName}]];
     /*]]>*/
+
+    var regisDate = new Date(regisTime.getTime() + period * 1000 * 60 * 60);
+    var expiredDate;
+    expiredDate = " " + regisDate.getFullYear() + "-" + (regisDate.getMonth() + 1) + "-" + regisDate.getDate() + " ";
+
+    var hours = Math.floor((regisDate.getTime() % (1000*60*60*24))/(1000*60*60));
+    var minutes = Math.floor((regisDate.getTime() % (1000*60*60))/(1000*60));
+
+    expiredDate += hours + ":" + minutes;
+
+    document.getElementById("regisTime").innerText = expiredDate;
 
     //게시글 작성 사용자면 입찰하기, 즉시구매 버튼 없애기
     if(postUserName===loginUsername) {
