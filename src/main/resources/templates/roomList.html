@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <script src="/webjars/jquery/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/chat.css" />
 <head>
 </head>
 <body>
@@ -10,47 +11,76 @@
 <br/>
 <br/>
 
-<div class="msg-container">
-    <div class="msg-list">
-        <h4>[[${session.nickname}]]의 톡방</h4>
-        <div th:each="room : ${list}">
-            <div class="chatList_box">
-                <div type="button" class="chatRoom" th:onclick="|location.href='@{/room(roomId=${room.roomId})}'|">
-                    <div class="roomDetails">
-                        <div class="profile">
-                            <div th:if="${room.regisName == session.nickname}">
-                                <h5>[[${room.buyerName}]]님과의 채팅방</h5>
-                            </div>
-                            <div th:if="${room.buyerName == session.nickname}">
-                                <h5>[[${room.regisName}]]님과의 채팅방</h5>
-                            </div>
-                            <div th:each="unRead : ${unReadMsgList}">
-                                <div th:if="${unRead.roomId == room.roomId}">
-                                    <div th:if="${unRead.count != 0}">
-                                        <h6>읽지 않은 채팅 메시지 : [[${unRead.count}]]</h6>
+    <div class="msg-container">
+        <div class="messaging">
+            <div class="inbox_msg">
+                <div class="inbox_people">
+                    <div class="headind_srch">
+                        <div class="user_header">
+                            <h4>[[${session.nickname}]] 채팅방</h4>
+                        </div>
+                    </div>
+
+                    <div class="inbox_chat">
+                        <div th:each="room : ${list}">
+                            <div class="chatListBox${room.roomId} chatListBox" >
+                                <div type="button" class="chatList" th:roomId="${room.roomId}">
+                                    <div class="roomDetails">
+                                        <div class="profile">
+                                            <div th:if="${room.regisName == session.nickname}">
+                                                <h5>[[${room.buyerName}]]님과의 채팅방</h5>
+                                            </div>
+                                            <div th:if="${room.buyerName == session.nickname}">
+                                                <h5>[[${room.regisName}]]님과의 채팅방</h5>
+                                            </div>
+                                            <div th:each="unRead : ${unReadMsgList}">
+                                                <div th:if="${unRead.roomId == room.roomId}">
+                                                    <div th:if="${unRead.count != 0}">
+                                                        <h6>읽지 않은 채팅 메시지 : [[${unRead.count}]]</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="chat">
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="chat">
+                    </div>
+                </div>
 
-                        </div>
+                <div class="mesgs">
+                    <div class="msg_history" name="contentList">
+
+                    </div>
+                    <div class="send_message">
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 <script th:inline="javascript">
     $(function(){
         var id = [[${session.id}]];
         var username = [[${session.nickname}]];
-        MessageList(username);
     })
 
-    function MessageList(username){
+    $('.chatList').on('click', function(){
+        var roomId = $(this).attr('roomId');
+        console.log(roomId);
+        $.ajax({
+            type: "GET",
+            url: "/room/show",
+            data: { "roomId": roomId },
+            success: function(data){
+                console.log(data);
+            }
+        });
 
-    }
+    });
 </script>
 </body>
 </html>

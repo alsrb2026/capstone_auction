@@ -12,8 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -79,8 +78,9 @@ public class RoomController {
     }
 
     //채팅방 조회
-    @GetMapping("/room")
-    public String getRoom(String roomId, Model model, HttpServletRequest request){
+    @ResponseBody
+    @GetMapping(value = "/room/show")
+    public String getRoom(@RequestParam("roomId") String roomId, Model model, HttpServletRequest request){
 
         HttpSession session = request.getSession();
         log.info("# get Chat Room, roomID : " + roomId);
@@ -98,10 +98,11 @@ public class RoomController {
             }
         } // 들어가려는 방의 메시지를 읽었다는 표시로 모든 메시지를 1로 표시해주고, 읽은 시간도 업데이트 해준다.
 
+
         model.addAttribute("room", chatRoomService.findChatRoomById(roomId));
         model.addAttribute("chatList", chatList);
 
-        return "room";
+        return "roomList";
     }
 
     // 채팅방 나가는 동시에 리스트에서 삭제
