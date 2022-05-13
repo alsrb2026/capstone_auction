@@ -261,6 +261,7 @@ public class PostController {
         form.setContents(post.getContents());
         form.setProductName(post.getProductName());
         form.setCategory(post.getCategory());
+        form.setView(post.getView());
         form.setStartBid(post.getStartBid());
         form.setWinningBid(post.getWinningBid());
         form.setUnitBid(post.getUnitBid());

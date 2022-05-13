@@ -85,15 +85,17 @@ public class RoomController {
         HttpSession session = request.getSession();
         log.info("# get Chat Room, roomID : " + roomId);
 
+        String name = (String)session.getAttribute("nickname");
         Date now = new Date();
         log.info("# read chat message : " + now);
-
 
         List<ChatMessage> chatList = chatMessageService.findChatMessages(roomId);
 
         for(int i=0;i<chatList.size();i++){
-            chatList.get(i).setRecvTime(now);
-            chatList.get(i).setCheckRead(1);
+            if(chatList.size() != 0 && name.equals(chatList.get(chatList.size() - 1).getReceiverName())){
+                chatList.get(i).setRecvTime(now);
+                chatList.get(i).setCheckRead(1);
+            }
         } // 들어가려는 방의 메시지를 읽었다는 표시로 모든 메시지를 1로 표시해주고, 읽은 시간도 업데이트 해준다.
 
         model.addAttribute("room", chatRoomService.findChatRoomById(roomId));
