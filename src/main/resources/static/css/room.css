@@ -1,0 +1,69 @@
+
+.mychat{
+  display: flex;
+  min-height: 50px;
+  margin: 10px 0;
+}
+.mychat span{
+  background: yellow;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 15px;
+  max-width: 45%;
+  word-break: break-all;
+}
+.notmychat{
+  display: flex;
+  justify-content: flex-end;
+  min-height: 50px;
+  margin: 10px 0;
+}
+.notmychat span{
+  background: grey;
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 15px;
+  max-width: 45%;
+  word-break: break-all;
+}
+.chat-box{
+  width: 80%;
+  height: 600px;
+  padding: 30px;
+  background: aliceblue;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.chat-list{
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+.chat-input-box{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+#msg{
+  width: 85%;
+  height: 40px;
+}
+#send{
+  width: 10%;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border: black 1px solid;
+}
+#exit{
+  width: 100px;
+  background: silver;
+}
