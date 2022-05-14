@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <script src="/webjars/jquery/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="/css/chat.css" />
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -11,7 +10,10 @@
             href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
             rel="stylesheet"
     />
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
     <link rel="stylesheet" type="text/css" href="/css/common.css" />
+    <link rel="stylesheet" type="text/css" href="/css/room.css" />
+    <link rel="stylesheet" type="text/css" href="/css/chat.css" />
 </head>
 <body>
 <div th:replace="fragments/bodyHeader :: bodyHeader"/>
@@ -29,7 +31,7 @@
                     <div class="inbox_chat">
                         <div th:each="room : ${list}">
                             <div class="chatListBox${room.roomId} chatListBox" >
-                                <div type="button" class="chatList" th:roomId="${room.roomId}">
+                                <div type="button" class="chatList" onclick="scroll();"th:roomId="${room.roomId}">
                                     <div class="roomDetails">
                                         <div class="profile">
                                             <div th:if="${room.regisName == session.nickname}">
@@ -56,7 +58,7 @@
                     </div>
                 </div>
 
-                <div class="mesgs">
+                <div class="chat-list">
                     <div class="msg_history" name="contentList">
                         <div id="msgList">
 
@@ -71,6 +73,7 @@
         </div>
     </div>
 <script th:inline="javascript">
+
 
     document.getElementById("msg").style.display = 'none';
     document.getElementById("send").style.display = 'none';
@@ -103,17 +106,27 @@
 
                 if(values.length != 0){
                     $.each(values, function(index, value){
-                        document.getElementById("msgList").innerText += value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + '\n';
+                        if (value.senderName == sender){
+                            $("#msgList").append("<div class='mychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
+                        }else{
+                            $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
+                        }
                     });
                 }
-
                 stomp.connect({}, function(){
                 console.log("server connected...");
                 stomp.subscribe("/sub/chat/room/" + roomId, function(chat){
                     var content = JSON.parse(chat.body);
                     var msgDate = sendMsgDate(content.sendTime);
-                    $("#msgList").append("<tr><td>" + content.senderName + ": " + content.message + " " + msgDate + "</td></tr>");
+                        if (content.senderName == sender){
+                            $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
+                        }else{
+                            $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
+                        }
+                scrollBottom();
                 })
+                scrollBottom();
+
             });
 
                 $('#msg').show();
@@ -153,6 +166,11 @@
 
         date = year + "-" + month + "-" + day + " " + hours + ":" + minutes;
         return date;
+    }
+    function scrollBottom(){
+
+        const objDiv = document.querySelector(".msg_history");
+        objDiv.scrollTop = objDiv.scrollHeight;
     }
 </script>
 </body>

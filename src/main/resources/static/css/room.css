@@ -5,8 +5,11 @@
   justify-content: flex-end;
   margin: 10px 0;
 }
+.inbox_msg{
+  display: flex;
+}
 .mychat span{
-  background: yellow;
+  background: #FFE61B;
   display: flex;
   align-items: center;
   padding: 5px;
@@ -20,7 +23,7 @@
   margin: 10px 0;
 }
 .notmychat span{
-  background: grey;
+  background: #fff;
   display: flex;
   align-items: center;
   padding: 5px;
@@ -39,17 +42,22 @@
   justify-content: space-between;
 }
 .chat-list{
-  height: 450px;
+  width: 60%;
+  height: 600px;
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+  background: #F7F7F7;
 }
 .chat-input-box{
   width: 100%;
+  padding: 5px;
   display: flex;
   justify-content: space-between;
 }
-
+.msg_history{
+  padding: 10px;
+}
 #msg{
   width: 85%;
   height: 40px;

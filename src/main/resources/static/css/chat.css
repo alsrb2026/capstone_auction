@@ -29,7 +29,6 @@ img{ max-width: 100%; }
 
 .inbox_msg{
 	border: 1px solid #f7f7f7;
-	border-radius: 15px;
 	clear: both;
 	overflow: hidden;
 }
