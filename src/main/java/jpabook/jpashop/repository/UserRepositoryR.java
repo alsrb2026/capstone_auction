@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,10 +27,11 @@ public class UserRepositoryR {
                 .getSingleResult();
     }
 
-    public UserEntity findByNickname(String nickname) {
-        return em.createQuery("select m from UserEntity m where m.nickname = :nickname", UserEntity.class)
+    public Optional<UserEntity> findByNickname(String nickname) {
+        List<UserEntity> user =  em.createQuery("select m from UserEntity m where m.nickname = :nickname", UserEntity.class)
                 .setParameter("nickname", nickname)
-                .getSingleResult();
+                .getResultList();
+        return user.stream().findAny();
     }
 
     @Transactional
