@@ -44,6 +44,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         th:action="@{/posts/new}"
         th:object="${form}"
         method="post"
+        enctype="multipart/form-data"
       >
         <div class="form-group">
 
@@ -69,6 +70,12 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             class="form-control"
             placeholder="제목을 입력하세요"
           />
+        </div>
+        <div class="form-group">
+
+          <input type="file" name="files">
+          <!-- 여기서 files는 controller에 @RequestPart MultipartFile files -->
+
         </div>
         <div class="form-group">
           <div th:for="price">내용</div>
