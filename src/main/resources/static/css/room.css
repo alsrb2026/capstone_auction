@@ -2,6 +2,7 @@
 .mychat{
   display: flex;
   min-height: 50px;
+  justify-content: flex-end;
   margin: 10px 0;
 }
 .mychat span{
@@ -15,7 +16,6 @@
 }
 .notmychat{
   display: flex;
-  justify-content: flex-end;
   min-height: 50px;
   margin: 10px 0;
 }
