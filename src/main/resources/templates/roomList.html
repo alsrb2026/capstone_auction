@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<script src="/webjars/jquery/jquery.min.js"></script>
-<link rel="stylesheet" type="text/css" href="/css/chat.css" />
 <head>
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/chat.css" />
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+            rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="/css/common.css" />
 </head>
 <body>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+<div th:replace="fragments/bodyHeader :: bodyHeader"/>
 
     <div class="msg-container">
         <div class="messaging">
@@ -53,20 +58,25 @@
 
                 <div class="mesgs">
                     <div class="msg_history" name="contentList">
+                        <div id="msgList">
 
+                        </div>
                     </div>
-                    <div class="send_message">
-
+                    <div class="chat-input-box">
+                        <input type="text" id="msg" class="form-control">
+                        <button id="send" class="btn btn-default">전송</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 <script th:inline="javascript">
-    $(function(){
-        var id = [[${session.id}]];
-        var username = [[${session.nickname}]];
-    })
+
+    document.getElementById("msg").style.display = 'none';
+    document.getElementById("send").style.display = 'none';
+    var sender = [[${session.nickname}]];
+    var receiver;
+    var roomId;
 
     $('.chatList').on('click', function(){
         var roomId = $(this).attr('roomId');
@@ -76,11 +86,74 @@
             url: "/room/show",
             data: { "roomId": roomId },
             success: function(data){
-                console.log(data);
+                $('.msg').empty();
+                values = data.chatList;
+
+                if(data.user1 == sender){
+                    receiver = data.user2;
+                }
+                else{
+                    receiver == data.user1;
+                }
+                roomId = data.roomId;
+
+                var socket = new SockJS("/stomp/chat");
+                var stomp = Stomp.over(socket);
+                var now;
+
+                if(values.length != 0){
+                    $.each(values, function(index, value){
+                        document.getElementById("msgList").innerText += value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + '\n';
+                    });
+                }
+
+                stomp.connect({}, function(){
+                console.log("server connected...");
+                stomp.subscribe("/sub/chat/room/" + roomId, function(chat){
+                    var content = JSON.parse(chat.body);
+                    var msgDate = sendMsgDate(content.sendTime);
+                    $("#msgList").append("<tr><td>" + content.senderName + ": " + content.message + " " + msgDate + "</td></tr>");
+                })
+            });
+
+                $('#msg').show();
+                $('#send').show();
+
+                $("#send").on("click", function(e){
+                    var msg = document.getElementById("msg");
+                    if(msg.value != null){
+                        now = new Date();
+                        stomp.send('/pub/chat/message', {}, JSON.stringify({
+                        chRoomId: roomId,
+                        senderName: sender,
+                        receiverName: receiver,
+                        sendTime: now,
+                        message: msg.value,
+                        checkRead: 0
+                        }));
+                    }
+                    else{
+                        alert("메세지를 입력하세요.");
+                    }
+            msg.value = "";
+        });
             }
         });
-
     });
+    function sendMsgDate(msgDate){
+        var date;
+        var time = new Date(msgDate);
+
+        var year = time.getFullYear();
+        var month = time.getMonth() + 1;
+        var day = time.getDate();
+
+        var hours = time.getHours();
+        var minutes = time.getMinutes();
+
+        date = year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+        return date;
+    }
 </script>
 </body>
 </html>
