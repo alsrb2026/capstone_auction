@@ -1,23 +1,31 @@
 package jpabook.jpashop.controller;
 
 import jpabook.jpashop.Form.PostForm;
+import jpabook.jpashop.domain.Files;
 import jpabook.jpashop.domain.Pagination;
 import jpabook.jpashop.domain.Post;
 import jpabook.jpashop.domain.UserEntity;
+import jpabook.jpashop.repository.FilesRepository;
 import jpabook.jpashop.repository.PostRepository;
 import jpabook.jpashop.repository.UserRepository;
 import jpabook.jpashop.service.ChatRoomService;
+import jpabook.jpashop.service.FilesService;
 import jpabook.jpashop.service.PostService;
 import jpabook.jpashop.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -33,6 +41,8 @@ public class PostController {
     private final UserRepository userRepository;
     private final UserService userService;
     private final ChatRoomService chatRoomService;
+    private final FilesService filesService;
+    private final FilesRepository filesRepository;
 
     @GetMapping("/posts/new")
     public String createForm(HttpServletRequest request, Model model) {
@@ -41,11 +51,10 @@ public class PostController {
     }
 
     @PostMapping("/posts/new")
-    public String create(@RequestParam String category, PostForm form) {
+    public String create(@RequestParam String category, PostForm form, HttpServletRequest request, @RequestPart MultipartFile files) throws Exception{
 
         Post post = new Post();
         SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = ((UserDetails) principal).getUsername();
 
@@ -56,8 +65,55 @@ public class PostController {
                 form.getStartBid(),Timestamp.valueOf(LocalDateTime.now()),form.getAuctionPeriod(),
                 "입찰 중" ,0L);
 
+        //이미지 업로드 코드
+        Files file = new Files();
+
+        String sourceFileName = files.getOriginalFilename();
+        String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
+        File destinationFile;
+        String destinationFileName;
+        String fileUrl = "C:/jpashop/jpashop/src/main/resources/static/images/";
+        do {
+            destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
+            destinationFile = new File(fileUrl + destinationFileName);
+        } while (destinationFile.exists());
+
+        destinationFile.getParentFile().mkdirs();
+        files.transferTo(destinationFile);
+
+        file.setFilename(destinationFileName);
+        file.setFileOriName(sourceFileName);
+        file.setFileurl(fileUrl);
+        filesService.save(file);
+        //
+        System.out.println("pmgt"+file.getFilename());
+        post.setFname(file.getFilename());
         postService.savePost(post);
         return "redirect:/";
+    }
+
+    @PostMapping("mung/fileinsert")
+    public String fileinsert(HttpServletRequest request, @RequestPart MultipartFile files) throws Exception{
+        Files file = new Files();
+
+        String sourceFileName = files.getOriginalFilename();
+        String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
+        File destinationFile;
+        String destinationFileName;
+        String fileUrl = "C:/jpashop/jpashop/src/main/resources/static/images/";
+        do {
+            destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
+            destinationFile = new File(fileUrl + destinationFileName);
+        } while (destinationFile.exists());
+
+        destinationFile.getParentFile().mkdirs();
+        files.transferTo(destinationFile);
+
+        file.setFilename(destinationFileName);
+        file.setFileOriName(sourceFileName);
+        file.setFileurl(fileUrl);
+        filesService.save(file);
+        return "redirect:/mung/insert";
     }
 
     @GetMapping("/posts")
@@ -270,6 +326,7 @@ public class PostController {
         form.setAuctionPeriod(post.getAuctionPeriod());
         form.setStatus(post.getStatus());
         form.setCurrentBidId(post.getCurrentBidId());
+        form.setFname(post.getFname());
 /*
         String nickname;
         String userId;
@@ -281,9 +338,17 @@ public class PostController {
             userId = userRepository.findById(form.getCurrentBidId()).get().getName();
         }
 */
+
+        //
+        //Files file = filesRepository.findByFno(4);
+//        String url = files.getFileurl();
+//        String filename = files.getFilename();
         model.addAttribute("form", form);
         model.addAttribute("postUserName",post.getPostUserName());
         model.addAttribute("loginName",name);
+        //System.out.println("zxc"+file.getFilename());
+        model.addAttribute("file", form.getFname());
+
 /*
         model.addAttribute("bidUserName", nickname);
         model.addAttribute("bidUserId", userId);

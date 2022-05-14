@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
+import java.util.Optional;
 
 
 @Controller
@@ -27,10 +26,12 @@ public class MemberController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -44,41 +45,32 @@ public class MemberController {
     }
 
     @PostMapping("/members/new")
-    public String create(@Valid UserForm form, BindingResult result, HttpServletRequest request, Model model){
+    public String create(@Valid UserForm form, BindingResult result, HttpServletRequest request, Model model) {
 
-        HttpSession session = request.getSession();
-        if(result.hasErrors()){
-            return "members/createMemberForm";
-        }
 
         String name = form.getId();
         String nickname = form.getNickname();
         String passwd = form.getPasswd();
 
-//        UserEntity dbUser = userRepositoryR.findByNickname(nickname);
-//        String dbNickname = dbUser.getNickname();
-//        System.out.println("dbNIckname = "+ dbNickname);
-//        if(dbNickname!=null){
-//            System.out.println("중복");
-//        } else {
-//            System.out.println("중복없음");
-//        }
+        //db에 유저가 이미 존재하면 정보 가져오기
+        Optional<UserEntity> dbUser = userRepositoryR.findByNickname(nickname);
 
-        //if(nickname.equals())
+        if (dbUser.isPresent()) { //닉네임 중복이면
+            String dbNickname = dbUser.get().getNickname();
+            System.out.println("dbNIckname = " + dbNickname);
+            model.addAttribute("memberForm", new UserForm());
+            return "alert";
+            //return "members/createMemberForm";
+        } else { //중복 없으면 회원정보 저장
+            UserEntity user = UserEntity.builder()
+                    .name(name)
+                    .nickname(nickname)
+                    .password(passwordEncoder.encode(passwd))
+                    .role("user")
+                    .build();
 
-        UserEntity user = UserEntity.builder()
-                .name(name)
-                .nickname(nickname)
-                .password(passwordEncoder.encode(passwd))
-                .role("user")
-                .build();
-
-        userRepositoryR.save(user);
-        return "home/loginPage";
+            userRepositoryR.save(user);
+            return "home/loginPage";
+        }
     }
-
-//    @GetMapping("/user-nicknames/{nickname}/exists")
-//    public ResponseEntity<Boolean> checkNicknameDuplicate(@PathVariable String nickname) {
-//        return ResponseEntity.ok(userService.checkNicknameDuplicate(nickname));
-//    }
 }

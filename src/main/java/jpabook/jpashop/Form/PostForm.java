@@ -25,6 +25,7 @@ public class PostForm {
     private int auctionPeriod; // 경매 기간 -> 12시간, 24시간, 36시간, 48시간
     private String status; // 상품 상태 -> 입찰 중, 낙찰 완료, 입찰 종료
     private Long currentBidId; // 현재 입찰한 사용자 id
+    private String fname;
 
     private String time; //작성 시간
 

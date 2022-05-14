@@ -12,16 +12,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 
+import javax.print.attribute.HashPrintJobAttributeSet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -79,8 +78,9 @@ public class RoomController {
     }
 
     //채팅방 조회
-    @GetMapping("/room")
-    public String getRoom(String roomId, Model model, HttpServletRequest request){
+    @ResponseBody
+    @GetMapping(value = "/room/show")
+    public Map<String, Object> getRoom(@RequestParam("roomId") String roomId, Model model, HttpServletRequest request, HttpServletResponse response){
 
         HttpSession session = request.getSession();
         log.info("# get Chat Room, roomID : " + roomId);
@@ -89,6 +89,7 @@ public class RoomController {
         Date now = new Date();
         log.info("# read chat message : " + now);
 
+        ChatRoom chatRoom = chatRoomService.findChatRoomById(roomId);
         List<ChatMessage> chatList = chatMessageService.findChatMessages(roomId);
 
         for(int i=0;i<chatList.size();i++){
@@ -98,10 +99,17 @@ public class RoomController {
             }
         } // 들어가려는 방의 메시지를 읽었다는 표시로 모든 메시지를 1로 표시해주고, 읽은 시간도 업데이트 해준다.
 
-        model.addAttribute("room", chatRoomService.findChatRoomById(roomId));
-        model.addAttribute("chatList", chatList);
+        Map<String, Object> mv = new HashMap<>();
 
-        return "room";
+        String user1 = chatRoom.getBuyerName();
+        String user2 = chatRoom.getRegisName();
+
+        mv.put("chatList", chatList);
+        mv.put("roomId", chatRoom.getRoomId());
+        mv.put("user1", user1);
+        mv.put("user2", user2);
+
+        return mv;
     }
 
     // 채팅방 나가는 동시에 리스트에서 삭제
