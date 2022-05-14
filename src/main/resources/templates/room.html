@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-        <div  class="chat-input-box">
+        <div class="chat-input-box">
             <input type="text" id="msg" class="form-control">
             <button id="send" class="btn btn-default">전송</button>
         </div>
@@ -97,22 +97,6 @@
 
         date = year + ":" + minutes;
         return date;
-    }
-
-    function getCookie(cookieName){
-        cookieName = cookieName + '=';
-        var cookieData = document.cookie;
-        var start = cookieData.indexOf(cookieName);
-        var value = '';
-        if(start != -1){
-            start += cookieName.length;
-            var end = cookieData.indexOf(';', start);
-            if(end == -1){
-                end = cookieData.length;
-            }
-            value = cookieData.substring(start, end);
-        }
-        return unescape(value);
     }
 </script>
 </html>
