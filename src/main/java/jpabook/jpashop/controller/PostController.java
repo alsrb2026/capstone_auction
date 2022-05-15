@@ -72,7 +72,7 @@ public class PostController {
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
         File destinationFile;
         String destinationFileName;
-        String fileUrl = "C:/jpashop/jpashop/src/main/resources/static/images/";
+        String fileUrl = "C:/jpashop/jpashop/photo/";
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
             destinationFile = new File(fileUrl + destinationFileName);
@@ -80,13 +80,11 @@ public class PostController {
 
         destinationFile.getParentFile().mkdirs();
         files.transferTo(destinationFile);
-
         file.setFilename(destinationFileName);
         file.setFileOriName(sourceFileName);
         file.setFileurl(fileUrl);
         filesService.save(file);
-        //
-        System.out.println("pmgt"+file.getFilename());
+        //System.out.println("pmgt"+file.getFilename());
         post.setFname(file.getFilename());
         postService.savePost(post);
         return "redirect:/";
@@ -100,7 +98,7 @@ public class PostController {
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
         File destinationFile;
         String destinationFileName;
-        String fileUrl = "C:/jpashop/jpashop/src/main/resources/static/images/";
+        String fileUrl = "C:/jpashop/jpashop/photo/";
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
             destinationFile = new File(fileUrl + destinationFileName);
@@ -128,13 +126,10 @@ public class PostController {
         int startIndex = pagination.getStartIndex();
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
-
         List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
-
-
         return "posts/postList";
     }
 

@@ -52,10 +52,7 @@
       <div class="product-list">
         <div class="product-box" th:each="board : ${boardList}">
           <div style="display: flex; justify-content: center">
-            <img
-              class="product-img"
-              src="https://www.missioninfra.net/img/noimg/noimg_4x3.gif"
-            />
+            <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
           </div>
           <div class="product-info">
             <div>

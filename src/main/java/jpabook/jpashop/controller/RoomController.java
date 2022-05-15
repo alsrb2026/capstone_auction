@@ -8,15 +8,14 @@ import jpabook.jpashop.service.ChatMessageService;
 import jpabook.jpashop.service.ChatRoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-
-import javax.print.attribute.HashPrintJobAttributeSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -98,7 +97,6 @@ public class RoomController {
                 chatList.get(i).setCheckRead(1);
             }
         } // 들어가려는 방의 메시지를 읽었다는 표시로 모든 메시지를 1로 표시해주고, 읽은 시간도 업데이트 해준다.
-
         Map<String, Object> mv = new HashMap<>();
 
         String user1 = chatRoom.getBuyerName();
