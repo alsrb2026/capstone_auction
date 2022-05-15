@@ -21,6 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/resources/static/css/**", "/css/**", "/fonts/**", "/js/**", "/less/**", "/scss/**", "/images/**", "/resources/static/images/**", "/resources/static/js/**",  "/webjars/**");
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http

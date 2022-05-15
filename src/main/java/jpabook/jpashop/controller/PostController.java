@@ -72,7 +72,7 @@ public class PostController {
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
         File destinationFile;
         String destinationFileName;
-        String fileUrl = "C:/jpashop/jpashop/src/main/resources/static/images/";
+        String fileUrl = "C:/jpashop/jpashop/photo/";
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
             destinationFile = new File(fileUrl + destinationFileName);
@@ -85,8 +85,7 @@ public class PostController {
         file.setFileOriName(sourceFileName);
         file.setFileurl(fileUrl);
         filesService.save(file);
-        //
-        System.out.println("pmgt"+file.getFilename());
+        //System.out.println("pmgt"+file.getFilename());
         post.setFname(file.getFilename());
         postService.savePost(post);
         return "redirect:/";
@@ -100,7 +99,7 @@ public class PostController {
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
         File destinationFile;
         String destinationFileName;
-        String fileUrl = "C:/jpashop/jpashop/src/main/resources/static/images/";
+        String fileUrl = "C:/jpashop/jpashop/photo/";
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
             destinationFile = new File(fileUrl + destinationFileName);
