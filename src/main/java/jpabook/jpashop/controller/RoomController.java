@@ -111,13 +111,13 @@ public class RoomController {
     }
 
     // 채팅방 나가는 동시에 리스트에서 삭제
-    @PostMapping("/exitRoom")
-    public String exit(ChatRoom chatRoom, HttpServletRequest request){
+    @PostMapping(value = "/room/exit")
+    public String exit(String roomId, HttpServletRequest request){
 
         HttpSession session = request.getSession();
         Long id = (Long)session.getAttribute("id"); // 채팅방 나가려고 하는 사용자의 id
 
-        chatRoomService.exitChatRoom(chatRoom.getRoomId(), id);
+        chatRoomService.exitChatRoom(roomId, id);
 
         return "home/home";
     }

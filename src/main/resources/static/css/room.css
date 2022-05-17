@@ -72,6 +72,11 @@
   border: black 1px solid;
 }
 #exit{
-  width: 100px;
-  background: silver;
+  width: 10%;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border: black 1px solid;
 }

@@ -48,9 +48,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="chat">
-
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -67,6 +64,7 @@
                     <div class="chat-input-box">
                         <input type="text" id="msg" class="form-control">
                         <button id="send" class="btn btn-default">전송</button>
+                        <button id="exit" class="btn btn-default">나가기</button>
                     </div>
                 </div>
             </div>
@@ -74,9 +72,10 @@
     </div>
 <script th:inline="javascript">
 
-
     document.getElementById("msg").style.display = 'none';
     document.getElementById("send").style.display = 'none';
+    document.getElementById("exit").style.display = 'none';
+
     var sender = [[${session.nickname}]];
     var receiver;
     var roomId;
@@ -89,7 +88,7 @@
             url: "/room/show",
             data: { "roomId": roomId },
             success: function(data){
-                $('.msg').empty();
+                $('#msgList').empty();
                 values = data.chatList;
 
                 if(data.user1 == sender){
@@ -126,15 +125,15 @@
                 scrollBottom();
                 })
                 scrollBottom();
-
             });
 
                 $('#msg').show();
                 $('#send').show();
+                $('#exit').show();
 
                 $("#send").on("click", function(e){
                     var msg = document.getElementById("msg");
-                    if(msg.value != null){
+                    if(msg.value != ""){
                         now = new Date();
                         stomp.send('/pub/chat/message', {}, JSON.stringify({
                         chRoomId: roomId,
@@ -148,8 +147,28 @@
                     else{
                         alert("메세지를 입력하세요.");
                     }
-            msg.value = "";
-        });
+                    msg.value = "";
+                });
+                $("#exit").on("click", function(e){
+                    if(!confirm("방을 나가시겠습니까?")){
+                        event.preventDefault();
+                    }
+                    else{
+                        stomp.disconnect();
+                        $('#msg').hide();
+                        $('#send').hide();
+                        $('#exit').hide();
+                        $('#msgList').empty();
+                        $.ajax({
+                            type: "POST",
+                            url: "/room/exit",
+                            data: { "roomId": roomId },
+                            success: function(data){
+                                location.reload();
+                            }
+                        });
+                    }
+                });
             }
         });
     });
