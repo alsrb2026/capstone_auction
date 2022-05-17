@@ -48,9 +48,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="chat">
-
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -67,6 +64,7 @@
                     <div class="chat-input-box">
                         <input type="text" id="msg" class="form-control">
                         <button id="send" class="btn btn-default">전송</button>
+                        <button id="exit" class="btn btn-default" onclick="exitRoom()">나가기</button>
                     </div>
                 </div>
             </div>
@@ -74,9 +72,10 @@
     </div>
 <script th:inline="javascript">
 
-
     document.getElementById("msg").style.display = 'none';
     document.getElementById("send").style.display = 'none';
+    document.getElementById("exit").style.display = 'none';
+
     var sender = [[${session.nickname}]];
     var receiver;
     var roomId;
@@ -131,10 +130,11 @@
 
                 $('#msg').show();
                 $('#send').show();
+                $('#exit').show();
 
                 $("#send").on("click", function(e){
                     var msg = document.getElementById("msg");
-                    if(msg.value != null){
+                    if(msg.value != ""){
                         now = new Date();
                         stomp.send('/pub/chat/message', {}, JSON.stringify({
                         chRoomId: roomId,
@@ -171,6 +171,12 @@
 
         const objDiv = document.querySelector(".msg_history");
         objDiv.scrollTop = objDiv.scrollHeight;
+    }
+
+    function exitRoom(){
+        if(confirm("방을 나가시겠습니까?")){
+            event.preventDefault();
+        }
     }
 </script>
 </body>
