@@ -212,11 +212,17 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
         if(aucId != regisId){
             if(aucId != currentBidId){
-                if(confirm("입찰하시겠습니까?")){
-                    alert("입찰에 성공했습니다");
+                if([[${form.unitBid}]] + [[${form.nextBid}]] > [[${form.winningBid}]]){
+                    alert("최대 입찰가격입니다.");
+                    event.preventDefault();
                 }
                 else{
-                    event.preventDefault();
+                    if(confirm("입찰하시겠습니까?")){
+                        alert("입찰에 성공했습니다");
+                    }
+                    else{
+                        event.preventDefault();
+                    }
                 }
             }
             else{
