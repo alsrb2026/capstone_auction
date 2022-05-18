@@ -47,6 +47,10 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     <input type="hidden" th:field="*{title}">
                     <input type="hidden" th:field="*{view}">
                 </div>
+                <div class="view">
+                    조회수 : <div th:text="*{view}"></div>
+                    <input type="hidden" th:field="*{view}">
+                </div>
                 <div class="form-groups">
                     <div class="productName">
                         상품명 : <div th:text="*{productName}"></div>

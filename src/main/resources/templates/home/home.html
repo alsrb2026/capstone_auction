@@ -35,15 +35,15 @@
           src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"
   ></script>
   <script>
-      $(document).ready(function () {
-        $(".slick-sample").slick({
-          autoplay: true,
-          autoplaySpeed: 3000,
-          prevArrow: $("#prevArrow"),
-          nextArrow: $("#nextArrow"),
-        });
+    $(document).ready(function () {
+      $(".slick-sample").slick({
+        autoplay: true,
+        autoplaySpeed: 3000,
+        prevArrow: $("#prevArrow"),
+        nextArrow: $("#nextArrow"),
       });
-    </script>
+    });
+  </script>
 </head>
 <body>
 <div class="container">
@@ -77,7 +77,7 @@
       </div>
       <div class="loginbox">
         <a class="welcome" sec:authorize="isAuthenticated()">
-         <td th:text="|${session.nickname}님, 환영합니다.|"></td>
+          <td th:text="|${session.nickname}님, 환영합니다.|"></td>
         </a>
         <a sec:authorize="isAnonymous()">
           <a class="loginbox-btn" th:href="@{/login}">로그인</a>
@@ -131,6 +131,27 @@
 
 
 
+<div class="container">
+  <div class="product-list">
+    <div class="product-box" th:each="board : ${boardList}">
+      <div class="product-info">
+        <div>
+              <span>조회수 : </span
+              ><span class="view" th:text="${board.view}"></span>
+        </div>
+        <div>
+              <span>상품명 : </span
+              ><span class="name" th:text="${board.productName}"></span>
+        </div>
+        <div>
+              <span>조회수 : </span
+              ><span class="view" th:text="${board.view}"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 
 <div class="sec_content">
   <div>
@@ -157,21 +178,21 @@
   const category = document.getElementById('category-box');
 
   posts.addEventListener('mouseover',function(){
-      category.style.display = 'flex';
-      posts.style.background = 'rgb(230, 230, 230)';
+    category.style.display = 'flex';
+    posts.style.background = 'rgb(230, 230, 230)';
   });
   category.addEventListener('mouseover',function(){
-      category.style.display = 'flex';
-      posts.style.background = 'rgb(230, 230, 230)';
+    category.style.display = 'flex';
+    posts.style.background = 'rgb(230, 230, 230)';
   });
 
   posts.addEventListener('mouseout',function(){
-      category.style.display = 'none';
-      posts.style.background = 'white';
+    category.style.display = 'none';
+    posts.style.background = 'white';
   });
   category.addEventListener('mouseout',function(){
-      category.style.display = 'none';
-      posts.style.background = 'white';
+    category.style.display = 'none';
+    posts.style.background = 'white';
   });
 
 </script>

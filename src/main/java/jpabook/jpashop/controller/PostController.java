@@ -47,6 +47,7 @@ public class PostController {
     @GetMapping("/posts/new")
     public String createForm(HttpServletRequest request, Model model) {
         model.addAttribute("form", new PostForm());
+
         return "posts/createPostForm";
     }
 
@@ -200,6 +201,7 @@ public class PostController {
     @GetMapping("post/{id}/edit")
     public String auctionPostForm(@PathVariable("id") Long itemId, Model model, HttpServletRequest request) {
 
+        System.out.println("yyy"+itemId); //OK
         PostForm form = new PostForm();
         Post post = postService.findOne(itemId);
         HttpSession session = request.getSession();
@@ -229,13 +231,15 @@ public class PostController {
         form.setCurrentBidId(post.getCurrentBidId());
         // 작성 시간
         model.addAttribute("form", form);
+        model.addAttribute("id",itemId);
+        System.out.println("xxx"+itemId);
         return "posts/updatePostForm";
     }
 
     @PostMapping("post/{id}/edit")
     public String auctionPost(@RequestParam(defaultValue = "1") int page, @PathVariable Long id, @ModelAttribute("form") PostForm form, Model model) {
-//        List<Post> posts = postService.findPosts();
-//        model.addAttribute("posts", posts);
+        System.out.println("yyyy"+id);
+
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
@@ -250,7 +254,6 @@ public class PostController {
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
-
 
         postService.updatePost(id, form.getTitle(),
                 form.getContents(), form.getProductName(), form.getCategory(), form.getStartBid()
@@ -306,10 +309,12 @@ public class PostController {
         // 현재 세션에 있는 사용자가 입찰을 해서 이 컨트롤러 함수로 들어온 것이므로 위 코드로 입찰자 id를 획득한다.
         // 아이디 중복이 없다는 가정하에
 
+        postService.viewPost(itemId);
+
         PostForm form = new PostForm();
         form.setId(post.getId());
         form.setPostUserId(post.getPostUserId());
-        form.setPostUserName(form.getPostUserName());
+        form.setPostUserName(post.getPostUserName());
         form.setTitle(post.getTitle());
         form.setContents(post.getContents());
         form.setProductName(post.getProductName());
@@ -340,6 +345,9 @@ public class PostController {
         //Files file = filesRepository.findByFno(4);
 //        String url = files.getFileurl();
 //        String filename = files.getFilename();
+
+
+
         model.addAttribute("form", form);
         model.addAttribute("postUserName",post.getPostUserName());
         model.addAttribute("loginName",name);
@@ -407,6 +415,7 @@ public class PostController {
 
         return "posts/postList";
     }
+
     @Transactional
     @PostMapping("/post/{id}/auction") // id에 해당하는 물품 입찰.
     public String auctionItem(@RequestParam(defaultValue = "1") int page, HttpServletRequest request,
@@ -437,7 +446,7 @@ public class PostController {
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
 
                     chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id
-                    , regisName, buyerName);
+                            , regisName, buyerName);
 
                     model.addAttribute("list", chatRoomService.findAllChatRooms(id));
                     model.addAttribute("connectedUserName", buyerName);
@@ -464,9 +473,9 @@ public class PostController {
                 post.setStatus("입찰 종료"); // 낙찰자 없이 종료
             }
         }
-        
+
         // 입찰 중(초기 상태), 낙찰됨(낙찰될 경우), 입찰 종료(시간 지나고 입찰자가 없을 경우) 이 3가지가 입찰 상태
-        
+
         int totalListCnt = postRepository.findAllCnt();
         System.out.println("test totalListCnt =" + totalListCnt);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
@@ -488,8 +497,8 @@ public class PostController {
     }
 
     public Post makePost(Post post, Long id, String name, String title, String contents, String productName,
-                   String category, int view, int startBid, int winningBid, int unitBid, int nextBid,
-                   Timestamp nowTime, int auctionPeriod, String status, Long currentBidId ){
+                         String category, int view, int startBid, int winningBid, int unitBid, int nextBid,
+                         Timestamp nowTime, int auctionPeriod, String status, Long currentBidId){
         post.setPostUserId(id); // 상품 등록한 사용자 id
         post.setPostUserName(name); // 상품 등록한 사용자 id(닉네임)
         post.setTitle(title);
@@ -505,6 +514,7 @@ public class PostController {
         post.setAuctionPeriod(auctionPeriod);
         post.setStatus(status); // 등록하면 바로 입찰 중인 상태가 될 것이기 때문에.
         post.setCurrentBidId(currentBidId);
+        post.setView(0);
 
         return post;
     }
