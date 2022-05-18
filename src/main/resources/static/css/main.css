@@ -166,6 +166,28 @@
 .slick-sample {
   width: 90%;
 }
+.top5{
+  display: flex;
+}
+.product-box{
+  display:flex;
+  flex-direction: column;
+  padding: 30px;
+  width: 33vw;
+
+}
+
+.product-img{
+  width: (33vw-30px);
+  height: (33vw-30px);
+  object-fit: contain;
+}
+.product-info{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
+}
 #prevArrow {
   background-image: url(/images/icon-backward.svg);
   left: 20px;
@@ -186,6 +208,9 @@
 .search-box, .search-btn{
   display: none;
 }
+.slick-sample2{
+  width: 200px;
+  }
 @media screen and (min-width: 960px) {
   .search-box {
     display: inline;
@@ -199,13 +224,14 @@
   }
   .search-btn{
     display: inline;
-      height: 50px;
-      width: 70px;
-      background-color: black;
-      border: none;
-      color: white;
-      position: relative;
-      top: -3px;
+    cursor: pointer;
+    position: relative;
+    top:9px;
+    right:52px;
+  }
+  .search-btn img{
+    width: 30px;
+    height: 30px;
   }
 }
 @media screen and (min-width: 600px) {

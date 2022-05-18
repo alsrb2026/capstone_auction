@@ -43,8 +43,8 @@
         nextArrow: $("#nextArrow"),
       });
     });
+
   </script>
-</head>
 <body>
 <div class="container">
   <div>
@@ -59,7 +59,7 @@
       <div class="search-from">
         <form action="/post/search" method="GET">
           <input class="search-box" name="keyword" type="text" placeholder="내가 찾는 도서, 전자기기">
-          <input type="submit" class="search-btn" value="검색">
+          <button class="search-btn"><img src="/images/search.png"/></button>
         </form>
       </div>
 
@@ -129,28 +129,21 @@
   </div>
 </div>
 
+<div class="top5">
+  <div class="product-box" th:each="board : ${boardList}">
+    <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
 
-
-<div class="container">
-  <div class="product-list">
-    <div class="product-box" th:each="board : ${boardList}">
-      <div class="product-info">
-        <div>
-              <span>조회수 : </span
-              ><span class="view" th:text="${board.view}"></span>
-        </div>
-        <div>
-              <span>상품명 : </span
-              ><span class="name" th:text="${board.productName}"></span>
-        </div>
-        <div>
-              <span>조회수 : </span
-              ><span class="view" th:text="${board.view}"></span>
-        </div>
-      </div>
-    </div>
+    <div class="product-info">
+            <span>
+                  <span>상품명 : </span
+                  ><span class="name" th:text="${board.productName}"></span>
+            </span>
+            <span>
+                  <span>조회수 : </span
+                  ><span class="view" th:text="${board.view}"></span>
+            </span>
+          </div>
   </div>
-</div>
 </div>
 
 <div class="sec_content">
@@ -195,7 +188,10 @@
     posts.style.background = 'white';
   });
 
-</script>
+
+
+
+    </script>
 <script th:inline="javascript">
 </script>
 </html>
