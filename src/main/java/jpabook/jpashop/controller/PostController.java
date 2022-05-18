@@ -72,7 +72,8 @@ public class PostController {
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
         File destinationFile;
         String destinationFileName;
-        String fileUrl = "C:/jpashop/jpashop/photo/";
+        String path = System.getProperty("user.dir");
+        String fileUrl = path+"/photo/";
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
             destinationFile = new File(fileUrl + destinationFileName);
@@ -98,7 +99,8 @@ public class PostController {
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
         File destinationFile;
         String destinationFileName;
-        String fileUrl = "C:/jpashop/jpashop/photo/";
+        String path = System.getProperty("user.dir");
+        String fileUrl = path+"/photo/";
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
             destinationFile = new File(fileUrl + destinationFileName);

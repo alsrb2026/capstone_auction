@@ -9,101 +9,133 @@
     ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
               crossorigin="anonymous">
         <!-- Custom styles for this template -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+                href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+                rel="stylesheet"
+        />
         <link href="/css/jumbotron-narrow.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/css/common.css" />
+        <link rel="stylesheet" type="text/css" href="/css/createPostForm.css" />
         <title>경매</title></head>
     <body>
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
         <div class="container">
-            <form th:action="@{/post/${id}/auction}" th:object="${form}" method="post">
+            <form th:action="@{/post/${id}/edit (id=${form.id})}" th:object="${form}" method="post">
                 <input type="hidden" th:field="*{id}" />
                 <div class="form-group">
-                    <select th:field="*{category}" class="form-control" id="category" onchange="handleOnChange(this)">
-                        카테고리
-                        <option value="도서">도서</option>
-                        <option value="학습자료">학습자료</option>
-                        <option value="전자기기">전자기기</option>
-                        <option value="생필품">생필품</option>
+
+                    <div>카테고리</div>
+                    <select
+                            th:field="*{category}"
+                            class="form-control"
+                            th:name="category"
+                            id="category"
+                            onchange="handleOnChange(this)"
+                    >
+                        <option th:selected="selected" th:value="book">도서</option>
+                        <option th:value="studyMaterial">학습자료</option>
+                        <option th:value="electronics">전자기기</option>
+                        <option th:value="daily">생필품</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label th:for="name">제목</label>
-                    <input type="text" th:field="*{title}" class="form-control" placeholder="이름을 입력하세요">
+                    <div th:for="name">제목</div>
+                    <input
+                            type="text"
+                            th:field="*{title}"
+                            class="form-control"
+                            placeholder="제목을 입력하세요"
+                    />
                 </div>
                 <div class="form-group">
-                    <label th:for="price">내용</label>
-                    <input type="text" th:field="*{contents}" class="form-control" placeholder="가격을 입력하세요">
+                    <input type="file" name="files">
+                    <!-- 여기서 files는 controller에 @RequestPart MultipartFile files -->
+
+                </div>
+                <div class="form-group" id="content">
+                    <div th:for="price">내용</div>
+                    <textarea
+                            th:field="*{contents}"
+                            maxlength="255"
+                            rows="5"
+                            class="form-control"
+                            placeholder="내용을 입력하세요"
+                    />
                 </div>
                 <div class="form-group">
-                    <label th:for="price">상품명</label>
-                    <input type="text" th:field="*{productName}" class="form-control" placeholder="가격을 입력하세요">
+                    <div th:for="price">상품명</div>
+                    <input
+                            type="text"
+                            th:field="*{productName}"
+                            class="form-control"
+                            placeholder="상품명을 입력하세요"
+                    />
                 </div>
                 <div class="form-group">
-                    <label th:for="price">시작가</label>
-                    <input type="text" th:field="*{startBid}" class="form-control" placeholder="가격을 입력하세요">
+                    <div th:for="price">시작가</div>
+                    <input
+                            type="text"
+                            th:field="*{startBid}"
+                            class="form-control"
+                            placeholder="시작 가격을 입력하세요"
+                    />
                 </div>
                 <div class="form-group">
-                    <label th:for="price">낙찰가</label>
-                    <input type="text" th:field="*{winningBid}" class="form-control" placeholder="가격을 입력하세요">
+                    <div th:for="price">즉시 낙찰가</div>
+                    <input
+                            type="text"
+                            th:field="*{winningBid}"
+                            class="form-control"
+                            placeholder="즉시 낙찰가를 입력하세요"
+                    />
                 </div>
                 <div class="form-group">
-                    <label th:for="price">입찰 단위</label>
-                    <input type="text" th:field="*{unitBid}" class="form-control" placeholder="가격을 입력하세요">
+                    <div th:for="price">입찰 단위</div>
+                    <select
+                            type="text"
+                            th:field="*{unitBid}"
+                            class="form-control"
+                            placeholder="입찰 단위을 입력하세요"
+                    >
+                        <option value="0" disabled selected>=====입찰 단위=====</option>
+                        <option th:value="100">100</option>
+                        <option th:value="500">500</option>
+                        <option th:value="1000">1000</option>
+                        <option th:value="5000">5000</option>
+                        <option th:value="10000">10000</option>
+                        <option th:value="100000">100000</option>
+                        <!-- 입찰단위 : 100, 500, 1000, 5000, 10000, 100000-->
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label th:for="price">현재 입찰가</label>
-                    <input type="text" th:field="*{nextBid}" class="form-control" placeholder="가격을 입력하세요">
+                    <div th:for="price">경매 기간</div>
+                    <select
+                            type="text"
+                            th:field="*{auctionPeriod}"
+                            class="form-control"
+                            placeholder="기간을 입력하세요"
+                    >
+                        <option value="0" disabled selected>=====경매 기간=====</option>
+                        <option th:value="24">1일</option>
+                        <option th:value="48">2일</option>
+                        <option th:value="72">3일</option>
+                    </select>
                 </div>
-                <div class="form-group">
-                    <label th:for="price">경매 기간</label>
-                    <input type="text" th:field="*{auctionPeriod}" class="form-control" placeholder="가격을 입력하세요">
+                <div class="form-group" style="display: none">
+                    <div th:for="price">사용자 아이디</div>
+                    <input
+                            type="text"
+                            th:field="*{postUserName}"
+                            class="form-control"
+                            placeholder="기간을 입력하세요"
+                    />
                 </div>
-                <div class="form-group">
-                    <label th:for="price">상품 상태</label>
-                    <input type="text" th:field="*{status}" class="form-control" placeholder="가격을 입력하세요">
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">수정하기</button>
             </form>
             <br/>
         </div>
-        <div class="form-group">
-            <label th:for="name">제목</label>
-            <input type="text" th:field="*{title}" class="form-control" placeholder="이름을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label th:for="price">내용</label>
-            <input type="text" th:field="*{contents}" class="form-control" placeholder="가격을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label th:for="price">상품명</label>
-            <input type="text" th:field="*{productName}" class="form-control" placeholder="가격을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label th:for="price">시작가</label>
-            <input type="text" th:field="*{startBid}" class="form-control" placeholder="가격을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label th:for="price">낙찰가</label>
-            <input type="text" th:field="*{winningBid}" class="form-control" placeholder="가격을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label th:for="price">입찰 단위</label>
-            <input type="text" th:field="*{unitBid}" class="form-control" placeholder="가격을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label th:for="price">현재 입찰가</label>
-            <input type="text" th:field="*{nextBid}" class="form-control" placeholder="가격을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label th:for="price">경매 기간</label>
-            <input type="text" th:field="*{auctionPeriod}" class="form-control" placeholder="가격을 입력하세요">
-        </div>
-        <div class="form-group">
-            <label th:for="price">상품 상태</label>
-            <input type="text" th:field="*{status}" class="form-control" placeholder="가격을 입력하세요">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    <br/>
-    <div th:replace="fragments/footer :: footer" />
 </div>
 </body>
 </html>
