@@ -60,10 +60,6 @@
                   <span class="p-title" th:text="${board.title}"></span>
               </div>
               <div>
-                <span>조회수 : </span
-                ><span class="view" th:text="${board.view}"></span>
-              </div>
-              <div>
                 <span>상품명 : </span
                 ><span class="name" th:text="${board.productName}"></span>
               </div>
@@ -75,16 +71,19 @@
                 <span>즉시구매가 : </span
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
               </div>
-              <div th:text="${board.auctionPeriod}"></div>
               <div>
                 <span>상태 : </span
                 ><span class="status" th:text="${board.status}"></span>
               </div>
               <div>
-                <span>등록기간 : </span
+                <span>마감기한 : </span
                 ><span
                   th:text="${#dates.format(board.regisTime, 'MM/dd HH:mm')}"
                 ></span>
+              </div>
+              <div>
+                <span>조회수 : </span
+                ><span class="view" th:text="${board.view}"></span>
               </div>
             </div>
           </a>
