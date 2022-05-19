@@ -31,6 +31,11 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             />도전경매</a
             >
         </div>
+        <div id="list_nav">
+            <a href="/posts">
+                목록 보기
+            </a>
+        </div>
     </div>
         <form class= product-info th:object="${form}" method="post">
 
@@ -45,6 +50,10 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 <div class="product-title form-groups">
                     <div th:text="*{title}"></div>
                     <input type="hidden" th:field="*{title}">
+                    <input type="hidden" th:field="*{view}">
+                </div>
+                <div class="view">
+                    조회수 : <div th:text="*{view}"></div>
                     <input type="hidden" th:field="*{view}">
                 </div>
                 <div class="form-groups">

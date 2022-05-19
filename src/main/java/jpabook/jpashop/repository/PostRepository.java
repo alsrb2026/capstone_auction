@@ -2,6 +2,7 @@ package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Post;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -24,15 +25,18 @@ public class PostRepository {
     }
     @Transactional
     public void delete(Long id) {
-        //em.createQuery("delete i from Post i where post_id=:id ");
         Post dPost = em.find(Post.class,id);
         em.remove(dPost);
     }
 
+    @Transactional
+    @Modifying(clearAutomatically = true)
     public void view(Long id) {
-        Post post = em.find(Post.class,id);
-        em.createQuery("update Post p SET p.view = p.view + 1 where p.id = :id", Post.class)
-                .setParameter("id", id);
+        em.createQuery(
+                        "update Post p SET p.view = p.view + 1 where p.id= :id")
+                .setParameter("id", id)
+                .executeUpdate();
+        em.clear();
     }
 
     public Post findOne(Long id) {
@@ -71,7 +75,7 @@ public class PostRepository {
                 .setMaxResults(pageSize)
                 .getResultList();
     }
-//내 게시글인지 어떻게 판단할래? JOIN해서? 아니면 id값? -> Post에 postUserId필드가 있음 이거 활용
+    //내 게시글인지 어떻게 판단할래? JOIN해서? 아니면 id값? -> Post에 postUserId필드가 있음 이거 활용
     public List<Post> findMyListPaging(Long myId) {
         System.out.println("id테스트"+myId);
         return em.createQuery("select b from Post b where b.postUserId = :myId", Post.class)
@@ -79,7 +83,4 @@ public class PostRepository {
                 .getResultList();
     }
 
-    public void viewTop5(Long id) {
-        //return em.createQuery("select b from Post b order by view desc limit 5", Post.class)
-    }
 }

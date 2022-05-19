@@ -3,7 +3,6 @@ package jpabook.jpashop.service;
 import jpabook.jpashop.domain.Post;
 import jpabook.jpashop.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +25,7 @@ public class PostService {
                            String productName, String category, int startBid,
                            int winningBid, int unitBid, int nextBid,
                            int auctionPeriod, String status, Long currentBidId ) {
+        System.out.println("updatett"+id);
         Post post = postRepository.findOne(id);
         post.setTitle(title);
         post.setContents(contents);
@@ -40,6 +40,9 @@ public class PostService {
         post.setCurrentBidId(currentBidId);
     } // 만약 입찰한 유저가 있고, currentBidId를 update할 때, 같이 넣지 않으면 입찰한 유저 정보가 사라져서 추가함.
 
+
+
+
     @Transactional // post id, 현재 입찰한 사용자 id, 입찰 상태, 현재 입찰 금액만 업데이트.
     public void auctionPost(Long id, int currentBid, String status, Long currentBidId){
         Post post = postRepository.findOne(id);
@@ -51,7 +54,6 @@ public class PostService {
     }
 
     @Transactional
-    @Modifying
     public void viewPost(Long id) {
         postRepository.view(id);
     }
