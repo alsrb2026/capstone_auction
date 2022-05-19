@@ -35,3 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
+/photo/
+/src/main/java/jpabook/jpashop/security/config/DatabaseConfig.java
