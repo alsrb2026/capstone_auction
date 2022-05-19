@@ -112,6 +112,7 @@
   <button type="button" aria-label="다음" id="nextArrow"></button>
 </div>
 
+
 <div class="fir_content">
   <div class="l-fir_content">
     <div class="l-fir_content-text">
@@ -129,22 +130,6 @@
   </div>
 </div>
 
-<div class="top5">
-  <div class="product-box" th:each="board : ${boardList}">
-    <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
-
-    <div class="product-info">
-            <span>
-                  <span>상품명 : </span
-                  ><span class="name" th:text="${board.productName}"></span>
-            </span>
-            <span>
-                  <span>조회수 : </span
-                  ><span class="view" th:text="${board.view}"></span>
-            </span>
-          </div>
-  </div>
-</div>
 
 <div class="sec_content">
   <div>
@@ -163,6 +148,26 @@
     <div>
       <img class="r-sec_content-img" src="/images/pic2.png" />
     </div>
+  </div>
+</div>
+
+<div class="top5">
+  <div class="product-box" th:each="board : ${boardList}">
+
+    <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
+      <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
+
+      <div class="product-info">
+              <span>
+                    <span>상품명 : </span
+                    ><span class="name" th:text="${board.productName}"></span>
+              </span>
+        <span>
+                    <span>조회수 : </span
+                    ><span class="view" th:text="${board.view}"></span>
+              </span>
+      </div>
+    </a>
   </div>
 </div>
 </body>

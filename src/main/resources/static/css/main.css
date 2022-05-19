@@ -168,25 +168,26 @@
 }
 .top5{
   display: flex;
+  background: aliceblue;
 }
 .product-box{
   display:flex;
   flex-direction: column;
   padding: 30px;
-  width: 33vw;
+  width: 20vw;
 
 }
 
 .product-img{
-  width: (33vw-30px);
-  height: (33vw-30px);
+  width: calc(20vw - 30px);
+  height: calc(20vw - 30px);
   object-fit: contain;
 }
 .product-info{
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  height: 30px;
+  height: 50px;
 }
 #prevArrow {
   background-image: url(/images/icon-backward.svg);

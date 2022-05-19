@@ -22,7 +22,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String getHome(HttpServletRequest request, Model model) {
-        List<Post> posts = entityRepository.findTop3ByOrderByViewDesc();
+        List<Post> posts = entityRepository.findTop5ByOrderByViewDesc();
         for(Post post : posts){
             System.out.println(post.getTitle());
             System.out.println(post.getView());

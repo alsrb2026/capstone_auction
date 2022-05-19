@@ -51,43 +51,43 @@
     <div class="container">
       <div class="product-list">
         <div class="product-box" th:each="board : ${boardList}">
-          <div style="display: flex; justify-content: center">
-            <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
-          </div>
-          <div class="product-info">
-            <div>
-              <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
-                <span class="p-title" th:text="${board.title}"></span>
-              </a>
+          <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
+            <div style="display: flex; justify-content: center">
+              <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
             </div>
-            <div>
-              <span>조회수 : </span
-              ><span class="view" th:text="${board.view}"></span>
+            <div class="product-info">
+              <div>
+                  <span class="p-title" th:text="${board.title}"></span>
+              </div>
+              <div>
+                <span>조회수 : </span
+                ><span class="view" th:text="${board.view}"></span>
+              </div>
+              <div>
+                <span>상품명 : </span
+                ><span class="name" th:text="${board.productName}"></span>
+              </div>
+              <div>
+                <span>현재가 : </span
+                ><span class="nextBid" th:text="${board.nextBid}"></span>
+              </div>
+              <div>
+                <span>즉시구매가 : </span
+                ><span class="winningBid" th:text="${board.winningBid}"></span>
+              </div>
+              <div th:text="${board.auctionPeriod}"></div>
+              <div>
+                <span>상태 : </span
+                ><span class="status" th:text="${board.status}"></span>
+              </div>
+              <div>
+                <span>등록기간 : </span
+                ><span
+                  th:text="${#dates.format(board.regisTime, 'MM/dd HH:mm')}"
+                ></span>
+              </div>
             </div>
-            <div>
-              <span>상품명 : </span
-              ><span class="name" th:text="${board.productName}"></span>
-            </div>
-            <div>
-              <span>현재가 : </span
-              ><span class="nextBid" th:text="${board.nextBid}"></span>
-            </div>
-            <div>
-              <span>즉시구매가 : </span
-              ><span class="winningBid" th:text="${board.winningBid}"></span>
-            </div>
-            <div th:text="${board.auctionPeriod}"></div>
-            <div>
-              <span>상태 : </span
-              ><span class="status" th:text="${board.status}"></span>
-            </div>
-            <div>
-              <span>등록기간 : </span
-              ><span
-                th:text="${#dates.format(board.regisTime, 'MM/dd HH:mm')}"
-              ></span>
-            </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>
