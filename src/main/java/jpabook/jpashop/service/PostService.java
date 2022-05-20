@@ -94,6 +94,8 @@ public class PostService {
     public List<Post> findMyListPaging(Long myId) {
         return postRepository.findMyListPaging(myId);
     }
+
+    public void updatePostStatus(Long id, Long currentBidId, String status){ postRepository.updatePostStatus(id, currentBidId, status); }
 }
 
 
