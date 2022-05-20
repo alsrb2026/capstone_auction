@@ -388,6 +388,7 @@ public class PostController {
         return "/roomList";
     }
 
+
     @Transactional
     @PostMapping("/post/timeExpired")
     public String timeExpired(PostForm form, HttpServletRequest request){
@@ -414,6 +415,16 @@ public class PostController {
         }
 
         return "posts/postList";
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/post/btnExpired")
+    public String btnPressed(@RequestParam("id") Long id, @RequestParam("postUserId") Long postUserId, @RequestParam("currentBidId") Long
+                             currentBidId){
+        System.out.println("id : "+ id);
+        System.out.println("postUserId : " + postUserId);
+        System.out.println("currentBidId : " + currentBidId);
+        return "";
     }
 
     @Transactional
