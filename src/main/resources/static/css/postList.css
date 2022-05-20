@@ -7,6 +7,13 @@
     padding-left: 10px;
     font-size: 15px;
 }
+#saled{
+  position:absolute;
+  width: 100px;
+  height: 100px;
+  bottom: 13px;
+  right: 10px;
+}
 .search-btn{
   display: inline;
   height: 30px;
@@ -53,6 +60,7 @@
 .product-info{
   height: 200px;
   padding: 10px;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
