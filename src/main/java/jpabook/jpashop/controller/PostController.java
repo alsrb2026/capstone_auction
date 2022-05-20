@@ -300,12 +300,13 @@ public class PostController {
 
     // id에 해당하는 경매 물품 조회
     @GetMapping("post/{id}/auction")
-    public String auctionItemForm(@PathVariable("id") Long itemId, Model model) {
+    public String auctionItemForm(@PathVariable("id") Long itemId, Model model, HttpServletRequest request) {
         Post post = postService.findOne(itemId);
 
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String name = ((UserDetails) principal).getUsername(); //현재 로그인 상태의 아이디
-        Long id = userRepository.findByName(name).get().getUserId();
+        HttpSession session = request.getSession();
+
+        String name = (String)session.getAttribute("accountId"); //현재 로그인 상태의 아이디
+
         // 현재 세션에 있는 사용자가 입찰을 해서 이 컨트롤러 함수로 들어온 것이므로 위 코드로 입찰자 id를 획득한다.
         // 아이디 중복이 없다는 가정하에
 
@@ -375,15 +376,12 @@ public class PostController {
         post.setNextBid(post.getWinningBid());
         post.setStatus("구매 완료");
 
-        System.out.println(post.getPostUserName());
-
         String regisName = userRepository.findByName(post.getPostUserName()).get().getNickname();
         String buyerName = (String)session.getAttribute("nickname");
 
         chatRoomService.createChatRoom(post.getProductName() + "()", post.getPostUserId(), id, regisName, buyerName);
 
         model.addAttribute("list", chatRoomService.findAllChatRooms(id));
-        model.addAttribute("connectedUserName", buyerName);
 
         return "/roomList";
     }
@@ -419,12 +417,27 @@ public class PostController {
 
     @ResponseBody
     @PostMapping(value = "/post/btnExpired")
-    public String btnPressed(@RequestParam("id") Long id, @RequestParam("postUserId") Long postUserId, @RequestParam("currentBidId") Long
+    public String btnPressed(@RequestParam("id") Long postId, @RequestParam("postUserId") Long postUserId, @RequestParam("currentBidId") Long
                              currentBidId){
-        System.out.println("id : "+ id);
-        System.out.println("postUserId : " + postUserId);
-        System.out.println("currentBidId : " + currentBidId);
-        return "";
+
+        Post post = postService.findOne(postId);
+
+        if(currentBidId == 0){
+            System.out.println("currentBidId = 0, no bid user -> status = '입찰 종료'");
+            postService.updatePostStatus(postId, 0L, "입찰 종료");
+            return "no bid user";
+        }
+        else{
+            post.setStatus("낙찰 완료");
+
+            String productName = postService.findOne(postId).getFname();
+            String regisName = userRepository.findById(postUserId).get().getNickname();
+
+            String buyerName = userRepository.findById(currentBidId).get().getNickname();
+            chatRoomService.createChatRoom(productName, postUserId, currentBidId, regisName, buyerName);
+
+            return "has bid user";
+        }
     }
 
     @Transactional
@@ -453,10 +466,10 @@ public class PostController {
             else {
                 if (form.getNextBid() == form.getWinningBid()) { // 1-2-(1). 현재 입찰한 금액이 낙찰가일 경우
                     post.setCurrentBidId(id);
-                    post.setStatus("낙찰됨");
+                    post.setStatus("낙찰 완료");
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
 
-                    chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id
+                    chatRoomService.createChatRoom(form.getProductName(), form.getPostUserId(), id
                             , regisName, buyerName);
 
                     model.addAttribute("list", chatRoomService.findAllChatRooms(id));
@@ -471,8 +484,10 @@ public class PostController {
                 } // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
             }
         }
-        // 2. 경매 기간이 지난 경우.
+        /*
+        // 2. 경매 기간이 지난 경우. 에러 처리
         else{
+
             // 2-1. 물품에 입찰자가 있는지 체크
             if(post.getCurrentBidId() != 0){ // 2.2 현재 입찰 id 값을 0으로 초기화했으므로 0이 아닌 경우 -> 입찰자가 존재하는 경우
                 post.setCurrentBidId(id);
@@ -484,6 +499,8 @@ public class PostController {
                 post.setStatus("입찰 종료"); // 낙찰자 없이 종료
             }
         }
+
+         */
 
         // 입찰 중(초기 상태), 낙찰됨(낙찰될 경우), 입찰 종료(시간 지나고 입찰자가 없을 경우) 이 3가지가 입찰 상태
 
