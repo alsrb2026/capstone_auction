@@ -68,17 +68,16 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 </div>
 
                 <div class="content form-groups">
-                    내용<br> <div th:text="*{contents}"></div>
+                    내용: <br> <div th:text="*{contents}"></div>
                     <input type="hidden" th:field="*{contents}">
                 </div>
 
                 <input type="hidden" th:field="*{status}">
                 <div class="form-groups price-box"/>
-                    <div class="startBid">
-                        시작가 : <div id="startBid" th:text="*{startBid}"></div>
-                        <input type="hidden" th:field="*{startBid}">
+                    <div class="nextBid">
+                        다음 입찰가 : <div id="nextBid" th:text="*{nextBid}"></div>
+                        <input type="hidden" th:field="*{nextBid}">
                     </div>
-
                     <input type="hidden" th:field="*{nextBid}">
 
                     <div class="winningBid">
@@ -97,7 +96,9 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     <input type="hidden" th:field="*{status}">
                 </div>
                 <div class="regisTime form-groups">
-                    마감 기한 : <div id="regisTime"></div>
+                    <button type="button" id="exp" th:if="${session.id == form.postUserId && form.status == '입찰 중'}" onclick="expired()">마감</button>
+                    <br>
+                    <div id="timer">마감된 물품입니다.</div>
                     <input type="hidden" th:field="*{regisTime}">
                 </div>
                 <div style="display:flex; align-items:center">
@@ -126,27 +127,20 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     const period = [[${form.auctionPeriod}]];
     const status = [[${form.status}]];
     var regisTime = new Date([[${form.regisTime}]]);
+    var timer;
 
     /*<![CDATA[*/
     var postUserName =  [[${postUserName}]];
     var loginUsername = [[${loginName}]];
     /*]]>*/
 
-    var regisDate = new Date(regisTime.getTime() + period * 1000 * 60 * 60);
-    var expiredDate;
-    expiredDate = " " + regisDate.getFullYear() + "-" + (regisDate.getMonth() + 1) + "-" + regisDate.getDate() + " ";
-
-    var hours = regisDate.getHours();
-    var minutes = regisDate.getMinutes();
-
-    expiredDate += hours + ":" + minutes;
-
-    document.getElementById("regisTime").innerText = expiredDate;
-
     //게시글 작성 사용자면 입찰하기, 즉시구매 버튼 없애기
     if(postUserName===loginUsername) {
         document.getElementById('bidButton').style.display = 'none';
         document.getElementById('buyButton').style.display = 'none';
+        if(status == '입찰 종료'){
+            document.getElementById('exp').disabled = 'disabled';
+        }
     }
 
     //게시글 작성 사용자가 아니면 수정,삭제 버튼 없애기
@@ -159,7 +153,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         if(status === '입찰 종료'){
             alert("입찰 종료된 상품입니다.");
         }
-        else if(status === '낙찰됨'){
+        else if(status === '낙찰 완료'){
             alert("낙찰된 상품입니다.");
         }
         else if(status === '구매 완료'){
@@ -167,51 +161,49 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         }
         else{
             calcDay();
-            setInterval(calcDay, 1000);
+            timer = setInterval(calcDay, 1000);
         }
     }
-    function calcDay(){
-        const today = new Date();
-        const regisDay = new Date(regisTime);
 
-        const distance = today.getTime() - regisDay.getTime();
+    function calcDay(){
+        var regisDate = regisTime.getTime();
+
         const time = Math.floor(period * 60 * 1000 * 60);
 
-        if(distance > time){
+        const expiredDate = new Date(regisDate + time);
+
+        const today = new Date();
+
+        const distance = expiredDate.getTime() - today.getTime();
+
+        console.log("timer starting... millisecond : " + distance);
+
+        if(distance < 0){
             document.getElementById("buyButton").disabled = true;
             document.getElementById("bidButton").disabled = true;
         }
-        else if(distance == time){
-
-            var form = {
-                id: [[${form.id}]],
-                postUserId: [[${form.postUserId}]],
-                postUserName: [[${form.postUserName}]],
-                title: [[${form.title}]],
-                contents: [[${form.contents}]],
-                productName: [[${form.productName}]],
-                category: [[${form.category}]],
-                view: [[${form.view}]],
-                startBid: [[${form.startBid}]],
-                winningBid: [[${form.winningBid}]],
-                unitBid: [[${form.unitBid}]],
-                nextBid: [[${form.nextBid}]],
-                regisTime: [[${form.regisTime}]],
-                auctionPeriod: [[${form.auctionPeriod}]],
-                status: [[${form.status}]],
-                currentBidId: [[${form.currentBidId}]]
-            };
+        else if(distance == 0){
             $.ajax({
                 type: "POST",
                 url: "/post/timeExpired",
-                data: form,
-                success: function(res){
-
+                data: {
+                    "id": [[${form.id}]]
                 },
-                error: function(){
-                    alert("입찰 실패");
+                success: function(res){
+                     window.location.href = "http://localhost:9076";
+                },
+                error: function(request,status,error){
+                    alert("오류 발생");
                 }
             });
+        }
+        else{
+            var day = Math.floor(distance / (1000*60*60*24));
+            var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
+            var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
+            var seconds = Math.floor((distance % (1000*60))/1000);
+
+            document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
         }
     }
     function bid(){
@@ -243,6 +235,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             event.preventDefault();
         }
     }
+
     function buy(){
         var buyId = [[${session.id}]];
         var regisId = [[${form.postUserId}]];
@@ -257,6 +250,38 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         }
         else{
             alert("자신의 물품은 구매할 수 없습니다.");
+            event.preventDefault();
+        }
+    }
+
+    function expired(){
+        if(confirm("마감 하시겠습니까?")){
+            document.getElementById("timer").innerText = "마감된 물품입니다.";
+            clearInterval(timer);
+
+            var form = {
+                "id": [[${form.id}]],
+                "postUserId": [[${form.postUserId}]],
+                "currentBidId": [[${form.currentBidId}]]
+            };
+            $.ajax({
+                type: "POST",
+                url: "/post/btnExpired",
+                data:{
+                    "id" : [[${form.id}]],
+                    "postUserId" : [[${form.postUserId}]],
+                    "currentBidId" : [[${form.currentBidId}]]
+                },
+                success: function(res){
+                    alert("마감되었습니다.");
+                    window.location.href = "http://localhost:9076";
+                },
+                error:function(request,status,error){
+                    alert("오류 발생");
+                }
+            });
+
+        }else{
             event.preventDefault();
         }
     }
