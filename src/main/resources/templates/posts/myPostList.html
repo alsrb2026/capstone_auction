@@ -4,57 +4,100 @@
     <meta charset="UTF-8">
     <title>paging</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/postList.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+            rel="stylesheet"
+    />
 </head>
 <body>
-<div class="title">
-    <a href="/"><img
-            src="/images/premium-icon-hammer-2547559.png"
-            id="iconimg"
-    />도전경매</a>
+<div th:replace="fragments/bodyHeader :: bodyHeader" />
+<div style="border-bottom: solid 1px black; padding: 10px; font-size: 20px">
+    내 게시글 목록
 </div>
-<table class="table table-striped">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <thead class="thead-dark">
-<br><br>
-    <b><p>내가 쓴 게시글 목록</p></b>
-
-    <tr>
-        <th>#</th>
-        <th>작성자</th>
-        <th>제목</th>
-        <th>내용</th>
-        <th>상품명</th>
-        <th>시작가</th>
-        <th>낙찰가</th>
-        <th>입찰 단위</th>
-        <th>현재 입찰가</th>
-        <th>경매 기간</th>
-        <th>상품 상태</th>
-        <th>등록 시간</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="board : ${boardList}">
-        <th scope="row" th:text="${boardStat.index + 1}">1</th>
-        <td th:text="${board.getPostUserId()}"></td>
-        <td>
-            <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
-                <h2><span th:text="${board.title}"></span></h2>
+<div class="container">
+    <div class="product-list">
+        <div class="product-box" th:each="board : ${boardList}">
+            <a href="#" th:if="${board.status == '낙찰 완료'}" th:href="@{/post/{id}/auction (id=${board.id})}">
+                <div style="display: flex; justify-content: center;">
+                    <img class="product-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${board.getFname()}"/>
+                </div>
+                <div class="product-info saled" style=" background-color:#e6e6e6">
+                    <div>
+                        <span class="p-title" th:text="${board.title}"></span>
+                    </div>
+                    <div>
+                <span>상품명 : </span
+                ><span class="name" th:text="${board.productName}"></span>
+                    </div>
+                    <div>
+                <span>현재가 : </span
+                ><span class="nextBid" th:text="${board.nextBid}"></span>
+                    </div>
+                    <div>
+                <span>즉시구매가 : </span
+                ><span class="winningBid" th:text="${board.winningBid}"></span>
+                    </div>
+                    <div>
+                <span>상태 : </span
+                ><span class="status" th:text="${board.status}"></span>
+                    </div>
+                    <div>
+                <span>마감기한 : </span
+                ><span
+                            th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
+                    ></span>
+                    </div>
+                    <div>
+                <span>조회수 : </span
+                ><span class="view" th:text="${board.view}"></span>
+                    </div>
+                    <img id="saled" src="/images/saled.png"/>
+                </div>
             </a>
-        </td>
-        <td th:text="${board.contents}"></td>
-        <td th:text="${board.productName}"></td>
-        <td th:text="${board.startBid}"></td>
-        <td th:text="${board.winningBid}"></td>
-        <td th:text="${board.unitBid}"></td>
-        <td th:text="${board.nextBid}"></td>
-        <td th:text="${board.auctionPeriod}"></td>
-        <td th:text="${board.status}"></td>
-        <td th:text="${#dates.format(board.regisTime, 'yyyy년 MM월 dd일 HH시 mm분')}"></td>
-    </tr>
-    </tbody>
-</table>
+            <a href="#" th:if="${board.status != '낙찰 완료'}" th:href="@{/post/{id}/auction (id=${board.id})}">
+                <div style="display: flex; justify-content: center; ">
+                    <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
+                </div>
+                <div class="product-info">
+                    <div>
+                        <span class="p-title" th:text="${board.title}"></span>
+                    </div>
+                    <div>
+                <span>상품명 : </span
+                ><span class="name" th:text="${board.productName}"></span>
+                    </div>
+                    <div>
+                <span>현재가 : </span
+                ><span class="nextBid" th:text="${board.nextBid}"></span>
+                    </div>
+                    <div>
+                <span>즉시구매가 : </span
+                ><span class="winningBid" th:text="${board.winningBid}"></span>
+                    </div>
+                    <div>
+                <span>상태 : </span
+                ><span class="status" th:text="${board.status}"></span>
+                    </div>
+                    <div>
+                <span>마감기한 : </span
+                ><span
+                            th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
+                    ></span>
+                    </div>
+                    <div>
+                <span>조회수 : </span
+                ><span class="view" th:text="${board.view}"></span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
 </body>
 </html>
 

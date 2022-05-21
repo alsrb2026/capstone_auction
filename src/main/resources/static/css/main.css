@@ -228,7 +228,7 @@
     cursor: pointer;
     position: relative;
     top:9px;
-    right:52px;
+    right:62px;
   }
   .search-btn img{
     width: 30px;
@@ -238,7 +238,6 @@
 @media screen and (min-width: 600px) {
   .fir_content {
     height: 500px;
-    background-color: aliceblue;
     line-height: 2;
     letter-spacing: -0.03em;
     font-size: 30px;
@@ -251,6 +250,7 @@
   .sec_content {
     height: 500px;
     line-height: 2;
+    background-color: aliceblue;
     letter-spacing: -0.03em;
     font-size: 30px;
     font-weight: bold;
