@@ -90,7 +90,7 @@
           <a class="loginbox-btn" th:href="@{/members/new}">회원가입</a>
         </a>
         <a sec:authorize="isAuthenticated()">
-          <a class="loginbox-btn" href="/post/myPost">내 게시글</a>
+          <a class="loginbox-btn" href="/post/myPost">내 게시물</a>
         </a>
         <a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/home/adminpage}">
           <a class="loginbox-btn">관리자</a>
@@ -112,6 +112,10 @@
   <button type="button" aria-label="다음" id="nextArrow"></button>
 </div>
 
+
+<div style="padding: 10px; font-size: 20px; background:aliceblue;">
+  ⭐️인기물품 top5⭐
+</div>
 <div class="top5">
   <div class="product-box" th:each="board : ${boardList}">
 
