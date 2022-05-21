@@ -10,10 +10,9 @@
   margin-right: 20px;
 }
 .post-img{
-  width: 400px;
-  height: 400px;
+  width: 100%;
+  height: auto;
   object-fit: contain;
-  margin-right: 30px;
 }
 .top-bar{
   display: flex;
@@ -55,6 +54,9 @@
   height: 100px;
   align-items: flex-start;
 }
+.text{
+  margin-left: 20px;
+}
 .edit-box{
   width: 100%;
   display: flex;
@@ -66,8 +68,43 @@ button{
 .buy-btn{
   position: absolute;
   right: 240px;
-  bottom: 12px;
+  bottom: 11px;
 }
 #modifyButton{
   margin-right: 10px;
+}
+.img-box{
+  margin-right: 30px;
+}
+@media screen and (max-width: 600px) {
+  .post-box{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .img-box{
+    margin-right: 0;
+    justify-content: center;
+    align-items: center;
+  }
+  .post-content{
+    width: 100%;
+    padding: 10px;
+  }
+  .post-content div{
+    width: 100%;
+  }
+  .product-info{
+    width: 100%;
+    display: center;
+    justify-content: center;
+  }
+  .buy-btn{
+    right: 200px;
+  }
+.product-info div{
+  font-size: 10px;
+}
 }
