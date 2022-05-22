@@ -2,6 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <script src="/webjars/jquery/jquery.min.js"></script>
+<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/stomp.min.js"></script>
 <head>
   <title>도전경매</title>
 
@@ -180,7 +182,7 @@
   <div><a href="roomList">채팅 목록</a></div>
 </div>
 </body>
-<script>
+<script th:inline="javascript">
   const posts = document.getElementById('posts');
   const category = document.getElementById('category-box');
 
@@ -202,10 +204,16 @@
     posts.style.background = 'white';
   });
 
+  if([[${session.id}]] != null){
+    var socket = new SockJS("/stomp/chat");
+    var stomp = Stomp.over(socket);
 
-
-
-    </script>
-<script th:inline="javascript">
+    stomp.connect({}, function(){
+      console.log("server connected... ");
+      stomp.subscribe("/sub/chat/room", function(chat){
+        var content = JSON.parse(chat.body);
+      });
+    });
+  }
 </script>
 </html>

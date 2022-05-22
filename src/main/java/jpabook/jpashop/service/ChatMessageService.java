@@ -25,5 +25,5 @@ public class ChatMessageService {
     }
     public int findUnReadMsg(String roomId, String recName) { return chatMessageRepository.findUnReadMsg(roomId, recName); }
 
-    public void updateUnreadMsg(String roomId, Date date){ chatMessageRepository.updateUnreadMsg(roomId, date); }
+    public void updateUnreadMsg(String roomId, Date date, String name){ chatMessageRepository.updateUnreadMsg(roomId, date, name); }
 }

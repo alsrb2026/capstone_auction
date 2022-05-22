@@ -21,14 +21,16 @@ public class ChatController {
 
     @MessageMapping(value = "/chat/exit")
     public void exit(ChatMessage message) throws Exception {
-        template.convertAndSend("/sub/chat/room" + message.getChRoomId(), message);
+        // template.convertAndSend("/sub/chat/room" + message.getChRoomId(), message);
+        template.convertAndSend("/sub/chat/room", message);
         chatMessageService.saveChatMessage(message);
     }
 
     @MessageMapping(value = "/chat/message")
     public void message(ChatMessage message) throws Exception {
         message.setMessage(message.getMessage());
-        template.convertAndSend("/sub/chat/room/" + message.getChRoomId(), message);
+        // template.convertAndSend("/sub/chat/room/" + message.getChRoomId(), message);
+        template.convertAndSend("/sub/chat/room", message);
         chatMessageService.saveChatMessage(message);
     }
 }
