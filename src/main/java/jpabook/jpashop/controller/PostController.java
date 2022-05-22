@@ -1,10 +1,7 @@
 package jpabook.jpashop.controller;
 
 import jpabook.jpashop.Form.PostForm;
-import jpabook.jpashop.domain.Files;
-import jpabook.jpashop.domain.Pagination;
-import jpabook.jpashop.domain.Post;
-import jpabook.jpashop.domain.UserEntity;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.repository.FilesRepository;
 import jpabook.jpashop.repository.PostRepository;
 import jpabook.jpashop.repository.UserRepository;
@@ -75,6 +72,7 @@ public class PostController {
         String destinationFileName;
         String path = System.getProperty("user.dir");
         String fileUrl = path+"/photo/";
+        System.out.println("path는"+path);
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
             destinationFile = new File(fileUrl + destinationFileName);
@@ -86,7 +84,6 @@ public class PostController {
         file.setFileOriName(sourceFileName);
         file.setFileurl(fileUrl);
         filesService.save(file);
-        //System.out.println("pmgt"+file.getFilename());
         post.setFname(file.getFilename());
         postService.savePost(post);
         return "redirect:/";
@@ -177,6 +174,21 @@ public class PostController {
 
     @GetMapping("/post/myPost") //내 게시글 목록은 검색창, 페이징 없음
     public String searchMyPost(@RequestParam(defaultValue = "1") int page, Model model) {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String nickname = ((UserDetails) principal).getUsername();
+
+        //현재 로그인한 사용자정보 가져와서
+        UserEntity myId = userService.findIdByNickname(nickname);
+        //사용자의 id값 가져오기
+        List<Post> myPosts = postService.findMyListPaging(myId.getUserId());
+
+        model.addAttribute("boardList", myPosts);
+        return "posts/myPostList";
+    }
+
+    @GetMapping("/post/myBidding") //
+    public String myBiddingList(@RequestParam(defaultValue = "1") int page, Model model) {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String nickname = ((UserDetails) principal).getUsername();
@@ -453,6 +465,8 @@ public class PostController {
         String buyerName = userRepository.findById(id).get().getNickname(); // 구매자 닉네임
 
         Post post = postRepository.findOne(form.getId());
+
+
 
         // 1. 경매에 참여할 수 있는지 없는지 부터 체크
         if (!calcDay(form.getAuctionPeriod(), form.getRegisTime())) { // 아직 물품 경매 기간이 지나지 않았을 경우

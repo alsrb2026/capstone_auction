@@ -96,6 +96,8 @@ public class PostService {
     }
 
     public void updatePostStatus(Long id, Long currentBidId, String status){ postRepository.updatePostStatus(id, currentBidId, status); }
+
+
 }
 
 
