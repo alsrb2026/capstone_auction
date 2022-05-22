@@ -43,7 +43,10 @@
                                             <div th:each="unRead : ${unReadMsgList}">
                                                 <div th:if="${unRead.roomId == room.roomId}">
                                                     <div th:if="${unRead.count != 0}">
-                                                        <h6>읽지 않은 채팅 메시지 : [[${unRead.count}]]</h6>
+                                                        <h6  th:id="${unRead.roomId}">읽지 않은 채팅 메시지 : [[${unRead.count}]]</h6>
+                                                    </div>
+                                                    <div th:if="${unRead.count == 0}">
+                                                        <h6 th:id="${unRead.roomId}"></h6>
                                                     </div>
                                                 </div>
                                             </div>
@@ -77,12 +80,16 @@
     document.getElementById("exit").style.display = 'none';
 
     var sender = [[${session.nickname}]];
-    var receiver;
     var roomId;
 
     $('.chatList').on('click', function(){
+        var receiver;
         var roomId = $(this).attr('roomId');
-        console.log(roomId);
+
+        if(document.getElementById(roomId)){
+            document.getElementById(roomId).style.display = 'none';
+        }
+
         $.ajax({
             type: "GET",
             url: "/room/show",
@@ -95,13 +102,12 @@
                     receiver = data.user2;
                 }
                 else{
-                    receiver == data.user1;
+                    receiver = data.user1;
                 }
                 roomId = data.roomId;
 
                 var socket = new SockJS("/stomp/chat");
                 var stomp = Stomp.over(socket);
-                var now;
 
                 if(values.length != 0){
                     $.each(values, function(index, value){
@@ -115,6 +121,9 @@
                 stomp.connect({}, function(){
                 console.log("server connected...");
                 stomp.subscribe("/sub/chat/room/" + roomId, function(chat){
+
+                    console.log(chat);
+
                     var content = JSON.parse(chat.body);
                     var msgDate = sendMsgDate(content.sendTime);
                         if (content.senderName == sender){
@@ -134,12 +143,11 @@
                 $("#send").on("click", function(e){
                     var msg = document.getElementById("msg");
                     if(msg.value != ""){
-                        now = new Date();
                         stomp.send('/pub/chat/message', {}, JSON.stringify({
                         chRoomId: roomId,
                         senderName: sender,
                         receiverName: receiver,
-                        sendTime: now,
+                        sendTime: new Date(),
                         message: msg.value,
                         checkRead: 0
                         }));
@@ -154,7 +162,6 @@
                         event.preventDefault();
                     }
                     else{
-                        stomp.disconnect();
                         $('#msg').hide();
                         $('#send').hide();
                         $('#exit').hide();

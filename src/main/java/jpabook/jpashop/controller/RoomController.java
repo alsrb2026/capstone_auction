@@ -91,12 +91,11 @@ public class RoomController {
         ChatRoom chatRoom = chatRoomService.findChatRoomById(roomId);
         List<ChatMessage> chatList = chatMessageService.findChatMessages(roomId);
 
-        for(int i=0;i<chatList.size();i++){
-            if(chatList.size() != 0 && name.equals(chatList.get(chatList.size() - 1).getReceiverName())){
-                chatList.get(i).setRecvTime(now);
-                chatList.get(i).setCheckRead(1);
-            }
-        } // 들어가려는 방의 메시지를 읽었다는 표시로 모든 메시지를 1로 표시해주고, 읽은 시간도 업데이트 해준다.
+        // 들어가려는 방의 메시지를 읽었다는 표시로 모든 메시지를 1로 표시해주고, 읽은 시간도 업데이트 해준다.
+        if(chatList.size() != 0){
+            chatMessageService.updateUnreadMsg(roomId, new Date());
+        }
+
         Map<String, Object> mv = new HashMap<>();
 
         String user1 = chatRoom.getBuyerName();

@@ -87,19 +87,23 @@ public class PostRepository {
     @Modifying(clearAutomatically = true)
     public void updatePostStatus(Long id, Long currentBidId, String status) {
         // currentBidId가 0인 경우 -> 물품 등록 기간이 다 지났는데도 입찰가 없는 경우 or 판매자가 마감 버튼을 눌러서 물품 등록을 마감시킬 때,
-        // 입찰자가 없는 경우
-        if(currentBidId == 0){
-            em.createQuery("update Post p SET p.status = :status where p.id = :id")
-                    .setParameter("id", id)
-                    .setParameter("status", status)
-                    .executeUpdate();
-            em.clear();
-        }
-        // 나머지는 입찰자, 낙찰자 즉시 구매자 or 마감 시간 지나고 최고가로 입찰한 유저가 있는 경우.
-        // post/auction, post/buy 둘 다 postRepository로 직접 접근해서 동작하므로 수정해야 함.
-        else{
+        // 입찰자가 없는 경우, 있는 경우 status 만 바꿔준다.(입찰 중, 입찰 종료, 낙찰 완료, 구매 완료)
+        em.createQuery("update Post p SET p.status = :status where p.id = :id")
+                .setParameter("id", id)
+                .setParameter("status", status)
+                .executeUpdate();
+        em.clear();
 
-        }
-
+    }
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    public void updatePostBidStatus(Long id, Long currentBidId, int nextBid, String status) {
+        em.createQuery("update Post p SET p.status = :status, p.currentBidId = :currentBidId, nextBid = :nextBid where p.id = :id")
+                .setParameter("id", id)
+                .setParameter("status", status)
+                .setParameter("currentBidId", currentBidId)
+                .setParameter("nextBid", nextBid)
+                .executeUpdate();
+        em.clear();
     }
 }

@@ -2,10 +2,12 @@ package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.ChatMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -44,7 +46,16 @@ public class ChatMessageRepository {
                 count++;
             }
         }
-
         return count;
+    }
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    public void updateUnreadMsg(String roomId, Date date) {
+        em.createQuery("update ChatMessage cm SET cm.recvTime = :date, cm.checkRead = 1 where cm.chRoomId = :roomId")
+                .setParameter("roomId", roomId)
+                .setParameter("date", date)
+                .executeUpdate();
+        em.clear();
     }
 }
