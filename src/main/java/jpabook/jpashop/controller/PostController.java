@@ -56,10 +56,11 @@ public class PostController {
 
         Post post = new Post();
         SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        HttpSession session = request.getSession();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String name = ((UserDetails) principal).getUsername();
+        String name = (String)session.getAttribute("accountId");
 
-        Long id = userRepository.findByName(name).get().getUserId(); // 상품 등록한 user id 를 repository에서 조회해서 넣었음.
+        Long id = (Long)session.getAttribute("id"); // 상품 등록한 user id 를 repository에서 조회해서 넣었음.
 
         post = makePost(post,id,name,form.getTitle(),form.getContents(),form.getProductName(),
                 form.getCategory(),0, form.getStartBid(), form.getWinningBid(), form.getUnitBid(),
@@ -370,16 +371,13 @@ public class PostController {
         Long id = (Long)session.getAttribute("id");
         // .html 화면에서 이미 즉시 구매하는 사람과 등록한 사람을 구분해서 데이터가 오기 때문에 예외 처리할 필요 X.
         // 현재 구매한 사용자 id, 입찰 상태,
-
         Post post = postRepository.findOne(form.getId());
-        post.setCurrentBidId(id);
-        post.setNextBid(post.getWinningBid());
-        post.setStatus("구매 완료");
+        postService.updatePostBidStatus(form.getId(), id, form.getWinningBid(), "구매 완료");
 
         String regisName = userRepository.findByName(post.getPostUserName()).get().getNickname();
         String buyerName = (String)session.getAttribute("nickname");
 
-        chatRoomService.createChatRoom(post.getProductName() + "()", post.getPostUserId(), id, regisName, buyerName);
+        chatRoomService.createChatRoom(post.getProductName(), post.getPostUserId(), id, regisName, buyerName);
 
         model.addAttribute("list", chatRoomService.findAllChatRooms(id));
 
@@ -428,7 +426,9 @@ public class PostController {
             return "no bid user";
         }
         else{
-            post.setStatus("낙찰 완료");
+            System.out.println("currentBidId = " + currentBidId + "has bid user -> status = '낙찰 완료'");
+
+            postService.updatePostStatus(postId, currentBidId, "낙찰 완료");
 
             String productName = postService.findOne(postId).getFname();
             String regisName = userRepository.findById(postUserId).get().getNickname();
@@ -452,57 +452,29 @@ public class PostController {
         String regisName = userRepository.findById(form.getPostUserId()).get().getNickname(); // 판매자 닉네임
         String buyerName = userRepository.findById(id).get().getNickname(); // 구매자 닉네임
 
-        Post post = postRepository.findOne(form.getId());
-
         // 1. 경매에 참여할 수 있는지 없는지 부터 체크
         if (!calcDay(form.getAuctionPeriod(), form.getRegisTime())) { // 아직 물품 경매 기간이 지나지 않았을 경우
             // 1-1. 현재 입찰한 사용자가 첫 번째 입찰자일 경우
             if (form.getCurrentBidId() == 0) { //
-                post.setCurrentBidId(id);
-                post.setStatus("입찰 중");
-                post.setNextBid(form.getStartBid() + form.getUnitBid());
+                System.out.println("------------------ startBid , unit" + form.getStartBid() + "   " + form.getUnitBid());
+                postService.updatePostBidStatus(form.getId(), id, form.getStartBid() + form.getUnitBid(), "입찰 중");
             }
             // 1-2. 첫 번째 입찰자가 아닐 경우
             else {
                 if (form.getNextBid() == form.getWinningBid()) { // 1-2-(1). 현재 입찰한 금액이 낙찰가일 경우
-                    post.setCurrentBidId(id);
-                    post.setStatus("낙찰 완료");
+                    postService.updatePostBidStatus(form.getId(), id, form.getWinningBid(), "낙찰 완료");
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
 
                     chatRoomService.createChatRoom(form.getProductName(), form.getPostUserId(), id
                             , regisName, buyerName);
 
                     model.addAttribute("list", chatRoomService.findAllChatRooms(id));
-                    model.addAttribute("connectedUserName", buyerName);
-
-                    return "/roomlist";
+                    return "/roomList";
                 } else if (form.getNextBid() < form.getWinningBid()) { // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
-                    post.setCurrentBidId(id);
-                    post.setStatus("입찰 중");
-                    post.setNextBid(form.getNextBid() + form.getUnitBid());
-                } else {
-                } // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
+                    postService.updatePostBidStatus(form.getId(), id, form.getWinningBid(), "입찰 중");
+                } else {} // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
             }
         }
-        /*
-        // 2. 경매 기간이 지난 경우. 에러 처리
-        else{
-
-            // 2-1. 물품에 입찰자가 있는지 체크
-            if(post.getCurrentBidId() != 0){ // 2.2 현재 입찰 id 값을 0으로 초기화했으므로 0이 아닌 경우 -> 입찰자가 존재하는 경우
-                post.setCurrentBidId(id);
-                post.setStatus("낙찰됨");
-                // 그리고 채팅 연결.
-
-            }
-            else{
-                post.setStatus("입찰 종료"); // 낙찰자 없이 종료
-            }
-        }
-
-         */
-
-        // 입찰 중(초기 상태), 낙찰됨(낙찰될 경우), 입찰 종료(시간 지나고 입찰자가 없을 경우) 이 3가지가 입찰 상태
 
         int totalListCnt = postRepository.findAllCnt();
         System.out.println("test totalListCnt =" + totalListCnt);
