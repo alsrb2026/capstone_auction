@@ -73,35 +73,36 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             />
           </div>
         <div class="form-group">
-          <label th:for="nickname">전화번호</label>
-          <br />
-          전화번호 : <input
-                type="text"
-                th:field="*{phoneNumber}"
-                id="to"
-                name="to"
-        />   <!-- 인증번호 받을사람 휴대폰 번호 -->
-          <button type="button" id="send">전송</button><br> <!-- 문자보내는 전송버튼 -->
-        </div>
-        <div class="form-group">
-          <label th:for="nickname">인증번호</label>
-          <br />
-          인증번호 : <input
-                type="text"
-                id="userNum"
-        >   <!-- 인증번호 입력창 -->
-          <button type="button" id="enterBtn">확인</button>  <!-- 인증번호와 내가 입력창에 입력한 인증번호 비교하는 창 -->
-        </div>
-        <div class="form-group">
           <label th:for="passwd">비밀번호</label>
           <br />
           <input
-            type="password"
-            th:field="*{passwd}"
-            class="form-control"
-            placeholder="비밀번호를 입력하세요"
+                  type="password"
+                  th:field="*{passwd}"
+                  class="form-control"
+                  placeholder="비밀번호를 입력하세요"
           />
         </div>
+        <div class="form-group">
+          <label th:for="nickname">전화번호</label>
+          <input
+                type="tel"
+                th:field="*{phoneNumber}"
+                id="to"
+                name="to"
+                class="form-control"
+        />   <!-- 인증번호 받을사람 휴대폰 번호 -->
+          <button type="button" id="send">인증하기</button> <!-- 문자보내는 전송버튼 -->
+        </div>
+        <div class="form-group certify" style="display: none;">
+          <label th:for="nickname">인증번호</label>
+          <input
+                type="text"
+                id="userNum"
+                class="form-control"
+        >   <!-- 인증번호 입력창 -->
+          <button type="button" id="enterBtn">인증확인</button>  <!-- 인증번호와 내가 입력창에 입력한 인증번호 비교하는 창 -->
+        </div>
+
         <button type="submit" class="btn btn-primary sign-up-btn">
           가입하기
         </button>
@@ -112,8 +113,9 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
   </body>
 
 <script type="text/javascript">
+  const certify = document.querySelector(".certify");
   $('#send').click(function() {
-
+    certify.style.display = "block";
     const to = $('#to').val();
 
     $.ajax ({
@@ -124,7 +126,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       },
       success: function(data) {
         const checkNum = data;
-        alert('checkNum:'+ checkNum);
+        alert('인증번호 :'+ checkNum);
 
         $('#enterBtn').click(function() {
           const userNum = $('#userNum').val();
