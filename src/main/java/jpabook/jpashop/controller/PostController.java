@@ -5,10 +5,7 @@ import jpabook.jpashop.domain.*;
 import jpabook.jpashop.repository.FilesRepository;
 import jpabook.jpashop.repository.PostRepository;
 import jpabook.jpashop.repository.UserRepository;
-import jpabook.jpashop.service.ChatRoomService;
-import jpabook.jpashop.service.FilesService;
-import jpabook.jpashop.service.PostService;
-import jpabook.jpashop.service.UserService;
+import jpabook.jpashop.service.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -40,6 +37,7 @@ public class PostController {
     private final ChatRoomService chatRoomService;
     private final FilesService filesService;
     private final FilesRepository filesRepository;
+    private final CertifiService certifiService;
 
     @GetMapping("/posts/new")
     public String createForm(HttpServletRequest request, Model model) {
@@ -390,8 +388,9 @@ public class PostController {
         String buyerName = (String)session.getAttribute("nickname");
 
         chatRoomService.createChatRoom(post.getProductName(), post.getPostUserId(), id, regisName, buyerName);
-
         model.addAttribute("list", chatRoomService.findAllChatRooms(id));
+
+        certifiService.sendSms();
 
         return "/roomList";
     }

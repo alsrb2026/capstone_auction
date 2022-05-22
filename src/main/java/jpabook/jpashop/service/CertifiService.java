@@ -4,6 +4,7 @@ package jpabook.jpashop.service;
 import lombok.RequiredArgsConstructor;
 import net.nurigo.java_sdk.api.Message;
 import net.nurigo.java_sdk.exceptions.CoolsmsException;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,27 @@ public class CertifiService {
         coolsms.send(params); // 메시지 전송
 
         return numStr;
+    }
 
+    public void sendSms() {
+
+        String api_key = "NCSKG3PJXW7O9OVN";
+        String api_secret = "YJIWFSX2ZSNY7BMQ8W14VMO4NB6KDSPJ";
+        Message coolsms = new Message(api_key, api_secret);
+        HashMap<String, String> params = new HashMap<String, String>();
+
+        params.put("to", "01074948233"); //발신자 전화번호
+        params.put("from", "01074948233"); //여기에 받는 사람 전화번호
+        params.put("type", "SMS");
+        params.put("text", "[도전경매]경매글 :\"삶과 꿈 교재\" 낙찰or즉구 완료! 채팅목록을 확인하세요");
+
+        try {
+            JSONObject obj = (JSONObject) coolsms.send(params);
+            System.out.println(obj.toString());
+        } catch (CoolsmsException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getCode());
+        }
     }
 
 }
