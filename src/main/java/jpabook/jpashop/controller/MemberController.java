@@ -11,11 +11,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -37,7 +35,6 @@ public class MemberController {
     @Autowired
     private UserRepositoryR userRepositoryR;
 
-
     @GetMapping(value = "/members/new")
     public String createForm(Model model) {
         model.addAttribute("memberForm", new UserForm());
@@ -45,12 +42,14 @@ public class MemberController {
     }
 
     @PostMapping("/members/new")
-    public String create(@Valid UserForm form, BindingResult result, HttpServletRequest request, Model model) {
+    public String create(@Valid UserForm form, Model model) {
 
 
         String name = form.getId();
         String nickname = form.getNickname();
+        String phoneNumber = form.getPhoneNumber();
         String passwd = form.getPasswd();
+
 
         //db에 유저가 이미 존재하면 정보 가져오기
         Optional<UserEntity> dbUser = userRepositoryR.findByNickname(nickname);
@@ -65,6 +64,7 @@ public class MemberController {
             UserEntity user = UserEntity.builder()
                     .name(name)
                     .nickname(nickname)
+                    .phoneNumber(phoneNumber)
                     .password(passwordEncoder.encode(passwd))
                     .role("user")
                     .build();
@@ -73,4 +73,6 @@ public class MemberController {
             return "home/loginPage";
         }
     }
+
+
 }

@@ -12,6 +12,6 @@ public class UserForm {
     @NotEmpty(message = "회원 이름은 필수 입니다")
     private String id;
     private String nickname;
-    private List<String> likeList;
+    private String phoneNumber;
     private String passwd;
 }

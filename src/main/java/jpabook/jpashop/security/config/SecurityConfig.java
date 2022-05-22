@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .headers(headers -> headers .cacheControl(cache -> cache.disable()))
                 .authorizeRequests()
                 .antMatchers("/login","/members/new","/","/posts","/post/search",
-                        "/post/searchCategory/{keyword}","post/{id}/auction")
+                        "/post/searchCategory/{keyword}","post/{id}/auction","/sms","/check/sendSMS")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
