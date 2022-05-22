@@ -51,10 +51,11 @@ public class ChatMessageRepository {
 
     @Transactional
     @Modifying(clearAutomatically = true)
-    public void updateUnreadMsg(String roomId, Date date) {
-        em.createQuery("update ChatMessage cm SET cm.recvTime = :date, cm.checkRead = 1 where cm.chRoomId = :roomId")
+    public void updateUnreadMsg(String roomId, Date date, String name) {
+        em.createQuery("update ChatMessage cm SET cm.recvTime = :date, cm.checkRead = 1 where cm.chRoomId = :roomId and cm.checkRead = 0 and cm.receiverName = :name")
                 .setParameter("roomId", roomId)
                 .setParameter("date", date)
+                .setParameter("name", name)
                 .executeUpdate();
         em.clear();
     }

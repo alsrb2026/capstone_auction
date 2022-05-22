@@ -93,7 +93,7 @@ public class RoomController {
 
         // 들어가려는 방의 메시지를 읽었다는 표시로 모든 메시지를 1로 표시해주고, 읽은 시간도 업데이트 해준다.
         if(chatList.size() != 0){
-            chatMessageService.updateUnreadMsg(roomId, new Date());
+            chatMessageService.updateUnreadMsg(roomId, new Date(), name);
         }
 
         Map<String, Object> mv = new HashMap<>();

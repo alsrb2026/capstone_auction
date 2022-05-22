@@ -104,37 +104,42 @@
                 else{
                     receiver = data.user1;
                 }
-                roomId = data.roomId;
 
-                var socket = new SockJS("/stomp/chat");
-                var stomp = Stomp.over(socket);
+                roomId = data.roomId;
 
                 if(values.length != 0){
                     $.each(values, function(index, value){
                         if (value.senderName == sender){
                             $("#msgList").append("<div class='mychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
-                        }else{
+                        }else if(value.senderName = receiver){
                             $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
+                        }
+                        else if(value.senderName == "system"){
+                            $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + "</span></div>");
                         }
                     });
                 }
+
+                var socket = new SockJS("/stomp/chat");
+                var stomp = Stomp.over(socket);
+
                 stomp.connect({}, function(){
                 console.log("server connected...");
-                stomp.subscribe("/sub/chat/room/" + roomId, function(chat){
-
-                    console.log(chat);
-
+                stomp.subscribe("/sub/chat/room", function(chat){
                     var content = JSON.parse(chat.body);
-                    var msgDate = sendMsgDate(content.sendTime);
+                    console.log(content.chRoomId);
+                    if(content.chRoomId == roomId){
+                        var msgDate = sendMsgDate(content.sendTime);
                         if (content.senderName == sender){
                             $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                         }else{
                             $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                         }
-                scrollBottom();
-                })
-                scrollBottom();
-            });
+                        scrollBottom();
+                        }
+                    })
+                    scrollBottom();
+                });
 
                 $('#msg').show();
                 $('#send').show();
@@ -162,6 +167,17 @@
                         event.preventDefault();
                     }
                     else{
+                        stomp.send('/pub/chat/message', {}, JSON.stringify({
+                            chRoomId: roomId,
+                            senderName: "system",
+                            receiverName: receiver,
+                            sendTime: new Date(),
+                            message: sender + "님이 나가셨습니다.",
+                            checkRead: 2
+                        }));
+
+                        stomp.disconnect();
+
                         $('#msg').hide();
                         $('#send').hide();
                         $('#exit').hide();
@@ -179,6 +195,7 @@
             }
         });
     });
+
     function sendMsgDate(msgDate){
         var date;
         var time = new Date(msgDate);
