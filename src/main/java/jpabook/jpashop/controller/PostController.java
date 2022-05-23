@@ -390,7 +390,7 @@ public class PostController {
         chatRoomService.createChatRoom(post.getProductName(), post.getPostUserId(), id, regisName, buyerName);
         model.addAttribute("list", chatRoomService.findAllChatRooms(id));
 
-        certifiService.sendSms();
+        //certifiService.sendSms();
 
         return "/roomList";
     }

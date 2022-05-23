@@ -8,6 +8,17 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css" integrity="sha384-
 ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
+    <!-- socket.js, stomp.js-->
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <!-- toastr 메시지 스타일, toastr  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
+          integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+            integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <!-- Custom styles for this template -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -97,15 +108,15 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     <input type="hidden" th:field="*{status}">
                 </div>
                 <div class="regisTime form-groups">
-                    <button type="button" id="exp" th:if="${session.id == form.postUserId && form.status == '입찰 중'}" onclick="expired()">마감</button>
+                    <button type="button" id="exp" th:if="${session.id == form.postUserId && form.status == '입찰 중'}">마감</button>
                     <br>
                     <div id="timer">마감된 물품입니다.</div>
                     <input type="hidden" th:field="*{regisTime}">
                 </div>
                 <div style="display:flex; align-items:center">
                     <div class="bid-btn">
-                        <button type="submit" id='bidButton' th:if="${form.status == '입찰 중' && form.postUserId != session.id}" onclick="bid()">입찰하기</button>
-                        <button type="submit" th:if="${form.status != '입찰 중'}" onclick="bid()" disabled="disabled">입찰하기</button>
+                        <button type="submit" id='bidButton' th:if="${form.status == '입찰 중' && form.postUserId != session.id}">입찰하기</button>
+                        <button type="submit" th:if="${form.status != '입찰 중'}" disabled="disabled">입찰하기</button>
                     </div>
                     <div class="edit-box">
                         <a id="modifyButton" href="#" th:href="@{/post/{id}/edit (id=${form.id})}"  role="button">수정</a>
@@ -149,6 +160,130 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         document.getElementById('modifyButton').style.display = 'none';
         document.getElementById('deleteButton').style.display = 'none';
     }
+
+    toastr.options = {
+			  "closeButton": false,
+			  "debug": false,
+			  "newestOnTop": false,
+			  "progressBar": true,
+			  "positionClass": "toast-top-right",
+			  "preventDuplicates": false,
+			  "onclick": null,
+			  "showDuration": "100",
+			  "hideDuration": "1000",
+			  "timeOut": "1500",
+			  "extendedTimeOut": "1000",
+			  "showEasing": "swing",
+			  "hideEasing": "linear",
+			  "showMethod": "fadeIn",
+			  "hideMethod": "fadeOut"
+			}
+
+    if([[${session.id}]] != null){
+        var socket = new SockJS("/stomp/chat");
+        var stomp = Stomp.over(socket);
+
+        stomp.connect({}, function(){
+
+            var bidId = [[${session.id}]];
+            var regisId = [[${form.postUserId}]];
+            var currentBidId = [[${form.currentBidId}]];
+
+            console.log("server connected... ");
+
+            stomp.subscribe("/sub/chat/room", function(chat){
+                var content = JSON.parse(chat.body);
+                    if(name == content.receiverName){
+                    toastr.info("새 메시지가 도착했습니다.<br>" + content.senderName + ": " + content.message);
+                }
+            });
+
+            stomp.subscribe("/sub/item/auction", function(params){
+                var content = JSON.parse(params.body);
+                console.log(content);
+                if(name == content.postUserName){
+                    toastr.success("올리신 " + content.productName + "에 누군가 입찰하였습니다.");
+                }
+            });
+
+            stomp.subscribe("/sub/item/buy", function(post){
+                var content = JSON.parse(post.body);
+                if(name == content.postUserName){
+                    toastr.success("올리신 " + content.productName + "이 즉시 구매되었습니다.");
+                }
+            });
+
+            $('#bidButton').on('click', function(){
+                if(bidId != regisId){
+                    if(bidId != currentBidId){
+                        if(confirm("입찰하시겠습니까?")){
+                            stomp.send('/pub/item/auction', {}, JSON.stringify({
+                                "postUserId": regisId,
+                                "productName": [[${form.productName}]],
+                                "bidUserName": [[${session.nickname}]]
+                            }));
+                            alert("입찰에 성공했습니다");
+                        }
+                        else{
+                            event.preventDefault();
+                        }
+                    }
+                    else{
+                        alert("같은 물품에 두 번 이상 입찰할 수 없습니다.");
+                    }
+                }
+                else{
+                    alert("자신의 물품은 입찰할 수 없습니다.");
+                    event.preventDefault();
+                }
+            });
+
+            $('#buyButton').on('click', function(){
+                if(bidId != regisId){
+                    if(confirm("즉시 구매하시겠습니까?")){
+                        stomp.send('/pub/item/auction', {}, JSON.stringify({
+
+                        }));
+                        alert("성공적으로 구매되었습니다.");
+                    }
+                    else{
+                        event.preventDefault();
+                    }
+                }
+                else{
+                    alert("자신의 물품은 구매할 수 없습니다.");
+                    event.preventDefault();
+                }
+            });
+
+            $('#exp').on('click', function(){
+                if(confirm("마감 하시겠습니까?")){
+                    document.getElementById("timer").innerText = "마감된 물품입니다.";
+                    clearInterval(timer);
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/post/btnExpired",
+                        data:{
+                            "id" : [[${form.id}]],
+                            "postUserId" : regisId,
+                            "currentBidId" : currentBidId
+                        },
+                        success: function(res){
+                            alert("마감되었습니다.");
+                            window.location.href = "http://localhost:9076";
+                        },
+                        error:function(request,status,error){
+                            alert("오류 발생");
+                        }
+                    });
+                }else{
+                    event.preventDefault();
+                }
+            });
+
+        }) // stomp.connect({}, function(){}) 끝
+    } // if절 끝
 
     function check(){
         if(status === '입찰 종료'){
@@ -205,79 +340,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             var seconds = Math.floor((distance % (1000*60))/1000);
 
             document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
-        }
-    }
-    function bid(){
-        var aucId = [[${session.id}]];
-        var regisId = [[${form.postUserId}]];
-        var currentBidId = [[${form.currentBidId}]];
-
-        if(aucId != regisId){
-            if(aucId != currentBidId){
-                if(confirm("입찰하시겠습니까?")){
-                    alert("입찰에 성공했습니다");
-                }
-                else{
-                    event.preventDefault();
-                }
-            }
-            else{
-                alert("같은 물품에 두 번 이상 입찰할 수 없습니다.");
-            }
-        }
-        else{
-            alert("자신의 물품은 입찰할 수 없습니다.");
-            event.preventDefault();
-        }
-    }
-
-    function buy(){
-        var buyId = [[${session.id}]];
-        var regisId = [[${form.postUserId}]];
-
-        if(buyId != regisId){
-            if(confirm("즉시 구매하시겠습니까?")){
-                alert("성공적으로 구매되었습니다.");
-            }
-            else{
-                event.preventDefault();
-            }
-        }
-        else{
-            alert("자신의 물품은 구매할 수 없습니다.");
-            event.preventDefault();
-        }
-    }
-
-    function expired(){
-        if(confirm("마감 하시겠습니까?")){
-            document.getElementById("timer").innerText = "마감된 물품입니다.";
-            clearInterval(timer);
-
-            var form = {
-                "id": [[${form.id}]],
-                "postUserId": [[${form.postUserId}]],
-                "currentBidId": [[${form.currentBidId}]]
-            };
-            $.ajax({
-                type: "POST",
-                url: "/post/btnExpired",
-                data:{
-                    "id" : [[${form.id}]],
-                    "postUserId" : [[${form.postUserId}]],
-                    "currentBidId" : [[${form.currentBidId}]]
-                },
-                success: function(res){
-                    alert("마감되었습니다.");
-                    window.location.href = "http://localhost:9076";
-                },
-                error:function(request,status,error){
-                    alert("오류 발생");
-                }
-            });
-
-        }else{
-            event.preventDefault();
         }
     }
 </script>
