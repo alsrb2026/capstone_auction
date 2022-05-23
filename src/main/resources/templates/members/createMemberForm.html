@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrinkto-fit=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="/css/bootstrap.min.css" integrity="sha384-
 ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
@@ -74,12 +76,33 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           <label th:for="passwd">비밀번호</label>
           <br />
           <input
-            type="password"
-            th:field="*{passwd}"
-            class="form-control"
-            placeholder="비밀번호를 입력하세요"
+                  type="password"
+                  th:field="*{passwd}"
+                  class="form-control"
+                  placeholder="비밀번호를 입력하세요"
           />
         </div>
+        <div class="form-group">
+          <label th:for="nickname">전화번호</label>
+          <input
+                type="tel"
+                th:field="*{phoneNumber}"
+                id="to"
+                name="to"
+                class="form-control"
+        />   <!-- 인증번호 받을사람 휴대폰 번호 -->
+          <button type="button" id="send">인증하기</button> <!-- 문자보내는 전송버튼 -->
+        </div>
+        <div class="form-group certify" style="display: none;">
+          <label th:for="nickname">인증번호</label>
+          <input
+                type="text"
+                id="userNum"
+                class="form-control"
+        >   <!-- 인증번호 입력창 -->
+          <button type="button" id="enterBtn">인증확인</button>  <!-- 인증번호와 내가 입력창에 입력한 인증번호 비교하는 창 -->
+        </div>
+
         <button type="submit" class="btn btn-primary sign-up-btn">
           가입하기
         </button>
@@ -88,4 +111,37 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     </div>
     <!-- /container -->
   </body>
+
+<script type="text/javascript">
+  const certify = document.querySelector(".certify");
+  $('#send').click(function() {
+    certify.style.display = "block";
+    const to = $('#to').val();
+
+    $.ajax ({
+      url: '/check/sendSMS',
+      type: 'GET',
+      data: {
+        "to" : to
+      },
+      success: function(data) {
+        const checkNum = data;
+        alert('인증번호 :'+ checkNum);
+
+        $('#enterBtn').click(function() {
+          const userNum = $('#userNum').val();
+
+          if(checkNum === userNum) {
+            alert('인증 성공하였습니다.');
+          }
+          else {
+            alert('인증 실패하였습니다. 다시 입력해주세요.');
+          }
+        });
+
+      }
+    });
+
+  });
+</script>
 </html>

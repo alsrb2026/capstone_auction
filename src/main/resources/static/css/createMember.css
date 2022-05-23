@@ -44,4 +44,9 @@ body {
   outline: none;
   background-color: black;
 }
-
+.form-group button{
+  width:100px;
+  text-align: left;
+  padding: 0;
+  padding-top: 10px;
+}
