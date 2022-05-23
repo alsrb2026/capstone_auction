@@ -115,7 +115,7 @@
                             $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
                         }
                         else if(value.senderName == "system"){
-                            $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + "</span></div>");
+                            $("#msgList").append("<div class='syschat'><span>"+ value.senderName + ": " + value.message + "</span></div>");
                         }
                     });
                 }
@@ -132,6 +132,9 @@
                         var msgDate = sendMsgDate(content.sendTime);
                         if (content.senderName == sender){
                             $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
+                        }else if(content.senderName == "system"){
+                            $("#msgList").append("<div class='syschat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
+
                         }else{
                             $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                         }
