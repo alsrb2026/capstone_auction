@@ -24,7 +24,7 @@
                 <div class="inbox_people">
                     <div class="headind_srch">
                         <div class="user_header">
-                            <h4>[[${session.nickname}]] 채팅방</h4>
+                            <h4>채팅 목록</h4>
                         </div>
                     </div>
 
@@ -117,11 +117,11 @@
                             $.each(values, function(index, value){
                                 if (value.senderName == sender){
                                     $("#msgList").append("<div class='mychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
-                                }else if(value.senderName = receiver){
+                                }else if(value.senderName == receiver){
                                     $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
                                 }
                                 else if(value.senderName == "system"){
-                                    $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + "</span></div>");
+                                    $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
                                 }
                             });
                         }
@@ -134,7 +134,10 @@
                                 if(content.checkRead != 2){
                                     if (content.senderName == sender){
                                         $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
-                                    }else{
+                                    }
+                                    else if(value.senderName == "system"){
+                                        $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
+                                    }else if(value.senderName == receiver){
                                         $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                                     }
                                 }
