@@ -17,6 +17,10 @@
   max-width: 45%;
   word-break: break-all;
 }
+.syschat div{
+  text-align: center;
+  background: #b8b8b8;
+}
 .notmychat{
   display: flex;
   min-height: 50px;

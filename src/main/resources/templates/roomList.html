@@ -28,7 +28,7 @@
           <div class="inbox_people">
             <div class="headind_srch">
               <div class="user_header">
-                <h4>[[${session.nickname}]] 채팅방</h4>
+                <h4>채팅 목록</h4>
               </div>
             </div>
 
@@ -122,43 +122,46 @@
 
                           roomId = data.roomId;
 
-                          if(values.length != 0){
-                              $.each(values, function(index, value){
-                                  if (value.senderName == sender){
-                                      $("#msgList").append("<div class='mychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
-                                  }else if(value.senderName = receiver){
-                                      $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
-                                  }
-                                  else if(value.senderName == "system"){
-                                      $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + "</span></div>");
-                                  }
-                              });
-                          }
+                        if(values.length != 0){
+                            $.each(values, function(index, value){
+                                if (value.senderName == sender){
+                                    $("#msgList").append("<div class='mychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
+                                }else if(value.senderName == receiver){
+                                    $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
+                                }
+                                else if(value.senderName == "system"){
+                                    $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
+                                }
+                            });
+                        }
 
-                          stomp.subscribe("/sub/chat/room", function(chat){
-                              var content = JSON.parse(chat.body);
-                              console.log(content.chRoomId);
-                              if(content.chRoomId == roomId){ // 채팅 온 문자가 자신이 눌렀던 채팅방일 경우.
-                                  var msgDate = sendMsgDate(content.sendTime);
-                                  if(content.checkRead != 2){
-                                      if (content.senderName == sender){
-                                          $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
-                                      }else{
-                                          $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
-                                      }
-                                  }
-                                  else{
-                                      $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
-                                  }
-                                  scrollBottom();
-                              }
-                              else{
-                                  if(document.getElementById(content.chRoomId)){
-                                      document.getElementById(content.chRoomId).innerText = "새 메시지";
-                                  }
-                              }
-                              scrollBottom();
-                          }); // stomp.subscribe("/sub/chat/room", function(chat){}) 끝
+                        stomp.subscribe("/sub/chat/room", function(chat){
+                            var content = JSON.parse(chat.body);
+                            console.log(content.chRoomId);
+                            if(content.chRoomId == roomId){ // 채팅 온 문자가 자신이 눌렀던 채팅방일 경우.
+                                var msgDate = sendMsgDate(content.sendTime);
+                                if(content.checkRead != 2){
+                                    if (content.senderName == sender){
+                                        $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
+                                    }
+                                    else if(value.senderName == "system"){
+                                        $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
+                                    }else if(value.senderName == receiver){
+                                        $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
+                                    }
+                                }
+                                else{
+                                    $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
+                                }
+                                scrollBottom();
+                            }
+                            else{
+                                if(document.getElementById(content.chRoomId)){
+                                    document.getElementById(content.chRoomId).innerText = "새 메시지";
+                                }
+                            }
+                            scrollBottom();
+                        }); // stomp.subscribe("/sub/chat/room", function(chat){}) 끝
 
                           $('#msg').show();
                           $('#send').show();
