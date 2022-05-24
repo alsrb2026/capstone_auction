@@ -54,7 +54,7 @@ public class PostRepository {
     }
 
     public List<Post> findListPaging(int startIndex, int pageSize) {
-        return em.createQuery("select b from Post b", Post.class)
+        return em.createQuery("select b from Post b order by b.id desc", Post.class)
                 .setFirstResult(startIndex)
                 .setMaxResults(pageSize)
                 .getResultList();
