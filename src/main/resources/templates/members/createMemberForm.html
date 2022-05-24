@@ -84,6 +84,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         </div>
         <div class="form-group">
           <label th:for="nickname">전화번호</label>
+          <div style="display: flex">
           <input
                 type="tel"
                 th:field="*{phoneNumber}"
@@ -91,7 +92,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 name="to"
                 class="form-control"
         />   <!-- 인증번호 받을사람 휴대폰 번호 -->
-          <button type="button" id="send">인증하기</button> <!-- 문자보내는 전송버튼 -->
+          <button type="button" id="send" style="text-align: center;">인증하기</button></div> <!-- 문자보내는 전송버튼 -->
         </div>
         <div class="form-group certify" style="display: none;">
           <label th:for="nickname">인증번호</label>
