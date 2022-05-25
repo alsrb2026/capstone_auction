@@ -20,7 +20,7 @@
 }
 .post-box{
   margin-top: 150px;
-  width: 850px;
+  width: 100%;
   display: flex;
   justify-content: center;
 }
@@ -28,12 +28,24 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid black;
+  border-left: 1px solid silver;
   width: 450px;
   padding: 10px;
 }
 .price-box div{
   width: 33%;
+  font-size: 13px;
+}
+.price-box span{
+  width: 60%;
+}
+.price-box{
+  display: flex;
+  justify-content: space-around;
+}
+.nextBid, .winningBid, unitBid{
+  display: flex;
+  justify-content: space-around;
 }
 .form-groups{
   width: 100%;
@@ -55,7 +67,8 @@
   align-items: flex-start;
 }
 .text{
-  margin-left: 20px;
+  width: 40%;
+  text-align: center;
 }
 .edit-box{
   width: 100%;
