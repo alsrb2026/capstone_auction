@@ -156,9 +156,15 @@
 .product-box{
   display:flex;
   flex-direction: column;
-  padding: 30px;
+  align-items: center;
+  padding: 15px;
   width: 20vw;
-
+}
+.product-box:hover{
+  background: rgb(199, 229, 255);
+}
+.product-box a{
+  width: calc(20vw - 30px);
 }
 .nav-banner{
   display: none;
@@ -167,8 +173,10 @@
   width: calc(20vw - 30px);
   height: calc(20vw - 30px);
   object-fit: contain;
+  border: 1px solid black;
 }
 .product-info{
+  width: calc(20vw - 30px);
   display: flex;
   flex-direction: column;
   justify-content: center;

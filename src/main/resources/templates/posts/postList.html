@@ -52,7 +52,7 @@
       <div class="product-list">
         <div class="product-box" th:each="board : ${boardList}">
           <a href="#" th:if="${board.status != '입찰 중'}"  th:href="@{/post/{id}/bid (id=${board.id})}">
-            <div style="display: flex; justify-content: center;">
+            <div class="imgbox">
               <img class="product-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${board.getFname()}"/>
             </div>
             <div class="product-info saled" style=" background-color:#e6e6e6">

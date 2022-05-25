@@ -29,6 +29,11 @@
   height: 400px;
   padding: 10px;
 }
+.imgbox{
+  display: flex;
+  justify-content: center;
+  border: 1px solid silver;
+}
 .icon{
   position: relative;
   width: 20px;
@@ -86,10 +91,10 @@
 }
 @media (min-width: 768px) {
 .product-list{
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
 } }
 
 @media (min-width: 992px) {
 .product-list{
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 1fr;
 } }
