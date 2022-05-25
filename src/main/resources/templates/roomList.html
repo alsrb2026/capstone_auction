@@ -93,7 +93,7 @@
                 var roomId = $(this).attr('roomId');
 
                 if(document.getElementById(roomId)){
-                    document.getElementById(roomId).style.display = 'none';
+                    document.getElementById(roomId).innerText = "";
                 }
 
                 $.ajax({

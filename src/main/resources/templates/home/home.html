@@ -202,7 +202,7 @@
 			  "showDuration": "100",
 			  "hideDuration": "1000",
 			  "timeOut": "1500",
-			  "extendedTimeOut": "1000",
+			  "extendedTimeOut": "3000",
 			  "showEasing": "swing",
 			  "hideEasing": "linear",
 			  "showMethod": "fadeIn",
@@ -239,21 +239,36 @@
       console.log("server connected... ");
       stomp.subscribe("/sub/chat/room", function(chat){
         var content = JSON.parse(chat.body);
-         if(name == content.receiverName){
-          toastr.info("새 메시지가 도착했습니다.<br>" + content.senderName + ": " + content.message);
-         }
-      });
-
-      stomp.subscribe("/sub/item/auction", function(post){
-        var content = JSON.parse(post.body);
-
-      });
-
-      stomp.subscribe("/sub/item/buy", function(post){
-        var content = JSON.parse(post.body);
-          if(name == content.postUserName){
-            toastr.success("올리신 " + content.productName + "이 즉시 구매되었습니다.");
+        msg1 = content.chRoomId.split(" ");
+         if(msg1[0] == '마감'){
+          msg2 = content.message.split(" ");
+          if([[${session.id}]] == parseInt(msg2[1])){
+            toastr.info(content.senderName + "님의 " + content.receiverName + " 입찰을 종료했습니다.");
           }
+         }
+         else if(msg1[0] == '입찰'){
+            msg2 = content.message.split(" ");
+            if([[${session.id}]] == parseInt(msg2[3])){
+              toastr.info(content.senderName + "님이 " + content.receiverName + "에 입찰하였습니다.");
+            }
+         }
+         else if(msg1[0] == '낙찰'){
+            msg2 = content.message.split(" ");
+            if([[${session.id}]] == parseInt(msg2[3])){
+              toastr.info(content.senderName + "님이 " + content.receiverName + "을 낙찰하였습니다. <br> 채팅방을 확인하세요");
+            }
+         }
+         else if(msg1[0] == '즉구'){
+            msg2 = content.message.split(" ");
+            if([[${session.id}]] == parseInt(msg2[3])){
+              toastr.info(content.senderName + "님이 " + content.receiverName + "을 즉시 구매 하였습니다. <br> 채팅방을 확인하세요");
+            }
+         }
+         else{
+            if([[${session.nickname}]] == content.receiverName){
+              toastr.info("새 메시지가 도착했습니다.<br>" + content.senderName + ": " + content.message);
+            }
+         }
       });
     });
   }
