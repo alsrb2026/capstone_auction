@@ -27,24 +27,10 @@ public class ChatController {
 
     @MessageMapping(value = "/chat/message")
     public void message(ChatMessage message) throws Exception {
-        // message.setMessage(message.getMessage());
-        // template.convertAndSend("/sub/chat/room/" + message.getChRoomId(), message);
         template.convertAndSend("/sub/chat/room", message);
-        chatMessageService.saveChatMessage(message);
-    }
-
-    @MessageMapping(value = "/item/bid")
-    public void auction(Map params) throws Exception {
-        template.convertAndSend("/sub/item/bid", params);
-    }
-
-    @MessageMapping(value = "/item/buy")
-    public void buy(PostForm post) throws Exception {
-        template.convertAndSend("/sub/item/buy", post);
-    }
-
-    @MessageMapping(value = "/item/expired")
-    public void itemExpired(PostForm post) throws Exception {
-        template.convertAndSend("/sub/item/expired", post);
+        System.out.println(message.getChRoomId());
+        if(message.getCheckRead() != -1){
+            chatMessageService.saveChatMessage(message);
+        }
     }
 }

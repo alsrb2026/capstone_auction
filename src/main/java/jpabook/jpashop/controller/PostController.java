@@ -329,7 +329,7 @@ public class PostController {
     }
 
     // id에 해당하는 경매 물품 조회
-    @GetMapping("post/{id}/auction")
+    @GetMapping("post/{id}/bid")
     public String auctionItemForm(@PathVariable("id") Long itemId, Model model, HttpServletRequest request) {
         Post post = postService.findOne(itemId);
 
@@ -392,28 +392,23 @@ public class PostController {
         return "posts/postItemView";
     }
 
+    @ResponseBody
     @Transactional
-    @PostMapping("/auction/buy") // 즉시 구매이므로 바로 채팅방 연결시켜준다.
-    public String buyItem(@ModelAttribute("form") PostForm form, HttpServletRequest request, Model model){
+    @PostMapping("/post/buy") // 즉시 구매이므로 바로 채팅방 연결시켜준다.
+    public void buyItem(@RequestParam("postId") Long postId, HttpServletRequest request){
 
         HttpSession session = request.getSession();
         Long id = (Long)session.getAttribute("id");
         // .html 화면에서 이미 즉시 구매하는 사람과 등록한 사람을 구분해서 데이터가 오기 때문에 예외 처리할 필요 X.
         // 현재 구매한 사용자 id, 입찰 상태,
-        Post post = postRepository.findOne(form.getId());
-        postService.updatePostBidStatus(form.getId(), id, form.getWinningBid(), "구매 완료");
+        Post post = postRepository.findOne(postId);
+        postService.updatePostBidStatus(post.getId(), id, post.getWinningBid(), "구매 완료");
 
-        String regisName = userRepository.findByName(post.getPostUserName()).get().getNickname();
+        String regisName = post.getPostUserName();
         String buyerName = (String)session.getAttribute("nickname");
 
         chatRoomService.createChatRoom(post.getProductName(), post.getPostUserId(), id, regisName, buyerName);
-        model.addAttribute("list", chatRoomService.findAllChatRooms(id));
-
-        //certifiService.sendSms();
-
-        return "/roomList";
     }
-
 
     @Transactional
     @PostMapping("/post/timeExpired")
@@ -444,18 +439,18 @@ public class PostController {
     }
 
     @ResponseBody
-    @PostMapping(value = "/post/btnExpired")
-    public String btnPressed(@RequestParam("id") Long postId, @RequestParam("postUserId") Long postUserId, @RequestParam("currentBidId") Long
-                             currentBidId){
+    @PostMapping(value = "/post/expired")
+    public String btnPressed(@RequestParam("id") Long postId, @RequestParam("postUserId") Long postUserId, @RequestParam("type") String type){
 
         Post post = postService.findOne(postId);
 
-        if(currentBidId == 0){
+        if(post.getCurrentBidId() == 0){
             System.out.println("currentBidId = 0, no bid user -> status = '입찰 종료'");
             postService.updatePostStatus(postId, 0L, "입찰 종료");
             return "no bid user";
         }
         else{
+            Long currentBidId = post.getCurrentBidId();
             System.out.println("currentBidId = " + currentBidId + "has bid user -> status = '낙찰 완료'");
 
             postService.updatePostStatus(postId, currentBidId, "낙찰 완료");
@@ -470,23 +465,25 @@ public class PostController {
         }
     }
 
+    @ResponseBody
     @Transactional
-    @PostMapping("/post/{id}/auction") // id에 해당하는 물품 입찰.
-    public String auctionItem(@RequestParam(defaultValue = "1") int page, HttpServletRequest request,
-                              @ModelAttribute("form")  @PathVariable("id") Long regisIdPostForm, PostForm form,Model model) {
+    @PostMapping("/post/bid") // id에 해당하는 물품 입찰.
+    public void auctionItem(@RequestParam("postId") Long postId, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
 
         Long id = (Long)session.getAttribute("id"); // 현재 입찰하려고 하는 사용자의 id
 
-        String regisName = userRepository.findById(form.getPostUserId()).get().getNickname(); // 판매자 닉네임
-        String buyerName = userRepository.findById(id).get().getNickname(); // 구매자 닉네임
+        Post form = postService.findOne(postId);
+
+        String regisName = form.getPostUserName(); // 판매자 닉네임
+        String buyerName = (String)session.getAttribute("nickname"); // 구매자 닉네임
 
         // 1. 경매에 참여할 수 있는지 없는지 부터 체크
         if (!calcDay(form.getAuctionPeriod(), form.getRegisTime())) { // 아직 물품 경매 기간이 지나지 않았을 경우
             // 1-1. 현재 입찰한 사용자가 첫 번째 입찰자일 경우
             if (form.getCurrentBidId() == 0) { //
-                System.out.println("------------------ startBid , unit" + form.getStartBid() + "   " + form.getUnitBid());
+                System.out.println(">>> startBid , unit" + form.getStartBid() + "   " + form.getUnitBid() + " >>>");
                 postService.updatePostBidStatus(form.getId(), id, form.getStartBid() + form.getUnitBid(), "입찰 중");
             }
             // 1-2. 첫 번째 입찰자가 아닐 경우
@@ -497,33 +494,11 @@ public class PostController {
 
                     chatRoomService.createChatRoom(form.getProductName(), form.getPostUserId(), id
                             , regisName, buyerName);
-
-                    model.addAttribute("list", chatRoomService.findAllChatRooms(id));
-                    return "/roomList";
                 } else if (form.getNextBid() < form.getWinningBid()) { // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
                     postService.updatePostBidStatus(form.getId(), id, form.getWinningBid(), "입찰 중");
                 } else {} // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
             }
         }
-
-        int totalListCnt = postRepository.findAllCnt();
-        System.out.println("test totalListCnt =" + totalListCnt);
-        // 생성인자로  총 게시물 수, 현재 페이지를 전달
-        Pagination pagination = new Pagination(totalListCnt, page);
-
-        // DB select start index
-        int startIndex = pagination.getStartIndex();
-        System.out.println("test startIndex =" + startIndex);
-        // 페이지 당 보여지는 게시글의 최대 개수
-        int pageSize = pagination.getPageSize();
-        System.out.println("test pageSize =" + pageSize);
-
-        List<Post> boardList = postRepository.findListPaging(startIndex, pageSize);
-
-        model.addAttribute("boardList", boardList);
-        model.addAttribute("pagination", pagination);
-
-        return "posts/postList";
     }
 
     public Post makePost(Post post, Long id, String name, String title, String contents, String productName,
