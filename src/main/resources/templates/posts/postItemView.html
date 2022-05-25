@@ -128,8 +128,8 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             </div>
             </form>
             <input type="hidden" th:field="${form.id}">
-            <button class="buy-btn" id='buyButton' type="submit" th:if="${form.status == '입찰 중'}">즉시 구매</button>
-            <button class="buy-btn" type="submit" th:if="${form.status != '입찰 중'}" disabled="disabled">즉시 구매</button>
+            <button class="buy-btn" id='buyButton' type="button" th:if="${form.status == '입찰 중'}">즉시 구매</button>
+            <button class="buy-btn" type="button" th:if="${form.status != '입찰 중'}" disabled="disabled">즉시 구매</button>
         </div>
     </div>
 </div>
@@ -268,13 +268,14 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 else if(content.chRoomId == "즉구"){
                     msg = content.message.split(" ");
                     if(postId == parseInt(msg[5])){ // 즉시 구매 이벤트가 발생한 게시물이 현재 보고 있는 게시물일 경우
-                        $('#stat').text("구매 완료");
                         clearInterval(timer); // 시간 중단.
                         $('#expButton').hide(); // 마감 버튼 숨기고,
+                        $('#stat').text("구매 완료");
                         $('#timer').text('마감된 물품입니다.'); // timer 변경
                         if(id == parseInt(msg[3])){ // 현재 접속한 사용자가 게시물 올린 유저일 경우
                             document.getElementById('modifyButton').disabled = true;
                             document.getElementById('expButton').disabled = true;
+                            toastr.success(content.receiverName + "이(가) " + content.senderName + "님에게 구매되었습니다. <br> 채팅방을 확인하세요");
                         }
                         else{
                             if(id == parseInt(msg[1])){
@@ -392,7 +393,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                                 senderName: [[${session.nickname}]],
                                 receiverName: productName,
                                 sendTime: new Date(),
-                                message: "bidUser " + currentBidId + " postUser " + regisId + " postId " + postId,
+                                message: "bidUser " + id + " postUser " + regisId + " postId " + postId,
                                 checkRead: -1
                             }));
                         }
