@@ -122,7 +122,7 @@
 <div class="top5">
   <div class="product-box" th:each="board : ${boardList}">
 
-    <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
+    <a href="#" th:href="@{/post/{id}/bid (id=${board.id})}">
       <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
 
       <div class="product-info">
