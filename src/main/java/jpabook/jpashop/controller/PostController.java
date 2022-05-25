@@ -152,8 +152,27 @@ public class PostController {
         return "posts/postList";
     }
 
-    @GetMapping("/post/searchCategory/{keyword}")
+    @GetMapping("/post/searchCategory/{keyword}") //카테고리 검색 + 일반검색
     public String searchCategory(@PathVariable("keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
+
+        // 총 게시물 수
+        int totalListCnt = postService.findAllCount();
+        // 생성인자로  총 게시물 수, 현재 페이지를 전달
+        Pagination pagination = new Pagination(totalListCnt, page);
+        // DB select start index
+        int startIndex = pagination.getStartIndex();
+        // 페이지 당 보여지는 게시글의 최대 개수
+        int pageSize = pagination.getPageSize();
+
+        List<Post> searchboardList = postService.findCategoryListPaging(startIndex, pageSize, keyword);
+        model.addAttribute("boardList", searchboardList);
+        model.addAttribute("pagination", pagination);
+
+        return "posts/postList";
+    }
+
+    @GetMapping("/post/searchCategoryAndKeyword/{keyword}/{category}") //카테고리적용+검색
+    public String searchCategoryAndKeyword(@PathVariable("keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
 
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();

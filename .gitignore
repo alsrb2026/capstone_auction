@@ -26,7 +26,7 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-### NetBeans ###
+### NetBeans ###d
 /nbproject/private/
 /nbbuild/
 /dist/

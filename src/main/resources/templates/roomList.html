@@ -1,127 +1,136 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
     <script src="/webjars/jquery/jquery.min.js"></script>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-            href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
-            rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+      rel="stylesheet"
     />
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
     <link rel="stylesheet" type="text/css" href="/css/common.css" />
     <link rel="stylesheet" type="text/css" href="/css/room.css" />
     <link rel="stylesheet" type="text/css" href="/css/chat.css" />
-</head>
-<body>
-<div th:replace="fragments/bodyHeader :: bodyHeader"/>
+  </head>
+  <body>
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
 
     <div class="msg-container">
-        <div class="messaging">
-            <div class="inbox_msg">
-                <div class="inbox_people">
-                    <div class="headind_srch">
-                        <div class="user_header">
-                            <h4>[[${session.nickname}]] 채팅방</h4>
-                        </div>
-                    </div>
-
-                    <div class="inbox_chat">
-                        <div th:each="room : ${list}">
-                            <div class="chatListBox${room.roomId} chatListBox" >
-                                <div type="button" class="chatList" onclick="scroll();"th:roomId="${room.roomId}">
-                                    <div class="roomDetails">
-                                        <div class="profile">
-                                            <div th:if="${room.regisName == session.nickname}">
-                                                <h5>[[${room.buyerName}]]님과의 채팅방</h5>
-                                            </div>
-                                            <div th:if="${room.buyerName == session.nickname}">
-                                                <h5>[[${room.regisName}]]님과의 채팅방</h5>
-                                            </div>
-                                            <div th:each="unRead : ${unReadMsgList}">
-                                                <div th:if="${unRead.roomId == room.roomId}">
-                                                    <div th:if="${unRead.count != 0}">
-                                                        <h6  th:id="${unRead.roomId}">새 메시지 [[${unRead.count}]]</h6>
-                                                    </div>
-                                                    <div th:if="${unRead.count == 0}">
-                                                        <h6 th:id="${unRead.roomId}"></h6>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="chat-list">
-                    <div class="msg_history" name="contentList">
-                        <div id="msgList">
-
-                        </div>
-                    </div>
-                    <div class="chat-input-box">
-                        <input type="text" id="msg" class="form-control">
-                        <button id="send" class="btn btn-default">전송</button>
-                        <button id="exit" class="btn btn-default">나가기</button>
-                    </div>
-                </div>
+      <div class="messaging">
+        <div class="inbox_msg">
+          <div class="inbox_people">
+            <div class="headind_srch">
+              <div class="user_header">
+                <h4>채팅 목록</h4>
+              </div>
             </div>
+
+            <div class="inbox_chat">
+              <div th:each="room : ${list}">
+                <div class="chatListBox${room.roomId} chatListBox">
+                  <div
+                    type="button"
+                    class="chatList"
+                    onclick="scroll();"
+                    th:roomId="${room.roomId}"
+                  >
+                    <div class="roomDetails">
+                      <div class="profile">
+                        <div th:if="${room.regisName == session.nickname}">
+                          <h5>[[${room.buyerName}]]님과의 채팅방</h5>
+                        </div>
+                        <div th:if="${room.buyerName == session.nickname}">
+                          <h5>[[${room.regisName}]]님과의 채팅방</h5>
+                        </div>
+                        <div th:each="unRead : ${unReadMsgList}">
+                          <div th:if="${unRead.roomId == room.roomId}">
+                            <div th:if="${unRead.count != 0}">
+                              <h6 th:id="${unRead.roomId}">
+                                새 메시지 [[${unRead.count}]]
+                              </h6>
+                            </div>
+                            <div th:if="${unRead.count == 0}">
+                              <h6 th:id="${unRead.roomId}"></h6>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-list">
+            <div class="msg_history" name="contentList">
+              <div id="msgList"></div>
+            </div>
+            <div class="chat-input-box">
+              <input type="text" id="msg" class="form-control" />
+              <button id="send" class="btn btn-default">전송</button>
+              <button id="exit" class="btn btn-default">나가기</button>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-<script th:inline="javascript">
+    <script th:inline="javascript">
 
-    document.getElementById("msg").style.display = 'none';
-    document.getElementById("send").style.display = 'none';
-    document.getElementById("exit").style.display = 'none';
+      document.getElementById("msg").style.display = 'none';
+      document.getElementById("send").style.display = 'none';
+      document.getElementById("exit").style.display = 'none';
 
-    var sender = [[${session.nickname}]];
-    var roomId;
+      var sender = [[${session.nickname}]];
+      var roomId;
 
-    if([[${session.id}]] != null){
-        var socket = new SockJS("/stomp/chat");
-        var stomp = Stomp.over(socket);
+      if([[${session.id}]] != null){
+          var socket = new SockJS("/stomp/chat");
+          var stomp = Stomp.over(socket);
 
-        stomp.connect({}, function(){
-            console.log("server connected...");
-            $('.chatList').on('click', function(){
-                var receiver;
-                var roomId = $(this).attr('roomId');
+          stomp.connect({}, function(){
+              console.log("server connected...");
+              $('.chatList').on('click', function(){
+                  var receiver;
+                  var roomId = $(this).attr('roomId');
 
-                if(document.getElementById(roomId)){
-                    document.getElementById(roomId).innerText = "";
-                }
+                  if(document.getElementById(roomId)){
+                      document.getElementById(roomId).style.display = 'none';
+                  }
 
-                $.ajax({
-                    type: "GET",
-                    url: "/room/show",
-                    data: { "roomId": roomId },
-                    success: function(data){
-                        $('#msgList').empty();
-                        values = data.chatList;
+                  $.ajax({
+                      type: "GET",
+                      url: "/room/show",
+                      data: { "roomId": roomId },
+                      success: function(data){
+                          $('#msgList').empty();
+                          values = data.chatList;
 
-                        if(data.user1 == sender){
-                            receiver = data.user2;
-                        }
-                        else{
-                            receiver = data.user1;
-                        }
+                          if(data.user1 == sender){
+                              receiver = data.user2;
+                          }
+                          else{
+                              receiver = data.user1;
+                          }
 
-                        roomId = data.roomId;
+                          roomId = data.roomId;
 
                         if(values.length != 0){
                             $.each(values, function(index, value){
                                 if (value.senderName == sender){
                                     $("#msgList").append("<div class='mychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
-                                }else if(value.senderName = receiver){
+                                }else if(value.senderName == receiver){
                                     $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
                                 }
                                 else if(value.senderName == "system"){
-                                    $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + "</span></div>");
+                                    $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
                                 }
                             });
                         }
@@ -134,7 +143,10 @@
                                 if(content.checkRead != 2){
                                     if (content.senderName == sender){
                                         $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
-                                    }else{
+                                    }
+                                    else if(value.senderName == "system"){
+                                        $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
+                                    }else if(value.senderName == receiver){
                                         $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                                     }
                                 }
@@ -151,81 +163,81 @@
                             scrollBottom();
                         }); // stomp.subscribe("/sub/chat/room", function(chat){}) 끝
 
-                        $('#msg').show();
-                        $('#send').show();
-                        $('#exit').show();
+                          $('#msg').show();
+                          $('#send').show();
+                          $('#exit').show();
 
-                        $("#send").on("click", function(e){
-                            var msg = document.getElementById("msg");
-                            if(msg.value != ""){
-                                stomp.send('/pub/chat/message', {}, JSON.stringify({
-                                    chRoomId: roomId,
-                                    senderName: sender,
-                                    receiverName: receiver,
-                                    sendTime: new Date(),
-                                    message: msg.value,
-                                    checkRead: 0
-                                }));
-                            }
-                            else{
-                                alert("메세지를 입력하세요.");
-                            }
-                            msg.value = "";
-                        });// $('#send').on('click', function(e){})끝
+                          $("#send").on("click", function(e){
+                              var msg = document.getElementById("msg");
+                              if(msg.value != ""){
+                                  stomp.send('/pub/chat/message', {}, JSON.stringify({
+                                      chRoomId: roomId,
+                                      senderName: sender,
+                                      receiverName: receiver,
+                                      sendTime: new Date(),
+                                      message: msg.value,
+                                      checkRead: 0
+                                  }));
+                              }
+                              else{
+                                  alert("메세지를 입력하세요.");
+                              }
+                              msg.value = "";
+                          });// $('#send').on('click', function(e){})끝
 
-                        $("#exit").on("click", function(e){
-                            if(!confirm("방을 나가시겠습니까?")){
-                                event.preventDefault();
-                            }
-                            else{
-                                stomp.send('/pub/chat/message', {}, JSON.stringify({
-                                    chRoomId: roomId,
-                                    senderName: "system",
-                                    receiverName: receiver,
-                                    sendTime: new Date(),
-                                    message: sender + "님이 나가셨습니다.",
-                                    checkRead: 2
-                                }));
+                          $("#exit").on("click", function(e){
+                              if(!confirm("방을 나가시겠습니까?")){
+                                  event.preventDefault();
+                              }
+                              else{
+                                  stomp.send('/pub/chat/message', {}, JSON.stringify({
+                                      chRoomId: roomId,
+                                      senderName: "system",
+                                      receiverName: receiver,
+                                      sendTime: new Date(),
+                                      message: sender + "님이 나가셨습니다.",
+                                      checkRead: 2
+                                  }));
 
-                                $('#msg').hide();
-                                $('#send').hide();
-                                $('#exit').hide();
-                                $('#msgList').empty();
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/room/exit",
-                                    data: { "roomId": roomId },
-                                    success: function(data){
-                                        location.reload();
-                                    }
-                                });
-                            } // else 절 끝
-                        }); // $('#exit').on('click', ) 끝
-                    } // success:(data){} 끝
-                }) // $.ajax({}) 끝
-            }); // $('.chatList').on('click',) 끝
-        }) // stomp.connect() 끝
-    }
+                                  $('#msg').hide();
+                                  $('#send').hide();
+                                  $('#exit').hide();
+                                  $('#msgList').empty();
+                                  $.ajax({
+                                      type: "POST",
+                                      url: "/room/exit",
+                                      data: { "roomId": roomId },
+                                      success: function(data){
+                                          location.reload();
+                                      }
+                                  });
+                              } // else 절 끝
+                          }); // $('#exit').on('click', ) 끝
+                      } // success:(data){} 끝
+                  }) // $.ajax({}) 끝
+              }); // $('.chatList').on('click',) 끝
+          }) // stomp.connect() 끝
+      }
 
-    function sendMsgDate(msgDate){
-        var date;
-        var time = new Date(msgDate);
+      function sendMsgDate(msgDate){
+          var date;
+          var time = new Date(msgDate);
 
-        var year = time.getFullYear();
-        var month = time.getMonth() + 1;
-        var day = time.getDate();
+          var year = time.getFullYear();
+          var month = time.getMonth() + 1;
+          var day = time.getDate();
 
-        var hours = time.getHours();
-        var minutes = time.getMinutes();
+          var hours = time.getHours();
+          var minutes = time.getMinutes();
 
-        date = year + "-" + month + "-" + day + " " + hours + ":" + minutes;
-        return date;
-    }
-    function scrollBottom(){
+          date = year + "-" + month + "-" + day + " " + hours + ":" + minutes;
+          return date;
+      }
+      function scrollBottom(){
 
-        const objDiv = document.querySelector(".msg_history");
-        objDiv.scrollTop = objDiv.scrollHeight;
-    }
-</script>
-</body>
+          const objDiv = document.querySelector(".msg_history");
+          objDiv.scrollTop = objDiv.scrollHeight;
+      }
+    </script>
+  </body>
 </html>
