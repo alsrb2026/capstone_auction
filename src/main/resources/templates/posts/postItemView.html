@@ -377,7 +377,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
              });// $('#bidButton').on('click', function(e){})끝
 
             $("#buyButton").on("click", function(e){
-                if("즉시 구매하시겠습니까?"){
+                if(confirm("즉시 구매하시겠습니까?")){
                     $.ajax({
                         type: "POST",
                         url: "/post/buy",

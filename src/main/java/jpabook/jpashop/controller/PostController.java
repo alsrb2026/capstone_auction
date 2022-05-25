@@ -401,10 +401,10 @@ public class PostController {
         Long id = (Long)session.getAttribute("id");
         // .html 화면에서 이미 즉시 구매하는 사람과 등록한 사람을 구분해서 데이터가 오기 때문에 예외 처리할 필요 X.
         // 현재 구매한 사용자 id, 입찰 상태,
-        Post post = postRepository.findOne(postId);
-        postService.updatePostBidStatus(post.getId(), id, post.getWinningBid(), "구매 완료");
+        Post post = postService.findOne(postId);
+        postService.updatePostBidStatus(post.getId(), id, post.getNextBid(), "구매 완료");
 
-        String regisName = post.getPostUserName();
+        String regisName = userRepository.findById(post.getPostUserId()).get().getNickname();
         String buyerName = (String)session.getAttribute("nickname");
 
         chatRoomService.createChatRoom(post.getProductName(), post.getPostUserId(), id, regisName, buyerName);
@@ -476,7 +476,7 @@ public class PostController {
 
         Post form = postService.findOne(postId);
 
-        String regisName = form.getPostUserName(); // 판매자 닉네임
+        String regisName = userRepository.findById(form.getPostUserId()).get().getNickname(); // 판매자 닉네임
         String buyerName = (String)session.getAttribute("nickname"); // 구매자 닉네임
 
         // 1. 경매에 참여할 수 있는지 없는지 부터 체크

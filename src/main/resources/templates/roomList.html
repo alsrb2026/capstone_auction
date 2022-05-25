@@ -100,7 +100,6 @@
               $('.chatList').on('click', function(){
                   var receiver;
                   var roomId = $(this).attr('roomId');
-
                   if(document.getElementById(roomId)){
                       document.getElementById(roomId).style.display = 'none';
                   }
@@ -144,9 +143,9 @@
                                     if (content.senderName == sender){
                                         $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                                     }
-                                    else if(value.senderName == "system"){
-                                        $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
-                                    }else if(value.senderName == receiver){
+                                    else if(content.senderName == "system"){
+                                        $("#msgList").append("<div class='syschat'><div>"+ content.senderName + ": " + content.message + "</div></div>");
+                                    }else if(content.senderName == receiver){
                                         $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                                     }
                                 }
@@ -173,11 +172,13 @@
                                 else if(content.chRoomId == "즉구"){
 
                                 }
-                                else if(content.chRoomId == "마감감"){
+                                else if(content.chRoomId == "마감"){
 
                                 }
-                                if(document.getElementByd(content.chRoomId)){
-                                    document.getElementById(content.chRoomId).innerText = "새 메시지";
+                                else{ // 채팅인데 자신이 속해있는 채팅방일 경우.
+                                  if(document.getElementById(content.chRoomId)){
+
+                                  }
                                 }
                             }
                             scrollBottom();
