@@ -54,7 +54,7 @@
 <body>
 <div class="container">
   <div>
-    <div class="top-bar">
+    <div class="top-bar" style="border-bottom: solid 0.1em #fca863">
       <div class="title">
         <a href="/"><img
                 src="images/premium-icon-hammer-2547559.png"
@@ -187,6 +187,54 @@
         integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script th:inline="javascript">
+
+
+  function calcDay(){
+    var regisDate = regisTime.getTime();
+    const time = Math.floor(period * 60 * 1000 * 60);
+    const expiredDate = new Date(regisDate + time);
+    const today = new Date();
+    const distance = expiredDate.getTime() - today.getTime();
+
+    if(distance < 0){
+      document.getElementById("buyButton").disabled = true;
+      document.getElementById("bidButton").disabled = true;
+    }
+    else if(distance == 0){
+      $.ajax({
+        type: "POST",
+        url: "/post/expired",
+        data: {
+          "id": postId,
+          "postUserId": regisId,
+          "type": "expired"
+        },
+        success: function(res){
+          document.getElementById('expButton').disabled = true;
+          clearInterval(timer);
+          stomp.send('/pub/chat/message', {}, JSON.stringify({
+            chRoomId: "만료",
+            senderName: [[${session.nickname}]],
+            receiverName: productName,
+            sendTime: new Date(),
+            message: "마감 " + postId,
+            checkRead: -1
+          }));
+        },
+        error: function(request,status,error){
+          alert("오류 발생");
+        }
+      });
+    }
+    else{
+      var day = Math.floor(distance / (1000*60*60*24));
+      var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
+      var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
+      var seconds = Math.floor((distance % (1000*60))/1000);
+
+      document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
+    }
+  }
 
   toastr.options = {
 			  "closeButton": false,

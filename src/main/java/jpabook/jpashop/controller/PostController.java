@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
@@ -38,6 +39,7 @@ public class PostController {
     private final FilesService filesService;
     private final FilesRepository filesRepository;
     private final CertifiService certifiService;
+    private final EntityManager em;
 
     @GetMapping("/posts/new")
     public String createForm(HttpServletRequest request, Model model) {
@@ -71,7 +73,6 @@ public class PostController {
         String destinationFileName;
         String path = System.getProperty("user.dir");
         String fileUrl = path+"/photo/";
-        System.out.println("path는"+path);
         do {
             destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
             destinationFile = new File(fileUrl + destinationFileName);
@@ -85,6 +86,9 @@ public class PostController {
         filesService.save(file);
         post.setFname(file.getFilename());
         postService.savePost(post);
+
+
+
         return "redirect:/";
     }
 
@@ -229,7 +233,7 @@ public class PostController {
     }
 
     @GetMapping("post/{id}/edit")
-    public String auctionPostForm(@PathVariable("id") Long itemId, Model model, HttpServletRequest request) {
+    public String auctionPostForm(@PathVariable("id") Long itemId, Model model, HttpServletRequest request) throws Exception {
 
         System.out.println("yyy"+itemId); //OK
         PostForm form = new PostForm();
@@ -259,15 +263,17 @@ public class PostController {
         form.setAuctionPeriod(post.getAuctionPeriod());
         form.setStatus(post.getStatus());
         form.setCurrentBidId(post.getCurrentBidId());
+        form.setFname(post.getFname());
+        System.out.println("ggg"+post.getFname());
         // 작성 시간
         model.addAttribute("form", form);
         model.addAttribute("id",itemId);
-        System.out.println("xxx"+itemId);
         return "posts/updatePostForm";
     }
 
     @PostMapping("post/{id}/edit")
-    public String auctionPost(@RequestParam(defaultValue = "1") int page, @PathVariable Long id, @ModelAttribute("form") PostForm form, Model model) {
+    public String auctionPost(@RequestParam(defaultValue = "1") int page, @PathVariable Long id,
+                              @ModelAttribute("form") PostForm form, Model model, @RequestPart MultipartFile files) throws Exception {
         System.out.println("yyyy"+id);
 
         // 총 게시물 수
@@ -282,13 +288,35 @@ public class PostController {
 
         List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
+        //이미지 업로드 코드
+        Files file = new Files();
+
+        String sourceFileName = files.getOriginalFilename();
+        String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
+        File destinationFile;
+        String destinationFileName;
+        String path = System.getProperty("user.dir");
+        String fileUrl = path+"/photo/";
+        do {
+            destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
+            destinationFile = new File(fileUrl + destinationFileName);
+        } while (destinationFile.exists());
+
+        destinationFile.getParentFile().mkdirs();
+        files.transferTo(destinationFile);
+        file.setFilename(destinationFileName);
+        file.setFileOriName(sourceFileName);
+        file.setFileurl(fileUrl);
+        filesService.save(file);
+        //post.setFname(file.getFilename());
+
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
 
         postService.updatePost(id, form.getTitle(),
                 form.getContents(), form.getProductName(), form.getCategory(), form.getStartBid()
                 , form.getWinningBid(), form.getUnitBid(), form.getNextBid(), form.getAuctionPeriod(),
-                form.getStatus(), form.getCurrentBidId());
+                form.getStatus(), form.getCurrentBidId(), file.getFilename());
 
         return "redirect:/";
     }

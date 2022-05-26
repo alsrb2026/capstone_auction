@@ -190,6 +190,7 @@
 }
 .slick-arrow{
   display:none;
+  background-color: #fca863;
 }
 .slide{
   display: none;
@@ -279,7 +280,7 @@
 }
 #prevArrow,
 #nextArrow {
-  background-color: rgb(83, 81, 81);
+  background-color: #fca863;
   border-radius: 50%;
   position: absolute;
   top: 50%;

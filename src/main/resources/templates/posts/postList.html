@@ -20,7 +20,7 @@
   </head>
   <body>
     <div th:replace="fragments/bodyHeader :: bodyHeader" />
-    <div class="top-box">
+    <div class="top-box" style="border-bottom: solid 0.1em #fca863">
       <div class="nav-banner">
         <a href="/posts">전체 보기</a>
         <a href="/post/searchCategory/book"
@@ -44,7 +44,7 @@
             type="text"
             placeholder="내가 찾는 도서, 전자기기"
           />
-          <input type="submit" class="search-btn" value="검색" />
+          <input type="submit" class="search-btn" value="검색" style="background-color: #fca863; border-color: white"/>
         </form>
       </div>
     </div>
@@ -61,7 +61,7 @@
               </div>
 
               <div>
-                <span>현재가 : </span
+                <span>현재가 :     </span
                 ><span class="nextBid" th:text="${board.nextBid}"></span>
               </div>
               <div>
@@ -69,17 +69,14 @@
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
               </div>
               <div>
-                <span>마감된 시간 : </span
+                <div>
+                <span>마감기한 : </span
                 ><span
-                      th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
-              ></span>
+                        th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
+                ></span>
+                </div>
+                <img id="saled" src="/images/saled.png"/>
               </div>
-              <div>
-                <span>조회수 : </span
-                ><span class="view" th:text="${board.view}"></span>
-              </div>
-              <img id="saled" src="/images/saled.png"/>
-            </div>
           </a>
           <a href="#" th:if="${board.status == '입찰 중'}" th:href="@{/post/{id}/bid (id=${board.id})}">
             <div style="display: flex; justify-content: center; ">
@@ -98,9 +95,9 @@
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
               </div>
               <div>
-                <span>남은 기간 : </span
+                <span>마감기한 : </span
                 ><span
-                      th:id="${board.id}" th:text="${board.regisTime}"
+                      th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
               ></span>
               </div>
             </div>
@@ -109,7 +106,7 @@
       </div>
     </div>
     <nav class="nav-box" aria-label="Page navigation example ">
-      <ul class="pagination">
+      <ul style="border : solid 2px; border-color: #fca863" class="pagination">
         <li class="page-item">
           <a class="page-link" th:href="@{/posts?page=1}" aria-label="Previous">
             <span aria-hidden="true">처음</span>

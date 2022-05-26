@@ -37,4 +37,5 @@ out/
 .vscode/
 /photo/
 /src/main/java/jpabook/jpashop/security/config/DatabaseConfig.java
+DatabaseConfig.java
 /src/main/resources/application.yml

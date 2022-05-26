@@ -96,17 +96,19 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         </div>
         <div class="form-group certify" style="display: none;">
           <label th:for="nickname">인증번호</label>
+          <div style="display: flex">
           <input
                 type="text"
                 id="userNum"
                 class="form-control"
         >   <!-- 인증번호 입력창 -->
-          <button type="button" id="enterBtn">인증확인</button>  <!-- 인증번호와 내가 입력창에 입력한 인증번호 비교하는 창 -->
+          <button type="button" id="enterBtn" style="text-align: center">인증확인</button>  <!-- 인증번호와 내가 입력창에 입력한 인증번호 비교하는 창 -->
+        </div>
         </div>
 
-        <button type="submit" class="btn btn-primary sign-up-btn">
-          가입하기
-        </button>
+        <button style="background-color: #5a6268" type="submit" class="btn btn-primary sign-up-btn"
+                disabled/>
+        인증하세요
       </form>
       <br />
     </div>
@@ -115,6 +117,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
 <script type="text/javascript">
   const certify = document.querySelector(".certify");
+  const signupBtn = document.querySelector(".sign-up-btn");
   $('#send').click(function() {
     certify.style.display = "block";
     const to = $('#to').val();
@@ -127,22 +130,23 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       },
       success: function(data) {
         const checkNum = data;
-        alert('인증번호 :'+ checkNum);
+        alert('문자전송비용 아끼려고 문자대신 팝업창띄움 \n인증번호 :'+ checkNum);
 
         $('#enterBtn').click(function() {
           const userNum = $('#userNum').val();
 
           if(checkNum === userNum) {
             alert('인증 성공하였습니다.');
+            signupBtn.disabled = false;
+            signupBtn.innerText = "가입하기"
+            signupBtn.style.backgroundColor = "#07C9F0"
           }
           else {
             alert('인증 실패하였습니다. 다시 입력해주세요.');
           }
         });
-
       }
     });
-
   });
 </script>
 </html>
