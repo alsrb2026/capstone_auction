@@ -20,7 +20,7 @@
   </head>
   <body>
     <div th:replace="fragments/bodyHeader :: bodyHeader" />
-    <div class="top-box">
+    <div class="top-box" style="border-bottom: solid 0.1em #fca863">
       <div class="nav-banner">
         <a href="/posts">전체 보기</a>
         <a href="/post/searchCategory/book"
@@ -44,7 +44,7 @@
             type="text"
             placeholder="내가 찾는 도서, 전자기기"
           />
-          <input type="submit" class="search-btn" value="검색" />
+          <input type="submit" class="search-btn" value="검색" style="background-color: #fca863; border-color: white"/>
         </form>
       </div>
     </div>
@@ -69,13 +69,7 @@
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
               </div>
               <div>
-                <span>상태 : </span
-                ><span class="status" th:text="${board.status}"></span>
-              </div>
-              <div th:if="${board.status == '입찰 중'}">
-                남은 시간 : <span th:id="${board.id}" th:text="${board.regisTime}"></span>
-              <div>
-              <div th:if="${board.status != '입찰 중'}">
+
                 <span>마감된 시간 : </span
                 ><span
                       th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
@@ -91,6 +85,25 @@
           <a href="#" th:if="${board.status == '입찰 중'}" th:href="@{/post/{id}/bid (id=${board.id})}">
             <div style="display: flex; justify-content: center; ">
               <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
+            </div>
+            <div class="product-info">
+              <div>
+                <span class="p-title" th:text="${board.title}"></span>
+              </div>
+              <div>
+                <span>현재가 : </span
+                ><span class="nextBid" th:text="${board.nextBid}"></span>
+              </div>
+              <div>
+                <span>즉시구매가 : </span
+                ><span class="winningBid" th:text="${board.winningBid}"></span>
+              </div>
+              <div>
+                <span>남은 기간 : </span
+                ><span
+                      th:id="${board.id}" th:text="${board.regisTime}"
+              ></span>
+              </div>
             </div>
           </a>
         </div>
@@ -151,30 +164,5 @@
 <script th:inline="javascript">
   var timer;
   console.log([[${boardList}]].size());
-  // calcDay();
-  // timer = setInterval(calcDay, 1000);
-  function calcDay(){
-                var regisDate = regisTime.getTime();
-                const time = Math.floor(period * 60 * 1000 * 60);
-                const expiredDate = new Date(regisDate + time);
-                const today = new Date();
-                const distance = expiredDate.getTime() - today.getTime();
-
-                if(distance < 0){
-                    document.getElementById("buyButton").disabled = true;
-                    document.getElementById("bidButton").disabled = true;
-                }
-                else if(distance == 0){
-
-                }
-                else{
-                    var day = Math.floor(distance / (1000*60*60*24));
-                    var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
-                    var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
-                    var seconds = Math.floor((distance % (1000*60))/1000);
-
-                    document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
-                }
-            }
 </script>
 </html>
