@@ -73,7 +73,7 @@
                 ><span class="status" th:text="${board.status}"></span>
               </div>
               <div th:if="${board.status == '입찰 중'}">
-                남은 시간 : <span th:id="${board.id}" th:text="${board.regisTime}"></span
+                남은 시간 : <span th:id="${board.id}" th:text="${board.regisTime}"></span>
               <div>
               <div th:if="${board.status != '입찰 중'}">
                 <span>마감된 시간 : </span
