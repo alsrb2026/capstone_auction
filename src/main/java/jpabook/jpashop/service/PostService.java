@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -97,7 +98,7 @@ public class PostService {
 
     public void updatePostStatus(Long id, Long currentBidId, String status){ postRepository.updatePostStatus(id, currentBidId, status); }
 
-    public void updatePostBidStatus(Long id, Long currentBidId, int nextBid, String status){ postRepository.updatePostBidStatus(id, currentBidId, nextBid, status); }
+    public void updatePostBidStatusDate(Long id, Long currentBidId, int nextBid, String status, Date date){ postRepository.updatePostBidStatusDate(id, currentBidId, nextBid, status, date); }
 
 }
 

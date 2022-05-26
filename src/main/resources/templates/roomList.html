@@ -100,6 +100,7 @@
               $('.chatList').on('click', function(){
                   var receiver;
                   var roomId = $(this).attr('roomId');
+
                   if(document.getElementById(roomId)){
                       document.getElementById(roomId).style.display = 'none';
                   }
@@ -172,13 +173,11 @@
                                 else if(content.chRoomId == "즉구"){
 
                                 }
-                                else if(content.chRoomId == "마감"){
+                                else if(content.chRoomId == "마감감"){
 
                                 }
-                                else{ // 채팅인데 자신이 속해있는 채팅방일 경우.
-                                  if(document.getElementById(content.chRoomId)){
-
-                                  }
+                                if(document.getElementByd(content.chRoomId)){
+                                    document.getElementById(content.chRoomId).innerText = "새 메시지";
                                 }
                             }
                             scrollBottom();

@@ -402,40 +402,12 @@ public class PostController {
         // .html 화면에서 이미 즉시 구매하는 사람과 등록한 사람을 구분해서 데이터가 오기 때문에 예외 처리할 필요 X.
         // 현재 구매한 사용자 id, 입찰 상태,
         Post post = postService.findOne(postId);
-        postService.updatePostBidStatus(post.getId(), id, post.getNextBid(), "구매 완료");
+        postService.updatePostBidStatusDate(post.getId(), id, post.getNextBid(), "구매 완료", new Date());
 
         String regisName = userRepository.findById(post.getPostUserId()).get().getNickname();
         String buyerName = (String)session.getAttribute("nickname");
 
         chatRoomService.createChatRoom(post.getProductName(), post.getPostUserId(), id, regisName, buyerName);
-    }
-
-    @Transactional
-    @PostMapping("/post/timeExpired")
-    public String timeExpired(PostForm form, HttpServletRequest request){
-
-        HttpSession session = request.getSession();
-        Long id = (Long)session.getAttribute("id");
-
-        String regisName, buyerName;
-
-        if(id == form.getPostUserId()){
-            regisName = (String)session.getAttribute("nickname");
-            buyerName = userRepository.findById(form.getCurrentBidId()).get().getNickname();
-
-            chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id
-                    , regisName, buyerName);
-            return "roomList";
-        }
-        if(id == form.getCurrentBidId()){
-            regisName =  userRepository.findById(form.getPostUserId()).get().getNickname();
-            buyerName = (String)session.getAttribute("nickname");
-            chatRoomService.createChatRoom(form.getProductName() + "()", form.getPostUserId(), id
-                    , regisName, buyerName);
-            return "roomList";
-        }
-
-        return "posts/postList";
     }
 
     @ResponseBody
@@ -484,18 +456,18 @@ public class PostController {
             // 1-1. 현재 입찰한 사용자가 첫 번째 입찰자일 경우
             if (form.getCurrentBidId() == 0) { //
                 System.out.println(">>> startBid , unit" + form.getStartBid() + "   " + form.getUnitBid() + " >>>");
-                postService.updatePostBidStatus(form.getId(), id, form.getStartBid() + form.getUnitBid(), "입찰 중");
+                postService.updatePostBidStatusDate(form.getId(), id, form.getStartBid() + form.getUnitBid(), "입찰 중", form.getRegisTime());
             }
             // 1-2. 첫 번째 입찰자가 아닐 경우
             else {
                 if (form.getNextBid() == form.getWinningBid()) { // 1-2-(1). 현재 입찰한 금액이 낙찰가일 경우
-                    postService.updatePostBidStatus(form.getId(), id, form.getWinningBid(), "낙찰 완료");
+                    postService.updatePostBidStatusDate(form.getId(), id, form.getWinningBid(), "낙찰 완료", new Date());
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
 
                     chatRoomService.createChatRoom(form.getProductName(), form.getPostUserId(), id
                             , regisName, buyerName);
                 } else if (form.getNextBid() < form.getWinningBid()) { // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
-                    postService.updatePostBidStatus(form.getId(), id, form.getWinningBid(), "입찰 중");
+                    postService.updatePostBidStatusDate(form.getId(), id, form.getWinningBid(), "입찰 중", form.getRegisTime());
                 } else {} // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
             }
         }
