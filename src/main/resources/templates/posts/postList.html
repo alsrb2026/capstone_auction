@@ -94,8 +94,8 @@
                 <span>즉시구매가 : </span
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
               </div>
-              <div>
-                <span>마감기한 : </span
+              <div id="${board.id}">
+                <span>남은 기간 : </span
                 ><span
                       th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
               ></span>
