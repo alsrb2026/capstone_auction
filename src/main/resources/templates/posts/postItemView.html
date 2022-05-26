@@ -61,22 +61,21 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             <input type="hidden" th:field="*{postUserId}">
             <input type="hidden" th:field="*{currentBidId}">
             <div class="post-box">
-            <div class="img-box" >
-                <img th:if="*{status == '입찰 중'}" class="post-img" th:src="'/postimages/'+${file}"/>
-                <img th:if="*{status != '입찰 중'}"class="post-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${file}"/>
+                <div class="img-box" >
+                    <img th:if="*{status == '입찰 중'}" class="post-img" th:src="'/postimages/'+${file}"/>
+                    <img th:if="*{status != '입찰 중'}"class="post-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${file}"/>
 
-                <div class="content form-groups">
-                    내용: <br> <div class="text" style="width:50%" th:text="*{contents}"></div>
-                    <input type="hidden" th:field="*{contents}">
+                    <div class="content form-groups">
+                        내용: <br> <div class="text" style="width:50%" th:text="*{contents}"></div>
+                        <input type="hidden" th:field="*{contents}">
+                    </div>
                 </div>
-            </div>
-            <div class="post-content">
-                <div class="product-title form-groups">
-                    <div class="text" style="width:50%" th:text="*{title}"></div>
-                    <input type="hidden" th:field="*{title}">
-                    <input type="hidden" th:field="*{view}">
-                </div>
-
+                <div class="post-content">
+                    <div class="product-title form-groups">
+                        <div class="text" style="width:50%" th:text="*{title}"></div>
+                        <input type="hidden" th:field="*{title}">
+                        <input type="hidden" th:field="*{view}">
+                    </div>
                 <input type="hidden" th:field="*{status}">
                 <input type="hidden" th:field="*{startBid}">
                 <div class="writter form-groups">
@@ -97,8 +96,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         <span>입찰단위 : </span><div id="unit" class="text" style="width:50%" th:text="*{unitBid}"></div>
                         <input type="hidden" th:field="*{unitBid}">
                     </div>
-                <input type="hidden" th:field="*{auctionPeriod}">
-
+                    <input type="hidden" th:field="*{auctionPeriod}">
                 <div class="status form-groups">
                     입찰상태 : <div id="stat" class="text" style="width:50%" th:text="*{status}"></div>
                     <input type="hidden" th:field="*{status}">
@@ -160,6 +158,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                      background-color: red;"id="deleteButton" href="#" th:href="@{/post/{id}/delete (id=${form.id})}"  role="button">삭제</a>
                     </div>
                 </div>
+            </div>
             </div>
             </form>
             <input type="hidden" th:field="${form.id}">
@@ -335,7 +334,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         else{
                             $('#stat').text("낙찰 완료");
                             if(id == parseInt(msg[1])){
-                                console.log("====");
                                 toastr.success(content.receiverName + "이(가) 낙찰되었습니다. <br> 채팅방을 확인하세요");
                                 document.getElementById('bidButton').disabled = true;
                                 document.getElementById('buyButton').disabled = true;
@@ -345,7 +343,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                                 toastr.success("입찰이 종료되었습니다.");
                             }
                             else{
-                                console.log("!!!!");
                                 toastr.success("마감된 물품입니다.");
                                 document.getElementById('bidButton').disabled = true;
                                 document.getElementById('buyButton').disabled = true;

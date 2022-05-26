@@ -159,6 +159,30 @@
   </body>
 <script th:inline="javascript">
   var timer;
-  console.log([[${boardList}]].size());
+  // calcDay();
+  // timer = setInterval(calcDay, 1000);
+  function calcDay(){
+                var regisDate = regisTime.getTime();
+                const time = Math.floor(period * 60 * 1000 * 60);
+                const expiredDate = new Date(regisDate + time);
+                const today = new Date();
+                const distance = expiredDate.getTime() - today.getTime();
+
+                if(distance < 0){
+                    document.getElementById("buyButton").disabled = true;
+                    document.getElementById("bidButton").disabled = true;
+                }
+                else if(distance == 0){
+
+                }
+                else{
+                    var day = Math.floor(distance / (1000*60*60*24));
+                    var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
+                    var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
+                    var seconds = Math.floor((distance % (1000*60))/1000);
+
+                    document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
+                }
+            }
 </script>
 </html>
