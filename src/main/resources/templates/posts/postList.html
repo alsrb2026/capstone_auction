@@ -59,10 +59,7 @@
               <div>
                   <span class="p-title" th:text="${board.title}"></span>
               </div>
-              <div>
-                <span>상품명 : </span
-                ><span class="name" th:text="${board.productName}"></span>
-              </div>
+
               <div>
                 <span>현재가 : </span
                 ><span class="nextBid" th:text="${board.nextBid}"></span>
@@ -76,11 +73,8 @@
                 ><span class="status" th:text="${board.status}"></span>
               </div>
               <div th:if="${board.status == '입찰 중'}">
-                <span>남은 시간 : </span
-                ><span
-                  th:id="${board.id}"
-                ></span>
-              </div>
+                <span th:id="${board.id}">남은 시간 : </span
+              <div>
               <div th:if="${board.status != '입찰 중'}">
                 <span>마감된 시간 : </span
                 ><span
@@ -103,10 +97,6 @@
                 <span class="p-title" th:text="${board.title}"></span>
               </div>
               <div>
-                <span>상품명 : </span
-                ><span class="name" th:text="${board.productName}"></span>
-              </div>
-              <div>
                 <span>현재가 : </span
                 ><span class="nextBid" th:text="${board.nextBid}"></span>
               </div>
@@ -115,18 +105,10 @@
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
               </div>
               <div>
-                <span>상태 : </span
-                ><span class="status" th:text="${board.status}"></span>
-              </div>
-              <div>
                 <span>마감기한 : </span
                 ><span
                       th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
               ></span>
-              </div>
-              <div>
-                <span>조회수 : </span
-                ><span class="view" th:text="${board.view}"></span>
               </div>
             </div>
           </a>
