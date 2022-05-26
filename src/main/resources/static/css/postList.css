@@ -24,10 +24,15 @@
 .search-form{
   height: 50px;
 }
-
 .product-box{
+  width: 350px;
   height: 400px;
   padding: 10px;
+}
+.imgbox{
+  display: flex;
+  justify-content: center;
+  border: 1px solid silver;
 }
 .icon{
   position: relative;
@@ -50,6 +55,7 @@
 .product-list{
   display: grid;
   grid-template-columns: 100%;
+  justify-content: center;
   gap: 20px 40px;
   margin-bottom: 30px;
 }
@@ -63,7 +69,11 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
+}
+.page-link{
+  color: #fca863;
+  border: none;
 }
 .product-info div, span{
   font-family: none;
@@ -86,10 +96,10 @@
 }
 @media (min-width: 768px) {
 .product-list{
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
 } }
 
 @media (min-width: 992px) {
 .product-list{
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr 1fr;
 } }

@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class PostService {
     public void updatePost(Long id, String title, String contents,
                            String productName, String category, int startBid,
                            int winningBid, int unitBid, int nextBid,
-                           int auctionPeriod, String status, Long currentBidId ) {
+                           int auctionPeriod, String status, Long currentBidId, String file) {
         System.out.println("updatett"+id);
         Post post = postRepository.findOne(id);
         post.setTitle(title);
@@ -38,6 +39,7 @@ public class PostService {
         post.setAuctionPeriod(auctionPeriod);
         post.setStatus(status);
         post.setCurrentBidId(currentBidId);
+        post.setFname(file);
     } // 만약 입찰한 유저가 있고, currentBidId를 update할 때, 같이 넣지 않으면 입찰한 유저 정보가 사라져서 추가함.
 
 
@@ -97,7 +99,7 @@ public class PostService {
 
     public void updatePostStatus(Long id, Long currentBidId, String status){ postRepository.updatePostStatus(id, currentBidId, status); }
 
-    public void updatePostBidStatus(Long id, Long currentBidId, int nextBid, String status){ postRepository.updatePostBidStatus(id, currentBidId, nextBid, status); }
+    public void updatePostBidStatusDate(Long id, Long currentBidId, int nextBid, String status, Date date){ postRepository.updatePostBidStatusDate(id, currentBidId, nextBid, status, date); }
 
 }
 

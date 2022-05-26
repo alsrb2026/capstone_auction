@@ -144,9 +144,9 @@
                                     if (content.senderName == sender){
                                         $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                                     }
-                                    else if(value.senderName == "system"){
-                                        $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
-                                    }else if(value.senderName == receiver){
+                                    else if(content.senderName == "system"){
+                                        $("#msgList").append("<div class='syschat'><div>"+ content.senderName + ": " + content.message + "</div></div>");
+                                    }else if(content.senderName == receiver){
                                         $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                                     }
                                 }
@@ -156,7 +156,27 @@
                                 scrollBottom();
                             }
                             else{
-                                if(document.getElementById(content.chRoomId)){
+                                msg = content.message.split(" ");
+                                // msg[1]: 입찰한 유저 id
+                                // msg[3]: 이벤트 발생한 게시물 올린 유저 id
+                                // msg[5]: 이벤트 발생한 게시물 id
+                                if(content.chRoomId == "입찰"){
+                                  if([[${session.id}]] == parseInt(msg[3])){
+                                    toastr.info(content.senderName + "님이 " + content.receiverName + "에 입찰하였습니다. ");
+                                  }
+                                }
+                                else if(content.chRoomId == "낙찰"){
+                                  if([[${session.id}]] == parseInt(msg[3])){
+                                    toastr.info(content.senderName + "님이 " + content.receiverName + "을 낙찰하였습니다. <br> 채팅방을 새로고침 해주세요");
+                                  }
+                                }
+                                else if(content.chRoomId == "즉구"){
+
+                                }
+                                else if(content.chRoomId == "마감감"){
+
+                                }
+                                if(document.getElementByd(content.chRoomId)){
                                     document.getElementById(content.chRoomId).innerText = "새 메시지";
                                 }
                             }

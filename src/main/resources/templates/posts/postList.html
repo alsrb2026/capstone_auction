@@ -20,7 +20,7 @@
   </head>
   <body>
     <div th:replace="fragments/bodyHeader :: bodyHeader" />
-    <div class="top-box">
+    <div class="top-box" style="border-bottom: solid 0.1em #fca863">
       <div class="nav-banner">
         <a href="/posts">전체 보기</a>
         <a href="/post/searchCategory/book"
@@ -44,25 +44,22 @@
             type="text"
             placeholder="내가 찾는 도서, 전자기기"
           />
-          <input type="submit" class="search-btn" value="검색" />
+          <input type="submit" class="search-btn" value="검색" style="background-color: #fca863; border-color: white"/>
         </form>
       </div>
     </div>
     <div class="container">
       <div class="product-list">
         <div class="product-box" th:each="board : ${boardList}">
-          <a href="#" th:if="${board.status == '낙찰 완료'} or ${board.status == '구매 완료'}" th:href="@{/post/{id}/auction (id=${board.id})}">
-            <div style="display: flex; justify-content: center;">
+          <a href="#" th:if="${board.status != '입찰 중'}"  th:href="@{/post/{id}/bid (id=${board.id})}">
+            <div class="imgbox">
               <img class="product-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${board.getFname()}"/>
             </div>
             <div class="product-info saled" style=" background-color:#e6e6e6">
               <div>
                   <span class="p-title" th:text="${board.title}"></span>
               </div>
-              <div>
-                <span>상품명 : </span
-                ><span class="name" th:text="${board.productName}"></span>
-              </div>
+
               <div>
                 <span>현재가 : </span
                 ><span class="nextBid" th:text="${board.nextBid}"></span>
@@ -72,14 +69,11 @@
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
               </div>
               <div>
-                <span>상태 : </span
-                ><span class="status" th:text="${board.status}"></span>
-              </div>
-              <div>
-                <span>마감기한 : </span
+
+                <span>마감된 시간 : </span
                 ><span
-                  th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
-                ></span>
+                      th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
+              ></span>
               </div>
               <div>
                 <span>조회수 : </span
@@ -88,17 +82,13 @@
               <img id="saled" src="/images/saled.png"/>
             </div>
           </a>
-          <a href="#" th:if="${board.status != '낙찰 완료'} and ${board.status != '구매 완료'}" th:href="@{/post/{id}/auction (id=${board.id})}">
+          <a href="#" th:if="${board.status == '입찰 중'}" th:href="@{/post/{id}/bid (id=${board.id})}">
             <div style="display: flex; justify-content: center; ">
               <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
             </div>
             <div class="product-info">
               <div>
                 <span class="p-title" th:text="${board.title}"></span>
-              </div>
-              <div>
-                <span>상품명 : </span
-                ><span class="name" th:text="${board.productName}"></span>
               </div>
               <div>
                 <span>현재가 : </span
@@ -109,18 +99,10 @@
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
               </div>
               <div>
-                <span>상태 : </span
-                ><span class="status" th:text="${board.status}"></span>
-              </div>
-              <div>
-                <span>마감기한 : </span
+                <span>남은 기간 : </span
                 ><span
-                      th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
+                      th:id="${board.id}" th:text="${board.regisTime}"
               ></span>
-              </div>
-              <div>
-                <span>조회수 : </span
-                ><span class="view" th:text="${board.view}"></span>
               </div>
             </div>
           </a>
@@ -179,4 +161,8 @@
       </ul>
     </nav>
   </body>
+<script th:inline="javascript">
+  var timer;
+  console.log([[${boardList}]].size());
+</script>
 </html>

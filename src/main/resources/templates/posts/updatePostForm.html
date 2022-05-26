@@ -22,8 +22,8 @@
     <body>
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
         <div class="container">
-            <form th:action="@{/post/{id}/edit (id=${form.id})}" th:object="${form}" method="post">
-                <input type="hidden" th:field="*{id}" />
+            <form th:action="@{/post/{id}/edit (id=${form.id})}" th:object="${form}" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:field="*{id}" th:src="*{fname}" />
                 <div class="form-group">
 
                     <div>카테고리</div>
@@ -138,4 +138,7 @@
         </div>
 </div>
 </body>
+<script>
+    document.getElementById()
+</script>
 </html>

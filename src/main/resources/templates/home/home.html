@@ -54,7 +54,7 @@
 <body>
 <div class="container">
   <div>
-    <div class="top-bar">
+    <div class="top-bar" style="border-bottom: solid 0.1em #fca863">
       <div class="title">
         <a href="/"><img
                 src="images/premium-icon-hammer-2547559.png"
@@ -71,7 +71,7 @@
 
       <div class="nav-banner">
         <a href="/posts/new"><img class="icon" src="images/contact-form.png"/>물품 등록</a>
-        <div id="posts"><img class="icon" src="images/list.png"/>물품 거래</div>
+        <a href="/posts" id="posts"><img class="icon" src="images/list.png"/>물품 거래</a>
         <div id="category-box" style="display: none">
           <a href="/posts">전체 보기</a>
           <a href="/post/searchCategory/book"><img class="icon" src="images/book.png"/>도서</a>
@@ -122,7 +122,7 @@
 <div class="top5">
   <div class="product-box" th:each="board : ${boardList}">
 
-    <a href="#" th:href="@{/post/{id}/auction (id=${board.id})}">
+    <a href="#" th:href="@{/post/{id}/bid (id=${board.id})}">
       <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
 
       <div class="product-info">
@@ -188,6 +188,54 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script th:inline="javascript">
 
+
+  function calcDay(){
+    var regisDate = regisTime.getTime();
+    const time = Math.floor(period * 60 * 1000 * 60);
+    const expiredDate = new Date(regisDate + time);
+    const today = new Date();
+    const distance = expiredDate.getTime() - today.getTime();
+
+    if(distance < 0){
+      document.getElementById("buyButton").disabled = true;
+      document.getElementById("bidButton").disabled = true;
+    }
+    else if(distance == 0){
+      $.ajax({
+        type: "POST",
+        url: "/post/expired",
+        data: {
+          "id": postId,
+          "postUserId": regisId,
+          "type": "expired"
+        },
+        success: function(res){
+          document.getElementById('expButton').disabled = true;
+          clearInterval(timer);
+          stomp.send('/pub/chat/message', {}, JSON.stringify({
+            chRoomId: "만료",
+            senderName: [[${session.nickname}]],
+            receiverName: productName,
+            sendTime: new Date(),
+            message: "마감 " + postId,
+            checkRead: -1
+          }));
+        },
+        error: function(request,status,error){
+          alert("오류 발생");
+        }
+      });
+    }
+    else{
+      var day = Math.floor(distance / (1000*60*60*24));
+      var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
+      var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
+      var seconds = Math.floor((distance % (1000*60))/1000);
+
+      document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
+    }
+  }
+
   toastr.options = {
 			  "closeButton": false,
 			  "debug": false,
@@ -199,7 +247,7 @@
 			  "showDuration": "100",
 			  "hideDuration": "1000",
 			  "timeOut": "1500",
-			  "extendedTimeOut": "1000",
+			  "extendedTimeOut": "3000",
 			  "showEasing": "swing",
 			  "hideEasing": "linear",
 			  "showMethod": "fadeIn",
@@ -236,21 +284,36 @@
       console.log("server connected... ");
       stomp.subscribe("/sub/chat/room", function(chat){
         var content = JSON.parse(chat.body);
-         if(name == content.receiverName){
-          toastr.info("새 메시지가 도착했습니다.<br>" + content.senderName + ": " + content.message);
-         }
-      });
-
-      stomp.subscribe("/sub/item/auction", function(post){
-        var content = JSON.parse(post.body);
-
-      });
-
-      stomp.subscribe("/sub/item/buy", function(post){
-        var content = JSON.parse(post.body);
-          if(name == content.postUserName){
-            toastr.success("올리신 " + content.productName + "이 즉시 구매되었습니다.");
+        msg1 = content.chRoomId.split(" ");
+         if(msg1[0] == '마감'){
+          msg2 = content.message.split(" ");
+          if([[${session.id}]] == parseInt(msg2[1])){
+            toastr.info(content.senderName + "님의 " + content.receiverName + " 입찰을 종료했습니다.");
           }
+         }
+         else if(msg1[0] == '입찰'){
+            msg2 = content.message.split(" ");
+            if([[${session.id}]] == parseInt(msg2[3])){
+              toastr.info(content.senderName + "님이 " + content.receiverName + "에 입찰하였습니다.");
+            }
+         }
+         else if(msg1[0] == '낙찰'){
+            msg2 = content.message.split(" ");
+            if([[${session.id}]] == parseInt(msg2[3])){
+              toastr.info(content.senderName + "님이 " + content.receiverName + "을 낙찰하였습니다. <br> 채팅방을 확인하세요");
+            }
+         }
+         else if(msg1[0] == '즉구'){
+            msg2 = content.message.split(" ");
+            if([[${session.id}]] == parseInt(msg2[3])){
+              toastr.info(content.senderName + "님이 " + content.receiverName + "을 즉시 구매 하였습니다. <br> 채팅방을 확인하세요");
+            }
+         }
+         else{
+            if([[${session.nickname}]] == content.receiverName){
+              toastr.info("새 메시지가 도착했습니다.<br>" + content.senderName + ": " + content.message);
+            }
+         }
       });
     });
   }

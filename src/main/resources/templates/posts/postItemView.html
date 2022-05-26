@@ -32,7 +32,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 </head>
 <body onload="check()">
 <div class="container">
-    <div style="position: relative; width: 850px">
+    <div style="position: relative; width: 100%">
     <div class="top-bar">
         <div class="title">
             <a href="/"
@@ -54,8 +54,14 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             <input type="hidden" th:field="*{postUserId}">
             <input type="hidden" th:field="*{currentBidId}">
             <div class="post-box">
-            <div class="img-box">
-                <img class="post-img" th:src="'/postimages/'+${file}"/>
+            <div class="img-box" >
+                <img th:if="*{status == '입찰 중'}" class="post-img" th:src="'/postimages/'+${file}"/>
+                <img th:if="*{status != '입찰 중'}"class="post-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${file}"/>
+
+                <div class="content form-groups">
+                    내용: <br> <div class="text" style="width:50%" th:text="*{contents}"></div>
+                    <input type="hidden" th:field="*{contents}">
+                </div>
             </div>
             <div class="post-content">
                 <div class="product-title form-groups">
@@ -63,61 +69,42 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     <input type="hidden" th:field="*{title}">
                     <input type="hidden" th:field="*{view}">
                 </div>
-                <div class="view">
-                    조회수 : <div class="text" style="width:50%" th:text="*{view}"></div>
-                    <input type="hidden" th:field="*{view}">
-                </div>
-                <div class="form-groups">
-                    <div class="productName">
-                        상품명 : <div class="text" style="width:50%" th:text="*{productName}"></div>
-                        <input type="hidden" th:field="*{productName}">
-                    </div>
-                    <div class="category">
-                        카테고리 : <div class="text" style="width:50%" th:text="*{category}"></div>
-                        <input type="hidden" th:field="*{category}">
-                    </div>
-                </div>
-
-                <div class="content form-groups">
-                    내용: <br> <div class="text" style="width:50%" th:text="*{contents}"></div>
-                    <input type="hidden" th:field="*{contents}">
-                </div>
 
                 <input type="hidden" th:field="*{status}">
                 <input type="hidden" th:field="*{startBid}">
-                <div class="form-groups price-box"/>
-                    <div class="nextBid">
-                        현재가 : <div class="text" style="width:50%" id="nextBid" th:text="*{nextBid}"></div>
+                    <div class="nextBid form-groups">
+                        <span>현재가 : </span><div class="text" style="width:50%" id="nextBid" th:text="*{nextBid}"></div>
                         <input type="hidden" th:field="*{nextBid}">
                     </div>
                     <input type="hidden" th:field="*{nextBid}">
 
-                    <div class="winningBid">
-                        즉구가 : <div id="winningBid" class="text" style="width:50%" th:text="*{winningBid}"></div>
+                    <div class="winningBid form-groups">
+                        <span>즉구가 : </span><div id="winningBid" class="text" style="width:50%" th:text="*{winningBid}"></div>
                         <input type="hidden" th:field="*{winningBid}">
                     </div>
-                    <div class="unitBid">
-                        입찰단위 : <div id="unit" class="text" style="width:50%" th:text="*{unitBid}"></div>
+                    <div class="unitBid form-groups">
+                        <span>입찰단위 : </span><div id="unit" class="text" style="width:50%" th:text="*{unitBid}"></div>
                         <input type="hidden" th:field="*{unitBid}">
                     </div>
-                </div>
                 <input type="hidden" th:field="*{auctionPeriod}">
 
                 <div class="status form-groups">
-                    입찰상태 : <div id="status" class="text" style="width:50%" th:text="*{status}"></div>
+                    입찰상태 : <div id="stat" class="text" style="width:50%" th:text="*{status}"></div>
                     <input type="hidden" th:field="*{status}">
                 </div>
                 <div class="regisTime form-groups">
-                    <button type="button" id="exp" th:if="${session.id == form.postUserId && form.status == '입찰 중'}">마감</button>
+                    <button type="button" id="expButton" th:if="${form.status == '입찰 중'}">마감</button>
                     <br>
                     <div id="timer">마감된 물품입니다.</div>
                     <input type="hidden" th:field="*{regisTime}">
                 </div>
                 <div style="display:flex; align-items:center">
                     <div class="bid-btn">
-                        <button type="submit" id='bidButton' th:if="${form.status == '입찰 중' && form.postUserId != session.id}">입찰하기</button>
-                        <button type="submit" th:if="${form.status != '입찰 중'}" disabled="disabled">입찰하기</button>
+                        <button type="button" id='bidButton' th:if="${form.status == '입찰 중'}">입찰하기</button>
+                        <button type="button" th:if="${form.status != '입찰 중'}" disabled="disabled">입찰하기</button>
                     </div>
+                    <button class="buy-btn" id='buyButton' type="button" th:if="${form.status == '입찰 중'}">즉시 구매</button>
+                    <button class="buy-btn" type="button" th:if="${form.status != '입찰 중'}" disabled="disabled">즉시 구매</button>
                     <div class="edit-box">
                         <a id="modifyButton" href="#" th:href="@{/post/{id}/edit (id=${form.id})}"  role="button">수정</a>
 
@@ -126,11 +113,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 </div>
             </div>
             </form>
-        <form action="/auction/buy" method="post">
             <input type="hidden" th:field="${form.id}">
-            <button class="buy-btn" id='buyButton' type="submit" th:if="${form.status == '입찰 중' && form.postUserId != session.id}" onclick="buy()">즉시 구매</button>
-            <button class="buy-btn" type="submit" th:if="${form.status != '입찰 중'}" onclick="buy()" disabled="disabled">즉시 구매</button>
-        </form>
         </div>
     </div>
 </div>
@@ -139,27 +122,12 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     const period = [[${form.auctionPeriod}]];
     const status = [[${form.status}]];
     var regisTime = new Date([[${form.regisTime}]]);
-    var timer;
-
-    /*<![CDATA[*/
-    var postUserName =  [[${postUserName}]];
-    var loginUsername = [[${loginName}]];
-    /*]]>*/
-
-    //게시글 작성 사용자면 입찰하기, 즉시구매 버튼 없애기
-    if(postUserName===loginUsername) {
-        document.getElementById('bidButton').style.display = 'none';
-        document.getElementById('buyButton').style.display = 'none';
-        if(status == '입찰 종료'){
-            document.getElementById('exp').disabled = 'disabled';
-        }
-    }
-
-    //게시글 작성 사용자가 아니면 수정,삭제 버튼 없애기
-    if(postUserName!==loginUsername) {
-        document.getElementById('modifyButton').style.display = 'none';
-        document.getElementById('deleteButton').style.display = 'none';
-    }
+    const id = [[${session.id}]];
+    const regisId = [[${form.postUserId}]];
+    const postId = [[${form.id}]];
+    const productName = [[${form.productName}]];
+    const currentBidId = [[${form.currentBidId}]];
+    const name = [[${session.nickname}]];
 
     toastr.options = {
 			  "closeButton": false,
@@ -171,7 +139,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 			  "onclick": null,
 			  "showDuration": "100",
 			  "hideDuration": "1000",
-			  "timeOut": "1500",
+			  "timeOut": "3000",
 			  "extendedTimeOut": "1000",
 			  "showEasing": "swing",
 			  "hideEasing": "linear",
@@ -179,168 +147,318 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 			  "hideMethod": "fadeOut"
 			}
 
-    if([[${session.id}]] != null){
+     function check(){
+        if(status != '입찰 중'){
+            alert('마감된 물품입니다.');
+        }
+     }
+
+    if(id != null){
         var socket = new SockJS("/stomp/chat");
         var stomp = Stomp.over(socket);
+        var timer;
+
+        if(id == regisId){
+            document.getElementById('bidButton').disabled = true;
+            document.getElementById('buyButton').disabled = true;
+        }
+        else{
+            document.getElementById('expButton').disabled = true;
+            document.getElementById('modifyButton').disabled = true;
+            document.getElementById('deleteButton').disabled = true;
+            if(id == [[${form.currentBidId}]]){
+                document.getElementById('bidButton').disabled = true;
+                document.getElementById('buyButton').disabled = true;
+            }
+            else{
+                document.getElementById('bidButton').disabled = false;
+                document.getElementById('buyButton').disabled = false;
+            }
+        }
+
+        calcDay();
+        timer = setInterval(calcDay, 1000);
+
+        if(id != regisId){
+            document.getElementById('expButton').disabled = true;
+        }
 
         stomp.connect({}, function(){
-
-            var bidId = [[${session.id}]];
-            var regisId = [[${form.postUserId}]];
-            var currentBidId = [[${form.currentBidId}]];
 
             console.log("server connected... ");
 
             stomp.subscribe("/sub/chat/room", function(chat){
+
                 var content = JSON.parse(chat.body);
-                    if(name == content.receiverName){
-                    toastr.info("새 메시지가 도착했습니다.<br>" + content.senderName + ": " + content.message);
-                }
-            });
+                // 원래는 ChatMessage message 필드가 메시지 전송할 때 사용하는 메시지 필드지만, 코드 재활용함.
+                // ChatMessage 필드 : 채팅 메시지일 때는 그대로 쓰고 이벤트(입찰, 낙찰, 즉구, 마감)일 경우
+                // chRoomId: 이벤트 내용(입찰, 낙찰, 즉구, 마감)
+                // senderName: 이벤트 발생시킨 사용자 이름
+                // receiverName: 이벤트 발생한 게시물 물품명
+                // sendTime: 이벤트 발생한 시간, recvTime: null
+                // message: 이벤트 발생시킨 유저 id, 이벤트 발생한 게시글 등록 유저 id, 이벤트 발생한 게시글 id
+                // 구분을 위해 " "를 사이에 집어 넣엇 subscribe 로 메시지 받았을 때 구분함.
+                // content.message 를 split(" ") 하면
+                // msg[1]: 입찰한 유저 id
+                // msg[3]: 이벤트 발생한 게시물 올린 유저 id
+                // msg[5]: 이벤트 발생한 게시물 id
 
-            stomp.subscribe("/sub/item/auction", function(params){
-                var content = JSON.parse(params.body);
-                console.log(content);
-                if(name == content.postUserName){
-                    toastr.success("올리신 " + content.productName + "에 누군가 입찰하였습니다.");
+                if(content.chRoomId == "입찰"){ // 입찰인 경우, 입찰한 사용자와 입찰한 게시물 유저에게 메세지 전송 및 데이터 변경.
+                    msg = content.message.split(" ");
+                    if(postId == parseInt(msg[5])){
+                        $('#nextBid').text([[${form.nextBid}]] + [[${form.unitBid}]]);
+                        if(id != parseInt(msg[1]) && id != parseInt(msg[3])){
+                            document.getElementById('bidButton').disabled = false;
+                            document.getElementById('buyButton').disabled = false;
+                        }
+                    }
+                    if(id == parseInt(msg[1])){
+                        toastr.success("입찰에 성공하였습니다.");
+                    }
+                    else if(id == parseInt(msg[3])){
+                        toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰에 참가했습니다.");
+                    }
                 }
-            });
+                else if(content.chRoomId == "낙찰"){
+                    msg = content.message.split(" ");
+                    if(postId == parseInt(msg[5])){
+                        $('#stat').text("낙찰 완료");
+                        clearInterval(timer);
+                        $('#expButton').hide();
+                        $('#timer').text('마감된 물품입니다.'); // timer 변경
+                        document.getElementById('bidButton').disabled = true;
+                        document.getElementById('buyButton').disabled = true;
+                        document.getElementById('modifyButton').disabled = true;
 
-            stomp.subscribe("/sub/item/buy", function(post){
-                var content = JSON.parse(post.body);
-                if(name == content.postUserName){
-                    toastr.success("올리신 " + content.productName + "이 즉시 구매되었습니다.");
+                        if(id == parseInt(msg[1])){
+                            // 사용자 본인이 낙찰한 경우, /pub/chat/message 에서 메시지 전송하기 전에
+                            // ajax 코드에서 버튼 사용 못하도록 미리 설정함. 그래서 메시지만 전송.
+                            toastr.success(content.receiverName + "이(가) 낙찰되었습니다.");
+                        }
+                        else if(id == parseInt(msg[3])){ // 자신이 등록한 판매 물품이 낙찰된 경우
+                            toastr.info(content.receiverName + "이(가) " + content.senderName + "님에게 낙찰되었습니다. <br> 채팅방을 확인하세요" );
+                        }
+                    }else{
+                        if(id == parseInt(msg[1])){
+                            // 사용자 본인이 낙찰한 경우, /pub/chat/message 에서 메시지 전송하기 전에
+                            // ajax 코드에서 버튼 사용 못하도록 미리 설정함. 그래서 메시지만 전송.
+                            toastr.success(content.receiverName + "이(가) 낙찰되었습니다.");
+                        }
+                        else if(id == parseInt(msg[3])){ // 자신이 등록한 판매 물품이 낙찰된 경우
+                            toastr.info(content.receiverName + "이(가) " + content.senderName + "님에게 낙찰되었습니다. <br> 채팅방을 확인하세요" );
+                        }
+                    }
                 }
-            });
-
-            $('#bidButton').on('click', function(){
-                if(bidId != regisId){
-                    if(bidId != currentBidId){
-                        if(confirm("입찰하시겠습니까?")){
-                            stomp.send('/pub/item/auction', {}, JSON.stringify({
-                                "postUserId": regisId,
-                                "productName": [[${form.productName}]],
-                                "bidUserName": [[${session.nickname}]]
-                            }));
-                            alert("입찰에 성공했습니다");
+                else if(content.chRoomId == "즉구"){
+                    msg = content.message.split(" ");
+                    if(postId == parseInt(msg[5])){ // 즉시 구매 이벤트가 발생한 게시물이 현재 보고 있는 게시물일 경우
+                        clearInterval(timer); // 시간 중단.
+                        $('#expButton').hide(); // 마감 버튼 숨기고,
+                        $('#stat').text("구매 완료");
+                        $('#timer').text('마감된 물품입니다.'); // timer 변경
+                        if(id == parseInt(msg[3])){ // 현재 접속한 사용자가 게시물 올린 유저일 경우
+                            document.getElementById('expButton').disabled = true;
+                            toastr.success(content.receiverName + "이(가) " + content.senderName + "님에게 구매되었습니다. <br> 채팅방을 확인하세요");
                         }
                         else{
-                            event.preventDefault();
+                            if(id == parseInt(msg[1])){
+                                toastr.success(content.receiverName + "이(가) 구매되었습니다. <br> 채팅방을 확인하세요");
+                            }
+                            else{
+                                toastr.success("마감된 물품입니다.");
+                            }
+                            document.getElementById('bidButton').disabled = true;
+                            document.getElementById('buyButton').disabled = true;
                         }
                     }
-                    else{
-                        alert("같은 물품에 두 번 이상 입찰할 수 없습니다.");
+                }
+                else if(content.chRoomId == "마감"){
+                    msg = content.message.split(" ");
+                    if(postId == parseInt(msg[5])){ // 현재 보고 있는 게시물이 마감 버튼 눌린 게시물일 경우
+                        clearInterval(timer); // 시간 중단 시키고
+                        $('#expButton').hide(); // 마감 버튼 숨기고,
+                        $('#timer').text('마감된 물품입니다.'); // timer 변경
+                        // 이미지 흑백으로
+                        if(parseInt(msg[1]) == 0){
+                            $('#stat').text("입찰 종료");
+                            toastr.info("입찰이 종료되었습니다.");
+                        }
+                        else{
+                            $('#stat').text("낙찰 완료");
+                            if(id == parseInt(msg[1])){
+                                console.log("====");
+                                toastr.success(content.receiverName + "이(가) 낙찰되었습니다. <br> 채팅방을 확인하세요");
+                                document.getElementById('bidButton').disabled = true;
+                                document.getElementById('buyButton').disabled = true;
+                            }
+                            else if(id == parseInt(msg[3])){
+                                console.log("%%%%");
+                                toastr.success("입찰이 종료되었습니다.");
+                            }
+                            else{
+                                console.log("!!!!");
+                                toastr.success("마감된 물품입니다.");
+                                document.getElementById('bidButton').disabled = true;
+                                document.getElementById('buyButton').disabled = true;
+                            }
+                        }
                     }
                 }
-                else{
-                    alert("자신의 물품은 입찰할 수 없습니다.");
-                    event.preventDefault();
+                else{ // 채팅 메시지
+                    if([[${session.nickname}]] == content.receiverName){
+                        toastr.info("새 메시지가 도착했습니다.<br>" + content.senderName + ": " + content.message);
+                    }
                 }
             });
 
-            $('#buyButton').on('click', function(){
-                if(bidId != regisId){
-                    if(confirm("즉시 구매하시겠습니까?")){
-                        stomp.send('/pub/item/auction', {}, JSON.stringify({
-
-                        }));
-                        alert("성공적으로 구매되었습니다.");
+            $("#bidButton").on("click", function(e){
+                if(confirm("입찰하시겠습니까?")){
+                    if([[${form.nextBid}]] < [[${form.winningBid}]]){
+                        $.ajax({
+                            type: "POST",
+                            url: "/post/bid",
+                            data: {
+                                "postId": postId
+                            },
+                            success: function(){
+                                document.getElementById('bidButton').disabled = true;
+                                document.getElementById('buyButton').disabled = true;
+                                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                                    chRoomId: "입찰",
+                                    senderName: [[${session.nickname}]],
+                                    receiverName: productName,
+                                    sendTime: new Date(),
+                                    message: "bidUser " + id + " postUser "+ regisId + " postId " + postId,
+                                    checkRead: -1
+                                }));
+                            }
+                        })
                     }
-                    else{
-                        event.preventDefault();
+                    else if([[${form.nextBid}]] == [[${form.winningBid}]]){
+                        $.ajax({
+                            type: "POST",
+                            url: "/post/bid",
+                            data: {
+                                "postId": postId
+                            },
+                            success: function(){
+                                document.getElementById('bidButton').disabled = true;
+                                document.getElementById('buyButton').disabled = true;
+                                clearInterval(timer);
+                                stomp.send('/pub/chat/message', {}, JSON.stringify({
+                                    chRoomId: "낙찰",
+                                    senderName: [[${session.nickname}]],
+                                    receiverName: productName,
+                                    sendTime: new Date(),
+                                    message: "bidUser " + currentBidId + " postUser " + regisId + " postId " + postId,
+                                    checkRead: -1
+                                }));
+                            }
+                        })
                     }
                 }
-                else{
-                    alert("자신의 물품은 구매할 수 없습니다.");
-                    event.preventDefault();
-                }
-            });
+             });// $('#bidButton').on('click', function(e){})끝
 
-            $('#exp').on('click', function(){
-                if(confirm("마감 하시겠습니까?")){
-                    document.getElementById("timer").innerText = "마감된 물품입니다.";
-                    clearInterval(timer);
-
+            $("#buyButton").on("click", function(e){
+                if(confirm("즉시 구매하시겠습니까?")){
                     $.ajax({
                         type: "POST",
-                        url: "/post/btnExpired",
-                        data:{
-                            "id" : [[${form.id}]],
-                            "postUserId" : regisId,
-                            "currentBidId" : currentBidId
+                        url: "/post/buy",
+                        data: {
+                            "postId": postId
                         },
-                        success: function(res){
-                            alert("마감되었습니다.");
-                            window.location.href = "http://localhost:9076";
-                        },
-                        error:function(request,status,error){
-                            alert("오류 발생");
+                        success: function(){
+                            document.getElementById('bidButton').disabled = true;
+                            document.getElementById('buyButton').disabled = true;
+                            clearInterval(timer);
+                            stomp.send('/pub/chat/message', {}, JSON.stringify({
+                                chRoomId: "즉구",
+                                senderName: [[${session.nickname}]],
+                                receiverName: productName,
+                                sendTime: new Date(),
+                                message: "bidUser " + id + " postUser " + regisId + " postId " + postId,
+                                checkRead: -1
+                            }));
                         }
-                    });
-                }else{
-                    event.preventDefault();
+                    })
                 }
             });
 
+            $("#expButton").on("click", function(e){
+                if(confirm("마감하시겠습니까?")){
+                    $.ajax({
+                        type: "POST",
+                        url: "/post/expired",
+                        data: {
+                            "id": postId,
+                            "postUserId": regisId,
+                            "type": "pressed"
+                        },
+                        success: function(data){
+                            document.getElementById('expButton').disabled = true;
+                            document.getElementById('modifyButton').disabled = true;
+                            clearInterval(timer);
+                            stomp.send('/pub/chat/message', {}, JSON.stringify({
+                                chRoomId: "마감",
+                                senderName: [[${session.nickname}]],
+                                receiverName: productName,
+                                sendTime: new Date(),
+                                message: "bidUser " + currentBidId + " postUser " + regisId + " postId " + postId,
+                                checkRead: -1
+                            }));
+                        }
+                    }) // ajax 코드 끝
+                } // if 절 끝
+             });// $('#expButton').on('click', function(e){})끝
         }) // stomp.connect({}, function(){}) 끝
     } // if절 끝
 
-    function check(){
-        if(status === '입찰 종료'){
-            alert("입찰 종료된 상품입니다.");
-        }
-        else if(status === '낙찰 완료'){
-            alert("낙찰된 상품입니다.");
-        }
-        else if(status === '구매 완료'){
-            alert("구매 완료된 상품입니다.");
-        }
-        else{
-            calcDay();
-            timer = setInterval(calcDay, 1000);
-        }
-    }
-
     function calcDay(){
-        var regisDate = regisTime.getTime();
+                var regisDate = regisTime.getTime();
+                const time = Math.floor(period * 60 * 1000 * 60);
+                const expiredDate = new Date(regisDate + time);
+                const today = new Date();
+                const distance = expiredDate.getTime() - today.getTime();
 
-        const time = Math.floor(period * 60 * 1000 * 60);
-
-        const expiredDate = new Date(regisDate + time);
-
-        const today = new Date();
-
-        const distance = expiredDate.getTime() - today.getTime();
-
-        console.log("timer starting... millisecond : " + distance);
-
-        if(distance < 0){
-            document.getElementById("buyButton").disabled = true;
-            document.getElementById("bidButton").disabled = true;
-        }
-        else if(distance == 0){
-            $.ajax({
-                type: "POST",
-                url: "/post/timeExpired",
-                data: {
-                    "id": [[${form.id}]]
-                },
-                success: function(res){
-                     window.location.href = "http://localhost:9076";
-                },
-                error: function(request,status,error){
-                    alert("오류 발생");
+                if(distance < 0){
+                    document.getElementById("buyButton").disabled = true;
+                    document.getElementById("bidButton").disabled = true;
                 }
-            });
-        }
-        else{
-            var day = Math.floor(distance / (1000*60*60*24));
-            var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
-            var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
-            var seconds = Math.floor((distance % (1000*60))/1000);
+                else if(distance == 0){
+                    $.ajax({
+                        type: "POST",
+                        url: "/post/expired",
+                        data: {
+                            "id": postId,
+                            "postUserId": regisId,
+                            "type": "expired"
+                        },
+                        success: function(res){
+                            document.getElementById('expButton').disabled = true;
+                            clearInterval(timer);
+                            stomp.send('/pub/chat/message', {}, JSON.stringify({
+                                chRoomId: "만료",
+                                senderName: [[${session.nickname}]],
+                                receiverName: productName,
+                                sendTime: new Date(),
+                                message: "마감 " + postId,
+                                checkRead: -1
+                            }));
+                        },
+                        error: function(request,status,error){
+                            alert("오류 발생");
+                        }
+                    });
+                }
+                else{
+                    var day = Math.floor(distance / (1000*60*60*24));
+                    var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
+                    var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
+                    var seconds = Math.floor((distance % (1000*60))/1000);
 
-            document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
-        }
-    }
+                    document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
+                }
+            }
+
 </script>
 </html>
