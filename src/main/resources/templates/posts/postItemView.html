@@ -99,16 +99,40 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     <input type="hidden" th:field="*{regisTime}">
                 </div>
                 <div style="display:flex; align-items:center">
-                    <div class="bid-btn">
-                        <button type="button" id='bidButton' th:if="${form.status == '입찰 중'}">입찰하기</button>
-                        <button type="button" th:if="${form.status != '입찰 중'}" disabled="disabled">입찰하기</button>
+                    <div class="bid-btn" >
+                        <button style="border: solid 1px;
+                        border-radius: 0.3em;
+                     width:150px;
+                     height: 50px;
+                     color: white;
+                     font-size: 1.5em;
+                     background-color: #fca863;"type="button" id='bidButton' th:if="${form.status == '입찰 중'}">입찰하기</button>
+                        <button style="border: solid 1px;
+                        border-radius: 0.3em;
+                     width:150px;
+                     color: white;
+                     background-color: #fca863;"type="button" th:if="${form.status != '입찰 중'}" disabled="disabled">입찰하기</button>
                     </div>
-                    <button class="buy-btn" id='buyButton' type="button" th:if="${form.status == '입찰 중'}">즉시 구매</button>
+                    <button style="border: solid 1px;
+                    border-radius: 0.3em;
+                     width:150px;
+                     height: 50px;
+                     color: white;
+                     font-size: 1.0em;
+                     background-color: #fca863;" class="buy-btn" id='buyButton' type="button" th:if="${form.status == '입찰 중'}">즉시 구매</button>
                     <button class="buy-btn" type="button" th:if="${form.status != '입찰 중'}" disabled="disabled">즉시 구매</button>
                     <div class="edit-box">
-                        <a id="modifyButton" href="#" th:href="@{/post/{id}/edit (id=${form.id})}"  role="button">수정</a>
+                        <a style="border: solid 1px;
+                    border-radius: 0.3em;
+                    padding: 0.2em;
+                     color: white;
+                     background-color: #fca863;"id="modifyButton" href="#" th:href="@{/post/{id}/edit (id=${form.id})}"  role="button">수정</a>
 
-                        <a id="deleteButton" href="#" th:href="@{/post/{id}/delete (id=${form.id})}"  role="button">삭제</a>
+                        <a style="border: solid 1px;
+                    border-radius: 0.3em;
+                    padding: 0.2em;
+                     color: white;
+                     background-color: red;"id="deleteButton" href="#" th:href="@{/post/{id}/delete (id=${form.id})}"  role="button">삭제</a>
                     </div>
                 </div>
             </div>
