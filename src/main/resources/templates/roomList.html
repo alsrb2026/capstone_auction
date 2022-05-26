@@ -144,9 +144,9 @@
                                     if (content.senderName == sender){
                                         $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                                     }
-                                    else if(value.senderName == "system"){
-                                        $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
-                                    }else if(value.senderName == receiver){
+                                    else if(content.senderName == "system"){
+                                        $("#msgList").append("<div class='syschat'><div>"+ content.senderName + ": " + content.message + "</div></div>");
+                                    }else if(content.senderName == receiver){
                                         $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
                                     }
                                 }

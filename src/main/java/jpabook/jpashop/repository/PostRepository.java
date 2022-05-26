@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -97,12 +98,13 @@ public class PostRepository {
     }
     @Transactional
     @Modifying(clearAutomatically = true)
-    public void updatePostBidStatus(Long id, Long currentBidId, int nextBid, String status) {
-        em.createQuery("update Post p SET p.status = :status, p.currentBidId = :currentBidId, nextBid = :nextBid where p.id = :id")
+    public void updatePostBidStatusDate(Long id, Long currentBidId, int nextBid, String status, Date date) {
+        em.createQuery("update Post p SET p.status = :status, p.currentBidId = :currentBidId, p.nextBid = :nextBid, p.date = :date where p.id = :id")
                 .setParameter("id", id)
                 .setParameter("status", status)
                 .setParameter("currentBidId", currentBidId)
                 .setParameter("nextBid", nextBid)
+                .setParameter("date", date)
                 .executeUpdate();
         em.clear();
     }

@@ -257,7 +257,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         $('#stat').text("구매 완료");
                         $('#timer').text('마감된 물품입니다.'); // timer 변경
                         if(id == parseInt(msg[3])){ // 현재 접속한 사용자가 게시물 올린 유저일 경우
-                            document.getElementById('modifyButton').disabled = true;
                             document.getElementById('expButton').disabled = true;
                             toastr.success(content.receiverName + "이(가) " + content.senderName + "님에게 구매되었습니다. <br> 채팅방을 확인하세요");
                         }
@@ -361,7 +360,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
              });// $('#bidButton').on('click', function(e){})끝
 
             $("#buyButton").on("click", function(e){
-                if("즉시 구매하시겠습니까?"){
+                if(confirm("즉시 구매하시겠습니까?")){
                     $.ajax({
                         type: "POST",
                         url: "/post/buy",
@@ -414,7 +413,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         }) // stomp.connect({}, function(){}) 끝
     } // if절 끝
 
-function calcDay(){
+    function calcDay(){
                 var regisDate = regisTime.getTime();
                 const time = Math.floor(period * 60 * 1000 * 60);
                 const expiredDate = new Date(regisDate + time);
