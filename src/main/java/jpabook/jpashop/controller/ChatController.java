@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -18,9 +19,19 @@ public class ChatController {
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate template;
 
+    @MessageMapping(value = "/chat/enter")
+    public void enter(ChatMessage message) throws Exception {
+        List<ChatMessage> list = chatMessageService.findChatMessages(message.getChRoomId());
+        if(list.size() == 0){
+            message.setCheckRead(1);
+            chatMessageService.saveChatMessage(message);
+            template.convertAndSend("/sub/chat/room", message);
+        }
+
+    }
+
     @MessageMapping(value = "/chat/exit")
     public void exit(ChatMessage message) throws Exception {
-        // template.convertAndSend("/sub/chat/room" + message.getChRoomId(), message);
         template.convertAndSend("/sub/chat/room", message);
         chatMessageService.saveChatMessage(message);
     }

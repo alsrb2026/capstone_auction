@@ -32,7 +32,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 </head>
 <body onload="check()">
 <div class="container">
-    <div style="position: relative; width: 100%">
+    <div style="position: relative; width: 100%; border: 1px solid; border-color: #fca863; border-radius: 15px">
     <div class="top-bar">
         <div class="title">
             <a href="/"
@@ -60,8 +60,8 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             <input type="hidden" th:field="*{id}" />
             <input type="hidden" th:field="*{postUserId}">
             <input type="hidden" th:field="*{currentBidId}">
-            <div class="post-box">
-                <div class="img-box" >
+            <div class="post-box" style="border-top : 1px solid; border-color: #fca863;" >
+                <div style="margin-top:30px; margin-right: 50px;" class="img-box" >
                     <img th:if="*{status == '입찰 중'}" class="post-img" th:src="'/postimages/'+${file}"/>
                     <img th:if="*{status != '입찰 중'}"class="post-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${file}"/>
 
@@ -187,13 +187,13 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 			  "onclick": null,
 			  "showDuration": "100",
 			  "hideDuration": "1000",
-			  "timeOut": "3000",
+			  "timeOut": "5000",
 			  "extendedTimeOut": "1000",
 			  "showEasing": "swing",
 			  "hideEasing": "linear",
 			  "showMethod": "fadeIn",
 			  "hideMethod": "fadeOut"
-			}
+     }
 
      function check(){
         if(status != '입찰 중'){
@@ -326,7 +326,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         clearInterval(timer); // 시간 중단 시키고
                         $('#expButton').hide(); // 마감 버튼 숨기고,
                         $('#timer').text('마감된 물품입니다.'); // timer 변경
-                        // 이미지 흑백으로
+
                         if(parseInt(msg[1]) == 0){
                             $('#stat').text("입찰 종료");
                             toastr.info("입찰이 종료되었습니다.");

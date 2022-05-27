@@ -1,188 +1,216 @@
 <!DOCTYPE html>
 <html
-  lang="en"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:sec="http://www.w3.org/1999/xhtml"
+        lang="en"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.w3.org/1999/xhtml"
 >
-  <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
-      rel="stylesheet"
-    />
-    <meta charset="UTF-8" />
-    <title>paging</title>
-    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
-    <link rel="stylesheet" type="text/css" href="/css/common.css" />
-    <link rel="stylesheet" type="text/css" href="/css/postList.css" />
-  </head>
-  <body>
-    <div th:replace="fragments/bodyHeader :: bodyHeader" />
-    <div class="top-box" style="border-bottom: solid 0.1em #fca863">
-      <div class="nav-banner">
-        <a href="/posts">전체 보기</a>
-        <a href="/post/searchCategory/book"
-          ><img class="icon" src="/images/book.png" />도서</a
-        >
-        <a href="/post/searchCategory/studyMaterial"
-          ><img class="icon" src="/images/document.png" />학습자료</a
-        >
-        <a href="/post/searchCategory/electronics"
-          ><img class="icon" src="/images/tablet.png" />전자기기</a
-        >
-        <a href="/post/searchCategory/daily"
-          ><img class="icon" src="/images/toilet-paper.png" />생필품</a
-        >
-      </div>
-      <div class="search-form">
-        <form action="/post/search" method="GET">
-          <input
-            class="search-box"
-            name="keyword"
-            type="text"
-            placeholder="내가 찾는 도서, 전자기기"
-          />
-          <input type="submit" class="search-btn" value="검색" style="background-color: #fca863; border-color: white"/>
-        </form>
-      </div>
-    </div>
-    <div class="container">
-      <div class="product-list">
-        <div class="product-box" th:each="board : ${boardList}">
-          <a href="#" th:if="${board.status != '입찰 중'}"  th:href="@{/post/{id}/bid (id=${board.id})}">
-            <div class="imgbox">
-              <img class="product-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${board.getFname()}"/>
-            </div>
-            <div class="product-info saled" style=" background-color:#e6e6e6">
-              <div>
-                  <span class="p-title" th:text="${board.title}"></span>
-              </div>
-
-              <div>
-                <span>현재가 :     </span
-                ><span class="nextBid" th:text="${board.nextBid}"></span>
-              </div>
-              <div>
-                <span>즉시구매가 : </span
-                ><span class="winningBid" th:text="${board.winningBid}"></span>
-              </div>
-              <div>
-                <div>
-                <span>마감기한 : </span
-                ><span
-                        th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
-                ></span>
-                </div>
-                <img id="saled" src="/images/saled.png"/>
-              </div>
-          </a>
-          <a href="#" th:if="${board.status == '입찰 중'}" th:href="@{/post/{id}/bid (id=${board.id})}">
-            <div style="display: flex; justify-content: center; ">
-              <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
-            </div>
-            <div class="product-info">
-              <div>
-                <span class="p-title" th:text="${board.title}"></span>
-              </div>
-              <div>
+<head>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+          href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
+          rel="stylesheet"
+  />
+  <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+  <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+  <meta charset="UTF-8" />
+  <title>paging</title>
+  <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+  <link rel="stylesheet" type="text/css" href="/css/common.css" />
+  <link rel="stylesheet" type="text/css" href="/css/postList.css" />
+</head>
+<body>
+<div th:replace="fragments/bodyHeader :: bodyHeader" />
+<div class="top-box">
+  <div class="nav-banner">
+    <a href="/posts">전체 보기</a>
+    <a href="/post/searchCategory/book"
+    ><img class="icon" src="/images/book.png" />도서</a
+    >
+    <a href="/post/searchCategory/studyMaterial"
+    ><img class="icon" src="/images/document.png" />학습자료</a
+    >
+    <a href="/post/searchCategory/electronics"
+    ><img class="icon" src="/images/tablet.png" />전자기기</a
+    >
+    <a href="/post/searchCategory/daily"
+    ><img class="icon" src="/images/toilet-paper.png" />생필품</a
+    >
+  </div>
+  <div class="search-form">
+    <form action="/post/search" method="GET">
+      <input
+              class="search-box"
+              name="keyword"
+              type="text"
+              placeholder="내가 찾는 도서, 전자기기"
+      />
+      <input type="submit" class="search-btn" value="검색" style="background-color: #fca863; border-color: white" />
+    </form>
+  </div>
+</div>
+<div class="container">
+  <div class="product-list">
+    <div class="product-box" th:each="board : ${boardList}">
+      <a href="#" th:if="${board.status != '입찰 중'}"  th:href="@{/post/{id}/bid (id=${board.id})}">
+        <div class="imgbox">
+          <img class="product-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${board.getFname()}"/>
+        </div>
+        <div class="product-info saled" style=" background-color:#e6e6e6">
+          <div>
+            <span class="p-title" th:text="${board.title}"></span>
+          </div>
+          <div>
                 <span>현재가 : </span
                 ><span class="nextBid" th:text="${board.nextBid}"></span>
-              </div>
-              <div>
+          </div>
+          <div>
                 <span>즉시구매가 : </span
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
-              </div>
-              <div id="${board.id}">
-                <span>남은 기간 : </span
+          </div>
+
+          <div>
+                <span>마감된 시간 : </span
                 ><span
-                      th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
-              ></span>
-              </div>
-            </div>
-          </a>
+                  th:text="${#dates.format(board.regisTime.getTime(), 'MM/dd HH:mm')}"
+          ></span>
+          </div>
+          <img id="saled" src="/images/saled.png"/>
         </div>
-      </div>
+      </a>
+      <a href="#" th:if="${board.status == '입찰 중'}" th:href="@{/post/{id}/bid (id=${board.id})}">
+        <div style="border: solid 0.5px; display: flex; justify-content: center; ">
+          <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
+        </div>
+        <div class="product-info" style="background-color:#ffe5cc; border: solid 1px">
+          <div>
+            <span class="p-title" th:text="${board.title}"></span>
+          </div>
+          <div>
+                <span>현재가 : </span
+                ><span class="nextBid" th:text="${board.nextBid}"></span>
+          </div>
+          <div>
+                <span>즉시 구매가 : </span>
+                <span class="winningBid" th:text="${board.winningBid}"></span>
+          </div>
+          <div>
+                <span id="${board.id}">남은시간 : </span>
+            <span
+                  th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
+          ></span>
+          </div>
+        </div>
+      </a>
     </div>
-    <nav class="nav-box" aria-label="Page navigation example ">
-      <ul style="border : solid 2px; border-color: #fca863" class="pagination">
-        <li class="page-item">
-          <a class="page-link" th:href="@{/posts?page=1}" aria-label="Previous">
-            <span aria-hidden="true">처음</span>
-          </a>
-        </li>
-        <li class="page-item">
-          <a
-            class="page-link"
-            th:href="@{/posts?page={page} (page = ${pagination.prevBlock}) }"
-            aria-label="Previous"
-          >
-            <span aria-hidden="true">이전</span>
-          </a>
-        </li>
-        <th:block
-          th:with="start = ${pagination.startPage}, end = ${pagination.endPage}"
-        >
-          <li
-            class="page-item"
-            th:with="start = ${pagination.startPage}, end = ${pagination.endPage}"
-            th:each="pageButton : ${#numbers.sequence(start, end)}"
-          >
-            <a
+  </div>
+</div>
+<nav class="nav-box" aria-label="Page navigation example ">
+  <ul style="border : solid 2px; border-color: #fca863"  class="pagination">
+    <li class="page-item">
+      <a class="page-link" th:href="@{/posts?page=1}" aria-label="Previous">
+        <span aria-hidden="true">처음</span>
+      </a>
+    </li>
+    <li class="page-item">
+      <a
               class="page-link"
-              th:href="@{/posts?page={page} (page = ${pageButton})}"
-              th:text="${pageButton}"
-            ></a>
-          </li>
-        </th:block>
-        <li class="page-item">
-          <a
-            class="page-link"
-            th:href="@{posts?page={page} (page = ${pagination.nextBlock})}"
-            aria-label="Next"
-          >
-            <span aria-hidden="true">다음</span>
-          </a>
-        </li>
-        <li class="page-item">
-          <a
-            class="page-link"
-            th:href="@{posts?page={page} (page = ${pagination.totalPageCnt})}"
-            aria-label="Previous"
-          >
-            <span aria-hidden="true">끝</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </body>
+              th:href="@{/posts?page={page} (page = ${pagination.prevBlock}) }"
+              aria-label="Previous"
+      >
+        <span aria-hidden="true">이전</span>
+      </a>
+    </li>
+    <th:block
+            th:with="start = ${pagination.startPage}, end = ${pagination.endPage}"
+    >
+      <li
+              class="page-item"
+              th:with="start = ${pagination.startPage}, end = ${pagination.endPage}"
+              th:each="pageButton : ${#numbers.sequence(start, end)}"
+      >
+        <a
+                class="page-link"
+                th:href="@{/posts?page={page} (page = ${pageButton})}"
+                th:text="${pageButton}"
+        ></a>
+      </li>
+    </th:block>
+    <li class="page-item">
+      <a
+              class="page-link"
+              th:href="@{posts?page={page} (page = ${pagination.nextBlock})}"
+              aria-label="Next"
+      >
+        <span aria-hidden="true">다음</span>
+      </a>
+    </li>
+    <li class="page-item">
+      <a
+              class="page-link"
+              th:href="@{posts?page={page} (page = ${pagination.totalPageCnt})}"
+              aria-label="Previous"
+      >
+        <span aria-hidden="true">끝</span>
+      </a>
+    </li>
+  </ul>
+</nav>
+</body>
 <script th:inline="javascript">
-  var timer;
-  // calcDay();
-  // timer = setInterval(calcDay, 1000);
-  function calcDay(){
-                var regisDate = regisTime.getTime();
-                const time = Math.floor(period * 60 * 1000 * 60);
-                const expiredDate = new Date(regisDate + time);
-                const today = new Date();
-                const distance = expiredDate.getTime() - today.getTime();
 
-                if(distance < 0){
-                    document.getElementById("buyButton").disabled = true;
-                    document.getElementById("bidButton").disabled = true;
-                }
-                else if(distance == 0){
+  const id = [[${session.id}]];
+  const name = [[${session.nickname}]];
 
-                }
-                else{
-                    var day = Math.floor(distance / (1000*60*60*24));
-                    var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
-                    var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
-                    var seconds = Math.floor((distance % (1000*60))/1000);
+  if(id != null){
+    var socket = new SockJS("/stomp/chat");
+    var stomp = Stomp.over(socket);
+    stomp.connect({}, function(){
+      console.log("server connected...");
 
-                    document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
-                }
-            }
+
+      stomp.subscribe("/sub/chat/room", function(chat){
+
+        for(board in [[${boardList}]]){
+          console.log(board.id);
+        }
+
+        // content.message 를 split(" ") 하면
+        // msg[1]: 입찰한 유저 id
+        // msg[3]: 이벤트 발생한 게시물 올린 유저 id
+        // msg[5]: 이벤트 발생한 게시물 id
+        if(content.chRoomId == '입찰'){
+          msg = content.message.split(" ");
+          if(id == parseInt(msg[3])){
+            toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰에 참가했습니다.");
+          }
+        }
+        else if(content.chRoomId == '낙찰'){
+          if(id == parseInt(msg[3])){
+            toastr.info(content.receiverName + "이(가) " + content.senderName + "님에게 낙찰되었습니다. <br> 채팅방을 확인하세요" );
+          }
+          // 낙찰된 상품을 마감된 상품 처리: 이미지, 상태,
+        }
+        else if(content.chRoomId == '즉구'){
+          if(id == parseInt(msg[3])){
+            toastr.success(content.receiverName + "이(가) " + content.senderName + "님에게 구매되었습니다. <br> 채팅방을 확인하세요");
+          }
+          // 구매된 상품을 마감된 상품 처리: 이미지, 상태,
+        }
+        else if(content.chRoomId == '마감'){
+          if(id == parseInt(msg[1])){
+            toastr.success(content.receiverName + "이(가) 낙찰되었습니다. <br> 채팅방을 확인하세요");
+          }
+          // 마감된 상품으로 처리: 이미지, 상태 -> 어차피 이 페이지에서는 아무것도 못하니깐 처리말고 새로고침하라고 메시지?
+        }
+        else{ // 채팅 메시지
+          if([[${session.nickname}]] == content.receiverName){
+            toastr.info("새 메시지가 도착했습니다.<br>" + content.senderName + ": " + content.message);
+          }
+        }
+      })
+    })
+  }
 </script>
 </html>

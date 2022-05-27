@@ -29,7 +29,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-left: 1px solid silver;
+  border-left: 1px solid #fca863;
   width: 450px;
   padding: 10px;
 }
