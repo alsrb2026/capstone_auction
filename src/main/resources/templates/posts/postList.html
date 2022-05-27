@@ -12,11 +12,21 @@
           href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap"
           rel="stylesheet"
   />
+  <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+  <script src="/webjars/jquery/jquery.min.js"></script>
+  <script src="/webjars/stomp-websocket/stomp.min.js"></script>
   <meta charset="UTF-8" />
   <title>paging</title>
   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
   <link rel="stylesheet" type="text/css" href="/css/common.css" />
   <link rel="stylesheet" type="text/css" href="/css/postList.css" />
+  <!-- toastr 메시지 스타일, toastr  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
+        integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+          integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 <div th:replace="fragments/bodyHeader :: bodyHeader" />
@@ -66,7 +76,6 @@
           <div>
             <span class="p-title" th:text="${board.title}"></span>
           </div>
-
           <div>
                 <span>현재가 : </span
                 ><span class="nextBid" th:text="${board.nextBid}"></span>
@@ -77,9 +86,9 @@
           </div>
 
           <div>
-                <span>마감기한 : </span
+                <span>마감된 시간 : </span
                 ><span
-                  th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
+                  th:text="${#dates.format(board.regisTime.getTime(), 'MM/dd HH:mm')}"
           ></span>
           </div>
           <img id="saled" src="/images/saled.png"/>
@@ -98,12 +107,12 @@
                 ><span class="nextBid" th:text="${board.nextBid}"></span>
           </div>
           <div>
-                <span>즉시구매가 : </span
-                ><span class="winningBid" th:text="${board.winningBid}"></span>
+                <span>즉시 구매가 : </span>
+                <span class="winningBid" th:text="${board.winningBid}"></span>
           </div>
           <div>
-                <span>마감기한 : </span
-                ><span
+                <span id="${board.id}">남은시간 : </span>
+            <span
                   th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
           ></span>
           </div>
@@ -164,4 +173,73 @@
   </ul>
 </nav>
 </body>
+<script th:inline="javascript">
+
+  const id = [[${session.id}]];
+  const name = [[${session.nickname}]];
+
+  toastr.options = {
+	          "closeButton": false,
+			  "debug": false,
+			  "newestOnTop": false,
+			  "progressBar": true,
+			  "positionClass": "toast-top-right",
+			  "preventDuplicates": false,
+			  "onclick": null,
+			  "showDuration": "100",
+			  "hideDuration": "1000",
+			  "timeOut": "10000",
+			  "extendedTimeOut": "1000",
+			  "showEasing": "swing",
+			  "hideEasing": "linear",
+			  "showMethod": "fadeIn",
+			  "hideMethod": "fadeOut"
+     }
+
+  if(id != null){
+    var socket = new SockJS("/stomp/chat");
+    var stomp = Stomp.over(socket);
+    stomp.connect({}, function(){
+      console.log("server connected...");
+
+      stomp.subscribe("/sub/chat/room", function(chat){
+
+        var content = JSON.parse(chat.body);
+        msg = content.message.split(" ");
+        // content.message 를 split(" ") 하면
+        // msg[1]: 입찰한 유저 id
+        // msg[3]: 이벤트 발생한 게시물 올린 유저 id
+        // msg[5]: 이벤트 발생한 게시물 id
+        if(content.chRoomId == '입찰'){
+          if(id == parseInt(msg[3])){
+            toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰에 참가했습니다.");
+          }
+        }
+        else if(content.chRoomId == '낙찰'){
+          if(id == parseInt(msg[3])){
+            toastr.info(content.receiverName + "이(가) " + content.senderName + "님에게 낙찰되었습니다. <br> 채팅방을 확인하세요" );
+          }
+          // 낙찰된 상품을 마감된 상품 처리: 이미지, 상태,
+        }
+        else if(content.chRoomId == '즉구'){
+          if(id == parseInt(msg[3])){
+            toastr.success(content.receiverName + "이(가) " + content.senderName + "님에게 구매되었습니다. <br> 채팅방을 확인하세요");
+          }
+          // 구매된 상품을 마감된 상품 처리: 이미지, 상태,
+        }
+        else if(content.chRoomId == '마감'){
+          if(id == parseInt(msg[1])){
+            toastr.success(content.receiverName + "이(가) 낙찰되었습니다. <br> 채팅방을 확인하세요");
+          }
+          // 마감된 상품으로 처리: 이미지, 상태 -> 어차피 이 페이지에서는 아무것도 못하니깐 처리말고 새로고침하라고 메시지?
+        }
+        else{ // 채팅 메시지
+          if([[${session.nickname}]] == content.receiverName){
+            toastr.info("새 메시지가 도착했습니다.<br>" + content.senderName + ": " + content.message);
+          }
+        }
+      })
+    })
+  }
+</script>
 </html>

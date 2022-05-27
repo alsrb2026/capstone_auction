@@ -392,36 +392,13 @@ public class PostController {
         form.setStatus(post.getStatus());
         form.setCurrentBidId(post.getCurrentBidId());
         form.setFname(post.getFname());
-/*
-        String nickname;
-        String userId;
-        if(form.getCurrentBidId() == 0){
-            nickname = "";
-            userId = "";
-        }else{
-            nickname = userRepository.findById(form.getCurrentBidId()).get().getNickname();
-            userId = userRepository.findById(form.getCurrentBidId()).get().getName();
-        }
-*/
-
-        //
-        //Files file = filesRepository.findByFno(4);
-//        String url = files.getFileurl();
-//        String filename = files.getFilename();
-
-
 
         model.addAttribute("form", form);
         model.addAttribute("postUserName",post.getPostUserName());
         model.addAttribute("loginName",name);
-        //System.out.println("zxc"+file.getFilename());
         model.addAttribute("file", form.getFname());
         model.addAttribute("bidList", bidList);
 
-/*
-        model.addAttribute("bidUserName", nickname);
-        model.addAttribute("bidUserId", userId);
-*/
         return "posts/postItemView";
     }
 
@@ -432,22 +409,48 @@ public class PostController {
 
         HttpSession session = request.getSession();
         Long id = (Long)session.getAttribute("id");
+        Date date = new Date();
+        PostUser postUser = new PostUser();
         // .html 화면에서 이미 즉시 구매하는 사람과 등록한 사람을 구분해서 데이터가 오기 때문에 예외 처리할 필요 X.
         // 현재 구매한 사용자 id, 입찰 상태,
         Post post = postService.findOne(postId);
-        postService.updatePostBidStatusDate(post.getId(), id, post.getNextBid(), "구매 완료", new Date());
+        postService.updatePostBidStatusDate(post.getId(), id, post.getWinningBid(), "구매 완료", new Date());
 
         String regisName = userRepository.findById(post.getPostUserId()).get().getNickname();
         String buyerName = (String)session.getAttribute("nickname");
+
+        String bidUserAccountId = (String)session.getAttribute("accountId");
+        String postUserAccountId = userRepository.findById(post.getPostUserId()).get().getName();
+
+        postUser.setPostId(postId);
+        postUser.setBidUserAccountId(bidUserAccountId);
+        postUser.setBidUserName(buyerName);
+        postUser.setPostUserAccountId(postUserAccountId);
+        postUser.setPostUserName(regisName);
+        postUser.setBid(post.getWinningBid());
+        postUser.setBidDate(date);
+        postUser.setType("즉시 구매");
+
+        postUserService.save(postUser);
 
         chatRoomService.createChatRoom(post.getProductName(), post.getPostUserId(), id, regisName, buyerName);
     }
 
     @ResponseBody
     @PostMapping(value = "/post/expired")
-    public String btnPressed(@RequestParam("id") Long postId, @RequestParam("postUserId") Long postUserId, @RequestParam("type") String type){
+    public String btnPressed(@RequestParam("id") Long postId, @RequestParam("postUserId") Long postUserId, @RequestParam("type") String type,
+                             HttpServletRequest request){
 
         Post post = postService.findOne(postId);
+        PostUser postUser = new PostUser();
+        Date date = new Date();
+
+        HttpSession session = request.getSession();
+
+        String bidUserAccountId = userRepository.findById(post.getCurrentBidId()).get().getName();
+        String bidUserName = userRepository.findById(post.getCurrentBidId()).get().getNickname();
+        String postUserAccountId = (String)session.getAttribute("accountId");
+        String postUserName = (String)session.getAttribute("nickname");
 
         if(post.getCurrentBidId() == 0){
             System.out.println("currentBidId = 0, no bid user -> status = '입찰 종료'");
@@ -460,8 +463,18 @@ public class PostController {
 
             postService.updatePostStatus(postId, currentBidId, "낙찰 완료");
 
+            postUser.setPostId(postId);
+            postUser.setBidUserAccountId(bidUserAccountId);
+            postUser.setBidUserName(bidUserName);
+            postUser.setPostUserAccountId(postUserAccountId);
+            postUser.setPostUserName(postUserName);
+            postUser.setBid(post.getNextBid() - post.getUnitBid());
+            postUser.setBidDate(date);
+            postUser.setType("낙찰");
+            postUserService.save(postUser);
+
             String productName = postService.findOne(postId).getFname();
-            String regisName = userRepository.findById(postUserId).get().getNickname();
+            String regisName = postUserName;
 
             String buyerName = userRepository.findById(currentBidId).get().getNickname();
             chatRoomService.createChatRoom(productName, postUserId, currentBidId, regisName, buyerName);
@@ -473,20 +486,16 @@ public class PostController {
     @ResponseBody
     @Transactional
     @PostMapping("/post/bid") // id에 해당하는 물품 입찰.
-    public void auctionItem(@RequestParam("postId") Long postId,
-                            @RequestParam("nickname") String nickname,
-                            @RequestParam("postUserName") String postUserName,
-                            HttpServletRequest request) {
+    public void auctionItem(@RequestParam("postId") Long postId, @RequestParam("regisId") Long regisId, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
-
+        Date date = new Date();
         Long id = (Long)session.getAttribute("id"); // 현재 입찰하려고 하는 사용자의 id
 
+        String bidUserAccountId = (String)session.getAttribute("accountId");
+        String postUserAccountId = userRepository.findById(regisId).get().getName();
+
         PostUser postUser = new PostUser();
-        postUser.setPostId(postId);
-        postUser.setPostUserName(postUserName);
-        postUser.setBidUserName(nickname);
-        postUserService.save(postUser);
 
         Post form = postService.findOne(postId);
 
@@ -498,18 +507,46 @@ public class PostController {
             // 1-1. 현재 입찰한 사용자가 첫 번째 입찰자일 경우
             if (form.getCurrentBidId() == 0) { //
                 System.out.println(">>> startBid , unit" + form.getStartBid() + "   " + form.getUnitBid() + " >>>");
-                postService.updatePostBidStatusDate(form.getId(), id, form.getStartBid() + form.getUnitBid(), "입찰 중", form.getRegisTime());
+                int bid = form.getStartBid() + form.getUnitBid();
+                postService.updatePostBidStatusDate(form.getId(), id, bid, "입찰 중", form.getRegisTime());
+                postUser.setPostId(postId);
+                postUser.setBidUserAccountId(bidUserAccountId);
+                postUser.setBidUserName(buyerName);
+                postUser.setPostUserAccountId(postUserAccountId);
+                postUser.setPostUserName(regisName);
+                postUser.setBid(bid);
+                postUser.setBidDate(date);
+                postUser.setType("입찰");
+                postUserService.save(postUser);
             }
             // 1-2. 첫 번째 입찰자가 아닐 경우
             else {
                 if (form.getNextBid() == form.getWinningBid()) { // 1-2-(1). 현재 입찰한 금액이 낙찰가일 경우
-                    postService.updatePostBidStatusDate(form.getId(), id, form.getWinningBid(), "낙찰 완료", new Date());
+                    postService.updatePostBidStatusDate(form.getId(), id, form.getWinningBid(), "낙찰 완료", date);
+                    postUser.setPostId(postId);
+                    postUser.setBidUserAccountId(bidUserAccountId);
+                    postUser.setBidUserName(buyerName);
+                    postUser.setPostUserAccountId(postUserAccountId);
+                    postUser.setPostUserName(regisName);
+                    postUser.setBid(form.getWinningBid());
+                    postUser.setType("낙찰");
+                    postUser.setBidDate(date);
+                    postUserService.save(postUser);
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
-
                     chatRoomService.createChatRoom(form.getProductName(), form.getPostUserId(), id
                             , regisName, buyerName);
                 } else if (form.getNextBid() < form.getWinningBid()) { // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
-                    postService.updatePostBidStatusDate(form.getId(), id, form.getWinningBid(), "입찰 중", form.getRegisTime());
+                    int bid = form.getNextBid() + form.getUnitBid();
+                    postService.updatePostBidStatusDate(form.getId(), id, bid, "입찰 중", form.getRegisTime());
+                    postUser.setPostId(postId);
+                    postUser.setBidUserAccountId(bidUserAccountId);
+                    postUser.setBidUserName(buyerName);
+                    postUser.setPostUserAccountId(postUserAccountId);
+                    postUser.setPostUserName(regisName);
+                    postUser.setBid(bid);
+                    postUser.setBidDate(date);
+                    postUser.setType("입찰");
+                    postUserService.save(postUser);
                 } else {} // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
             }
         }
