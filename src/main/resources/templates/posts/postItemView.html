@@ -54,8 +54,13 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         </a>
     </div>
 </div>
-    <div class="product-box">
 
+
+
+    <div class="product-box">
+        <div class="product-box" th:each="list : ${bidList}">
+            <div class="p-title" th:text="${list.bidUserName}"></div>
+        </div>
         <form class= product-info th:object="${form}" method="post">
                 <div class="product-title form-groups">
                     <span>제목 : </span>
@@ -137,6 +142,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     var regisTime = new Date([[${form.regisTime}]]);
     const id = [[${session.id}]];
     const regisId = [[${form.postUserId}]];
+    const postUserName = [[${form.postUserName}]];
     const postId = [[${form.id}]];
     const productName = [[${form.productName}]];
     const currentBidId = [[${form.currentBidId}]];
@@ -297,7 +303,9 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             type: "POST",
                             url: "/post/bid",
                             data: {
-                                "postId": postId
+                                "postId": postId,
+                                "nickname": name,
+                                "postUserName": postUserName,
                             },
                             success: function(){
                                 stomp.send('/pub/chat/message', {}, JSON.stringify({
@@ -316,7 +324,9 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             type: "POST",
                             url: "/post/bid",
                             data: {
-                                "postId": postId
+                                "postId": postId,
+                                "nickname": name,
+                                "postUserName": postUserName,
                             },
                             success: function(){
                                 clearInterval(timer);

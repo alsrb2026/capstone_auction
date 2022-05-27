@@ -39,6 +39,7 @@ public class PostController {
     private final FilesService filesService;
     private final FilesRepository filesRepository;
     private final CertifiService certifiService;
+    private final PostUserService postUserService;
     private final EntityManager em;
 
     @GetMapping("/posts/new")
@@ -358,7 +359,8 @@ public class PostController {
 
     // id에 해당하는 경매 물품 조회
     @GetMapping("post/{id}/bid")
-    public String auctionItemForm(@PathVariable("id") Long itemId, Model model, HttpServletRequest request) {
+    public String auctionItemForm(@PathVariable("id") Long itemId,
+                                  Model model, HttpServletRequest request) {
         Post post = postService.findOne(itemId);
 
         HttpSession session = request.getSession();
@@ -369,6 +371,8 @@ public class PostController {
         // 아이디 중복이 없다는 가정하에
 
         postService.viewPost(itemId);
+
+        List<PostUser> bidList = postUserService.bidList(itemId);
 
         PostForm form = new PostForm();
         form.setId(post.getId());
@@ -412,6 +416,7 @@ public class PostController {
         model.addAttribute("loginName",name);
         //System.out.println("zxc"+file.getFilename());
         model.addAttribute("file", form.getFname());
+        model.addAttribute("bidList", bidList);
 
 /*
         model.addAttribute("bidUserName", nickname);
@@ -468,11 +473,20 @@ public class PostController {
     @ResponseBody
     @Transactional
     @PostMapping("/post/bid") // id에 해당하는 물품 입찰.
-    public void auctionItem(@RequestParam("postId") Long postId, HttpServletRequest request) {
+    public void auctionItem(@RequestParam("postId") Long postId,
+                            @RequestParam("nickname") String nickname,
+                            @RequestParam("postUserName") String postUserName,
+                            HttpServletRequest request) {
 
         HttpSession session = request.getSession();
 
         Long id = (Long)session.getAttribute("id"); // 현재 입찰하려고 하는 사용자의 id
+
+        PostUser postUser = new PostUser();
+        postUser.setPostId(postId);
+        postUser.setPostUserName(postUserName);
+        postUser.setBidUserName(nickname);
+        postUserService.save(postUser);
 
         Post form = postService.findOne(postId);
 
