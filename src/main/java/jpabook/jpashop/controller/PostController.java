@@ -495,7 +495,7 @@ public class PostController {
                     chatRoomService.createChatRoom(form.getProductName(), form.getPostUserId(), id
                             , regisName, buyerName);
                 } else if (form.getNextBid() < form.getWinningBid()) { // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
-                    postService.updatePostBidStatusDate(form.getId(), id, form.getWinningBid(), "입찰 중", form.getRegisTime());
+                    postService.updatePostBidStatusDate(form.getId(), id, form.getNextBid() + form.getUnitBid(), "입찰 중", form.getRegisTime());
                 } else {} // 1-2-(3). 입찰가가 낙찰가보다 큰 경우이므로 에러 처리.
             }
         }

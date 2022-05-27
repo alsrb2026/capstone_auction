@@ -32,18 +32,17 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 </head>
 <body onload="check()">
 <div class="container">
-    <div style="position: relative; width: 100%; border: 1px solid; border-color: #fca863; border-radius: 15px">
     <div class="top-bar">
-        <div class="title">
-            <a href="/"
-            ><img
-                    src="/images/premium-icon-hammer-2547559.png"
-                    id="iconimg"
-            />도전경매</a
-            >
-        </div>
-        <div id="list_nav">
-            <a style="border: solid 1px;
+    <div class="title">
+        <a href="/"
+        ><img
+                src="/images/premium-icon-hammer-2547559.png"
+                id="iconimg"
+        />도전경매</a
+        >
+    </div>
+    <div id="list_nav">
+        <a style="border: solid 1px;
                         border-radius: 0.3em;
                         padding: 7px;
                      width:150px;
@@ -51,114 +50,80 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                      font-size: 1.5em;
                      color: white;
                      background-color: #fca863;"href="/posts">
-                목록 보기
-            </a>
-        </div>
+            목록 보기
+        </a>
     </div>
+</div>
+    <div class="product-box">
+
         <form class= product-info th:object="${form}" method="post">
+                <div class="product-title form-groups">
+                    <span>제목 : </span>
+                    <div class="text" style="width:50%" th:text="*{title}"></div>
+                    <input type="hidden" th:field="*{title}">
+                    <input type="hidden" th:field="*{view}">
+                </div>
 
             <input type="hidden" th:field="*{id}" />
             <input type="hidden" th:field="*{postUserId}">
             <input type="hidden" th:field="*{currentBidId}">
             <div class="post-box" style="border-top : 1px solid; border-color: #fca863;" >
-                <div style="margin-top:30px; margin-right: 50px;" class="img-box" >
-                    <img th:if="*{status == '입찰 중'}" class="post-img" th:src="'/postimages/'+${file}"/>
-                    <img th:if="*{status != '입찰 중'}"class="post-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${file}"/>
+                <div class="l-box">
+                    <div class="img-box">
+                        <img th:if="*{status == '입찰 중'}" id="expired" class="post-img" th:src="'/postimages/'+${file}"/>
+                        <img th:if="*{status != '입찰 중'}" class="post-img post-img-gray" th:src="'/postimages/'+${file}"/>
 
+                    </div>
                     <div class="content form-groups">
                         내용: <br> <div class="text" style="width:50%" th:text="*{contents}"></div>
                         <input type="hidden" th:field="*{contents}">
                     </div>
                 </div>
-                <div class="post-content">
-                    <div class="product-title form-groups">
-                        <div class="text" style="width:50%" th:text="*{title}"></div>
-                        <input type="hidden" th:field="*{title}">
-                        <input type="hidden" th:field="*{view}">
-                    </div>
-                <input type="hidden" th:field="*{status}">
-                <input type="hidden" th:field="*{startBid}">
-                <div class="writter form-groups">
-                    <span>작성자 : </span><div class="text" style="width:50%" th:text="*{postUserName}"></div>
-                    <input type="hidden" th:field="*{postUserName}">
-                </div>
-                    <div class="nextBid form-groups">
-                        <span>현재가 : </span><div class="text" style="width:50%" id="nextBid" th:text="*{nextBid}"></div>
-                        <input type="hidden" th:field="*{nextBid}">
-                    </div>
-                    <input type="hidden" th:field="*{nextBid}">
-
-                    <div class="winningBid form-groups">
-                        <span>즉구가 : </span><div id="winningBid" class="text" style="width:50%" th:text="*{winningBid}"></div>
-                        <input type="hidden" th:field="*{winningBid}">
-                    </div>
-                    <div class="unitBid form-groups">
-                        <span>입찰단위 : </span><div id="unit" class="text" style="width:50%" th:text="*{unitBid}"></div>
-                        <input type="hidden" th:field="*{unitBid}">
-                    </div>
-                    <input type="hidden" th:field="*{auctionPeriod}">
-                <div class="status form-groups">
-                    입찰상태 : <div id="stat" class="text" style="width:50%" th:text="*{status}"></div>
+                <div class="r-box">
+                    <div class="post-content">
                     <input type="hidden" th:field="*{status}">
-                </div>
-                <div class="regisTime form-groups">
-                    <button style="border: solid 1px;
-                        border-radius: 0.3em;
-                     width:70px;
-                     height: 30px;
-                     color: white;
-                     margin-right: 1em;
-                     background-color: #fca863;"type="button" id="expButton" th:if="${form.status == '입찰 중'}">마감하기</button>
-                    <br>
-                    <div id="timer">마감된 물품입니다.</div>
-                    <input type="hidden" th:field="*{regisTime}">
-                </div>
-                <div style="display:flex; align-items:center">
-                    <div class="bid-btn" >
-                        <button style="border: solid 1px;
-                        border-radius: 0.3em;
-                     width:150px;
-                     height: 50px;
-                     color: white;
-                     font-size: 1.5em;
-                     background-color: #fca863;"type="button" id='bidButton' th:if="${form.status == '입찰 중'}">입찰하기</button>
-                        <button style="border: solid 1px;
-                        border-radius: 0.3em;
-                     width:150px;
-                     height: 50px;
-                     font-size: 1.5em;
-                     color: white;
-                     background-color: #fca863;"type="button" th:if="${form.status != '입찰 중'}" disabled="disabled">입찰하기</button>
+                    <input type="hidden" th:field="*{startBid}">
+                    <div class="writter form-groups">
+                        <span>작성자 : </span><div class="text" style="width:50%" th:text="*{postUserName}"></div>
+                        <input type="hidden" th:field="*{postUserName}">
                     </div>
-                    <button style="border: solid 1px;
-                    border-radius: 0.3em;
-                     width:150px;
-                     height: 50px;
-                     color: white;
-                     font-size: 1.0em;
-                     background-color: #fca863;" class="buy-btn" id='buyButton' type="button" th:if="${form.status == '입찰 중'}">즉시 구매</button>
-                    <button style="border: solid 1px;
-                    border-radius: 0.3em;
-                     width:150px;
-                     height: 50px;
-                     color: white;
-                     font-size: 1.0em;
-                     background-color: #fca863;"class="buy-btn" type="button" th:if="${form.status != '입찰 중'}" disabled="disabled">즉시 구매</button>
-                    <div class="edit-box">
-                        <a style="border: solid 1px;
-                    border-radius: 0.3em;
-                    padding: 0.2em;
-                     color: white;
-                     background-color: #fca863;"id="modifyButton" href="#" th:href="@{/post/{id}/edit (id=${form.id})}"  role="button">수정</a>
+                        <div class="nextBid form-groups">
+                            <span>현재가 : </span><div class="text" style="width:50%" id="nextBid" th:text="*{nextBid}"></div>
+                            <input type="hidden" th:field="*{nextBid}">
+                        </div>
+                        <input type="hidden" th:field="*{nextBid}">
 
-                        <a style="border: solid 1px;
-                    border-radius: 0.3em;
-                    padding: 0.2em;
-                     color: white;
-                     background-color: red;"id="deleteButton" href="#" th:href="@{/post/{id}/delete (id=${form.id})}"  role="button">삭제</a>
+                        <div class="winningBid form-groups">
+                            <span>즉구가 : </span><div id="winningBid" class="text" style="width:50%" th:text="*{winningBid}"></div>
+                            <input type="hidden" th:field="*{winningBid}">
+                        </div>
+                        <div class="unitBid form-groups">
+                            <span>입찰단위 : </span><div id="unit" class="text" style="width:50%" th:text="*{unitBid}"></div>
+                            <input type="hidden" th:field="*{unitBid}">
+                        </div>
+                        <input type="hidden" th:field="*{auctionPeriod}">
+                    <div class="status form-groups">
+                        입찰상태 : <div id="stat" class="text" style="width:50%" th:text="*{status}"></div>
+                        <input type="hidden" th:field="*{status}">
+                    </div>
+                    <div class="regisTime form-groups">
+                        <button style=""type="button" id="expButton" th:if="${form.status == '입찰 중' and form.postUserId == session.id}">마감하기</button>
+                        <br>
+                        <div id="timer">마감된 물품입니다.</div>
+                        <input type="hidden" th:field="*{regisTime}">
+                    </div>
+                    <div style="display:flex; align-items:center">
+                        <div class="bid-btn" >
+                            <button id="bidButton" class="button" type="button"th:if="${form.status == '입찰 중' and form.postUserId != session.id}">입찰하기</button>
+                        <button id="buyButton"  class="buy-btn button" type="button" th:if="${form.status == '입찰 중' and form.postUserId != session.id}">즉시 구매</button>
+
+                            <a id="modifyButton" class="button" href="#" th:if="${form.postUserId == session.id}" th:href="@{/post/{id}/edit (id=${form.id})}"  role="button">수정</a>
+
+                            <a id="deleteButton" href="#" class="button" th:if="${form.postUserId == session.id}" th:href="@{/post/{id}/delete (id=${form.id})}"  role="button">삭제</a>
+
                     </div>
                 </div>
-            </div>
+                </div>
             </div>
             </form>
             <input type="hidden" th:field="${form.id}">
@@ -178,7 +143,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     const name = [[${session.nickname}]];
 
     toastr.options = {
-			  "closeButton": false,
+	          "closeButton": false,
 			  "debug": false,
 			  "newestOnTop": false,
 			  "progressBar": true,
@@ -206,30 +171,10 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         var stomp = Stomp.over(socket);
         var timer;
 
-        if(id == regisId){
-            document.getElementById('bidButton').disabled = true;
-            document.getElementById('buyButton').disabled = true;
-        }
-        else{
-            document.getElementById('expButton').disabled = true;
-            document.getElementById('modifyButton').disabled = true;
-            document.getElementById('deleteButton').disabled = true;
-            if(id == [[${form.currentBidId}]]){
-                document.getElementById('bidButton').disabled = true;
-                document.getElementById('buyButton').disabled = true;
-            }
-            else{
-                document.getElementById('bidButton').disabled = false;
-                document.getElementById('buyButton').disabled = false;
-            }
-        }
 
         calcDay();
         timer = setInterval(calcDay, 1000);
 
-        if(id != regisId){
-            document.getElementById('expButton').disabled = true;
-        }
 
         stomp.connect({}, function(){
 
@@ -255,10 +200,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     msg = content.message.split(" ");
                     if(postId == parseInt(msg[5])){
                         $('#nextBid').text([[${form.nextBid}]] + [[${form.unitBid}]]);
-                        if(id != parseInt(msg[1]) && id != parseInt(msg[3])){
-                            document.getElementById('bidButton').disabled = false;
-                            document.getElementById('buyButton').disabled = false;
-                        }
                     }
                     if(id == parseInt(msg[1])){
                         toastr.success("입찰에 성공하였습니다.");
@@ -274,9 +215,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         clearInterval(timer);
                         $('#expButton').hide();
                         $('#timer').text('마감된 물품입니다.'); // timer 변경
-                        document.getElementById('bidButton').disabled = true;
-                        document.getElementById('buyButton').disabled = true;
-                        document.getElementById('modifyButton').disabled = true;
+                        $('#expired').addClass('post-img-gray'); // 이미지 흑백으로
 
                         if(id == parseInt(msg[1])){
                             // 사용자 본인이 낙찰한 경우, /pub/chat/message 에서 메시지 전송하기 전에
@@ -304,8 +243,8 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         $('#expButton').hide(); // 마감 버튼 숨기고,
                         $('#stat').text("구매 완료");
                         $('#timer').text('마감된 물품입니다.'); // timer 변경
+                        $('#expired').addClass('post-img-gray'); // 이미지 흑백으로
                         if(id == parseInt(msg[3])){ // 현재 접속한 사용자가 게시물 올린 유저일 경우
-                            document.getElementById('expButton').disabled = true;
                             toastr.success(content.receiverName + "이(가) " + content.senderName + "님에게 구매되었습니다. <br> 채팅방을 확인하세요");
                         }
                         else{
@@ -315,8 +254,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             else{
                                 toastr.success("마감된 물품입니다.");
                             }
-                            document.getElementById('bidButton').disabled = true;
-                            document.getElementById('buyButton').disabled = true;
                         }
                     }
                 }
@@ -326,7 +263,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         clearInterval(timer); // 시간 중단 시키고
                         $('#expButton').hide(); // 마감 버튼 숨기고,
                         $('#timer').text('마감된 물품입니다.'); // timer 변경
-
+                        $('#expired').addClass('post-img-gray'); // 이미지 흑백으로
                         if(parseInt(msg[1]) == 0){
                             $('#stat').text("입찰 종료");
                             toastr.info("입찰이 종료되었습니다.");
@@ -335,8 +272,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             $('#stat').text("낙찰 완료");
                             if(id == parseInt(msg[1])){
                                 toastr.success(content.receiverName + "이(가) 낙찰되었습니다. <br> 채팅방을 확인하세요");
-                                document.getElementById('bidButton').disabled = true;
-                                document.getElementById('buyButton').disabled = true;
                             }
                             else if(id == parseInt(msg[3])){
                                 console.log("%%%%");
@@ -344,8 +279,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             }
                             else{
                                 toastr.success("마감된 물품입니다.");
-                                document.getElementById('bidButton').disabled = true;
-                                document.getElementById('buyButton').disabled = true;
                             }
                         }
                     }
@@ -367,8 +300,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                                 "postId": postId
                             },
                             success: function(){
-                                document.getElementById('bidButton').disabled = true;
-                                document.getElementById('buyButton').disabled = true;
                                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                                     chRoomId: "입찰",
                                     senderName: [[${session.nickname}]],
@@ -388,8 +319,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                                 "postId": postId
                             },
                             success: function(){
-                                document.getElementById('bidButton').disabled = true;
-                                document.getElementById('buyButton').disabled = true;
                                 clearInterval(timer);
                                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                                     chRoomId: "낙찰",
@@ -414,8 +343,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             "postId": postId
                         },
                         success: function(){
-                            document.getElementById('bidButton').disabled = true;
-                            document.getElementById('buyButton').disabled = true;
                             clearInterval(timer);
                             stomp.send('/pub/chat/message', {}, JSON.stringify({
                                 chRoomId: "즉구",
@@ -441,8 +368,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             "type": "pressed"
                         },
                         success: function(data){
-                            document.getElementById('expButton').disabled = true;
-                            document.getElementById('modifyButton').disabled = true;
                             clearInterval(timer);
                             stomp.send('/pub/chat/message', {}, JSON.stringify({
                                 chRoomId: "마감",
@@ -466,11 +391,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 const today = new Date();
                 const distance = expiredDate.getTime() - today.getTime();
 
-                if(distance < 0){
-                    document.getElementById("buyButton").disabled = true;
-                    document.getElementById("bidButton").disabled = true;
-                }
-                else if(distance == 0){
+                if(distance == 0){
                     $.ajax({
                         type: "POST",
                         url: "/post/expired",
@@ -480,7 +401,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             "type": "expired"
                         },
                         success: function(res){
-                            document.getElementById('expButton').disabled = true;
                             clearInterval(timer);
                             stomp.send('/pub/chat/message', {}, JSON.stringify({
                                 chRoomId: "만료",

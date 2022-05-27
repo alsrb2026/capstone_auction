@@ -40,6 +40,13 @@
   </div>
   <div class="search-form">
     <form action="/post/search" method="GET">
+      <select id="sel-category" name="category">
+        <option value="">전체</option>
+        <option value="book">책</option>
+        <option value="studyMaterial">학습자료</option>
+        <option value="electronics">전자기기</option>
+        <option value="daily">생필품</option>
+      </select>
       <input
               class="search-box"
               name="keyword"

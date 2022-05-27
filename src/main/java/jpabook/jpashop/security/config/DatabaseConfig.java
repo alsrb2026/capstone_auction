@@ -14,6 +14,7 @@ public class DatabaseConfig {
         dataSourceBuilder.driverClassName("com.mysql.cj.jdbc.Driver");
         dataSourceBuilder.username("root");
         dataSourceBuilder.password("js082917");
+
         dataSourceBuilder.url("jdbc:mysql://localhost:3306/csemall?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC");
         return dataSourceBuilder.build();
     }
