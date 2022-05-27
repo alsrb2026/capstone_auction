@@ -13,12 +13,20 @@
           rel="stylesheet"
   />
   <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+  <script src="/webjars/jquery/jquery.min.js"></script>
   <script src="/webjars/stomp-websocket/stomp.min.js"></script>
   <meta charset="UTF-8" />
   <title>paging</title>
   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
   <link rel="stylesheet" type="text/css" href="/css/common.css" />
   <link rel="stylesheet" type="text/css" href="/css/postList.css" />
+  <!-- toastr 메시지 스타일, toastr  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
+        integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+          integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
 <div th:replace="fragments/bodyHeader :: bodyHeader" />
@@ -170,25 +178,39 @@
   const id = [[${session.id}]];
   const name = [[${session.nickname}]];
 
+  toastr.options = {
+	          "closeButton": false,
+			  "debug": false,
+			  "newestOnTop": false,
+			  "progressBar": true,
+			  "positionClass": "toast-top-right",
+			  "preventDuplicates": false,
+			  "onclick": null,
+			  "showDuration": "100",
+			  "hideDuration": "1000",
+			  "timeOut": "10000",
+			  "extendedTimeOut": "1000",
+			  "showEasing": "swing",
+			  "hideEasing": "linear",
+			  "showMethod": "fadeIn",
+			  "hideMethod": "fadeOut"
+     }
+
   if(id != null){
     var socket = new SockJS("/stomp/chat");
     var stomp = Stomp.over(socket);
     stomp.connect({}, function(){
       console.log("server connected...");
 
-
       stomp.subscribe("/sub/chat/room", function(chat){
 
-        for(board in [[${boardList}]]){
-          console.log(board.id);
-        }
-
+        var content = JSON.parse(chat.body);
+        msg = content.message.split(" ");
         // content.message 를 split(" ") 하면
         // msg[1]: 입찰한 유저 id
         // msg[3]: 이벤트 발생한 게시물 올린 유저 id
         // msg[5]: 이벤트 발생한 게시물 id
         if(content.chRoomId == '입찰'){
-          msg = content.message.split(" ");
           if(id == parseInt(msg[3])){
             toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰에 참가했습니다.");
           }

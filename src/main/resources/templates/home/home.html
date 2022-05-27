@@ -5,9 +5,13 @@
 <script src="/webjars/sockjs-client/sockjs.min.js"></script>
 <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 
+<!-- toastr 스타일시트.-->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css"
       integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g=="
       crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+        integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <head>
   <title>도전경매</title>
 
@@ -183,58 +187,7 @@
   <div><a href="roomList">채팅 목록</a></div>
 </div>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
-        integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script th:inline="javascript">
-
-
-  function calcDay(){
-    var regisDate = regisTime.getTime();
-    const time = Math.floor(period * 60 * 1000 * 60);
-    const expiredDate = new Date(regisDate + time);
-    const today = new Date();
-    const distance = expiredDate.getTime() - today.getTime();
-
-    if(distance < 0){
-      document.getElementById("buyButton").disabled = true;
-      document.getElementById("bidButton").disabled = true;
-    }
-    else if(distance == 0){
-      $.ajax({
-        type: "POST",
-        url: "/post/expired",
-        data: {
-          "id": postId,
-          "postUserId": regisId,
-          "type": "expired"
-        },
-        success: function(res){
-          document.getElementById('expButton').disabled = true;
-          clearInterval(timer);
-          stomp.send('/pub/chat/message', {}, JSON.stringify({
-            chRoomId: "만료",
-            senderName: [[${session.nickname}]],
-            receiverName: productName,
-            sendTime: new Date(),
-            message: "마감 " + postId,
-            checkRead: -1
-          }));
-        },
-        error: function(request,status,error){
-          alert("오류 발생");
-        }
-      });
-    }
-    else{
-      var day = Math.floor(distance / (1000*60*60*24));
-      var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
-      var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
-      var seconds = Math.floor((distance % (1000*60))/1000);
-
-      document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
-    }
-  }
 
   toastr.options = {
 			  "closeButton": false,
@@ -246,7 +199,7 @@
 			  "onclick": null,
 			  "showDuration": "100",
 			  "hideDuration": "1000",
-			  "timeOut": "1500",
+			  "timeOut": "10000",
 			  "extendedTimeOut": "3000",
 			  "showEasing": "swing",
 			  "hideEasing": "linear",
@@ -284,26 +237,25 @@
       console.log("server connected... ");
       stomp.subscribe("/sub/chat/room", function(chat){
         var content = JSON.parse(chat.body);
-        msg1 = content.chRoomId.split(" ");
-         if(msg1[0] == '마감'){
+         if(content.chRoomId == '마감'){
           msg2 = content.message.split(" ");
           if([[${session.id}]] == parseInt(msg2[1])){
             toastr.info(content.senderName + "님의 " + content.receiverName + " 입찰을 종료했습니다.");
           }
          }
-         else if(msg1[0] == '입찰'){
+         else if(content.chRoomId == '입찰'){
             msg2 = content.message.split(" ");
             if([[${session.id}]] == parseInt(msg2[3])){
               toastr.info(content.senderName + "님이 " + content.receiverName + "에 입찰하였습니다.");
             }
          }
-         else if(msg1[0] == '낙찰'){
+         else if(content.chRoomId == '낙찰'){
             msg2 = content.message.split(" ");
             if([[${session.id}]] == parseInt(msg2[3])){
               toastr.info(content.senderName + "님이 " + content.receiverName + "을 낙찰하였습니다. <br> 채팅방을 확인하세요");
             }
          }
-         else if(msg1[0] == '즉구'){
+         else if(content.chRoomId == '즉구'){
             msg2 = content.message.split(" ");
             if([[${session.id}]] == parseInt(msg2[3])){
               toastr.info(content.senderName + "님이 " + content.receiverName + "을 즉시 구매 하였습니다. <br> 채팅방을 확인하세요");

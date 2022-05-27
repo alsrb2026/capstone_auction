@@ -55,7 +55,13 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     </div>
 </div>
     <div class="product-box">
-
+        <div class="product-box" th:each="list : ${bidList}">
+            <div class="p-title" th:text="${list.bidUserName}"></div>
+            <div class="p-title" th:text="${list.bidUserAccountId}"></div>
+            <div class="p-title" th:text="${#dates.format(list.bidDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
+            <div class="p-title" th:text="${list.bid}"></div>
+            <div class="p-title" th:text="${list.type}"></div>
+        </div>
         <form class= product-info th:object="${form}" method="post">
                 <div class="product-title form-groups">
                     <span>제목 : </span>
@@ -88,7 +94,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         <input type="hidden" th:field="*{postUserName}">
                     </div>
                         <div class="nextBid form-groups">
-                            <span>현재가 : </span><div class="text" style="width:50%" id="nextBid" th:text="*{nextBid}"></div>
+                            <span>다음 입찰가 : </span><div class="text" style="width:50%" id="nextBid" th:text="*{nextBid}"></div>
                             <input type="hidden" th:field="*{nextBid}">
                         </div>
                         <input type="hidden" th:field="*{nextBid}">
@@ -114,16 +120,14 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     </div>
                     <div style="display:flex; align-items:center">
                         <div class="bid-btn" >
-                            <button id="bidButton" class="button" type="button"th:if="${form.status == '입찰 중' and form.postUserId != session.id}">입찰하기</button>
-                        <button id="buyButton"  class="buy-btn button" type="button" th:if="${form.status == '입찰 중' and form.postUserId != session.id}">즉시 구매</button>
-
+                            <button id="bidButton" class="button" type="button"th:if="${form.status == '입찰 중' and form.postUserId != session.id and session.id != form.currentBidId}">입찰하기</button>
+                            <button id="buyButton"  class="buy-btn button" type="button" th:if="${form.status == '입찰 중' and form.postUserId != session.id and session.id != form.currentBidId}">즉시 구매</button>
                             <a id="modifyButton" class="button" href="#" th:if="${form.postUserId == session.id}" th:href="@{/post/{id}/edit (id=${form.id})}"  role="button">수정</a>
-
                             <a id="deleteButton" href="#" class="button" th:if="${form.postUserId == session.id}" th:href="@{/post/{id}/delete (id=${form.id})}"  role="button">삭제</a>
-
+                        </div>
                     </div>
                 </div>
-                </div>
+            </div>
             </div>
             </form>
             <input type="hidden" th:field="${form.id}">
@@ -152,7 +156,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 			  "onclick": null,
 			  "showDuration": "100",
 			  "hideDuration": "1000",
-			  "timeOut": "5000",
+			  "timeOut": "10000",
 			  "extendedTimeOut": "1000",
 			  "showEasing": "swing",
 			  "hideEasing": "linear",
@@ -171,10 +175,10 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         var stomp = Stomp.over(socket);
         var timer;
 
-
-        calcDay();
-        timer = setInterval(calcDay, 1000);
-
+        if(status == '입찰 중'){
+            calcDay();
+            timer = setInterval(calcDay, 1000);
+        }
 
         stomp.connect({}, function(){
 
@@ -200,19 +204,24 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     msg = content.message.split(" ");
                     if(postId == parseInt(msg[5])){
                         $('#nextBid').text([[${form.nextBid}]] + [[${form.unitBid}]]);
+                        if(id == parseInt(msg[1])){
+                            toastr.success("입찰에 성공하였습니다.");
+                        }
+                        else{
+                            $('#bidButton').show();
+                            $('#buyButton').show();
+                            toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰에 참가했습니다.");
+                        }
                     }
-                    if(id == parseInt(msg[1])){
-                        toastr.success("입찰에 성공하였습니다.");
-                    }
-                    else if(id == parseInt(msg[3])){
-                        toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰에 참가했습니다.");
-                    }
+
                 }
                 else if(content.chRoomId == "낙찰"){
                     msg = content.message.split(" ");
                     if(postId == parseInt(msg[5])){
                         $('#stat').text("낙찰 완료");
                         clearInterval(timer);
+                        $('#bidButton').hide();
+                        $('#buyButton').hide();
                         $('#expButton').hide();
                         $('#timer').text('마감된 물품입니다.'); // timer 변경
                         $('#expired').addClass('post-img-gray'); // 이미지 흑백으로
@@ -222,10 +231,11 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             // ajax 코드에서 버튼 사용 못하도록 미리 설정함. 그래서 메시지만 전송.
                             toastr.success(content.receiverName + "이(가) 낙찰되었습니다.");
                         }
-                        else if(id == parseInt(msg[3])){ // 자신이 등록한 판매 물품이 낙찰된 경우
+                        else{ // 자신이 등록한 판매 물품이 낙찰된 경우
                             toastr.info(content.receiverName + "이(가) " + content.senderName + "님에게 낙찰되었습니다. <br> 채팅방을 확인하세요" );
                         }
-                    }else{
+                    }
+                    else{
                         if(id == parseInt(msg[1])){
                             // 사용자 본인이 낙찰한 경우, /pub/chat/message 에서 메시지 전송하기 전에
                             // ajax 코드에서 버튼 사용 못하도록 미리 설정함. 그래서 메시지만 전송.
@@ -238,6 +248,9 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                 }
                 else if(content.chRoomId == "즉구"){
                     msg = content.message.split(" ");
+                    $('#bidButton').hide();
+                    $('#buyButton').hide();
+                    $('#expButton').hide();
                     if(postId == parseInt(msg[5])){ // 즉시 구매 이벤트가 발생한 게시물이 현재 보고 있는 게시물일 경우
                         clearInterval(timer); // 시간 중단.
                         $('#expButton').hide(); // 마감 버튼 숨기고,
@@ -274,7 +287,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                                 toastr.success(content.receiverName + "이(가) 낙찰되었습니다. <br> 채팅방을 확인하세요");
                             }
                             else if(id == parseInt(msg[3])){
-                                console.log("%%%%");
                                 toastr.success("입찰이 종료되었습니다.");
                             }
                             else{
@@ -297,9 +309,12 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             type: "POST",
                             url: "/post/bid",
                             data: {
-                                "postId": postId
+                                "postId": postId,
+                                "regisId": regisId
                             },
                             success: function(){
+                                $('#bidButton').hide();
+                                $('#buyButton').hide();
                                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                                     chRoomId: "입찰",
                                     senderName: [[${session.nickname}]],
@@ -316,9 +331,13 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             type: "POST",
                             url: "/post/bid",
                             data: {
-                                "postId": postId
+                                "postId": postId,
+                                "nickname": name,
+                                "postUserName": postUserName,
                             },
                             success: function(){
+                                $('#bidButton').hide();
+                                $('#buyButton').hide();
                                 clearInterval(timer);
                                 stomp.send('/pub/chat/message', {}, JSON.stringify({
                                     chRoomId: "낙찰",
@@ -343,6 +362,8 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             "postId": postId
                         },
                         success: function(){
+                            $('#bidButton').hide();
+                            $('#buyButton').hide();
                             clearInterval(timer);
                             stomp.send('/pub/chat/message', {}, JSON.stringify({
                                 chRoomId: "즉구",
@@ -369,6 +390,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         },
                         success: function(data){
                             clearInterval(timer);
+                            $('#expButton').hide();
                             stomp.send('/pub/chat/message', {}, JSON.stringify({
                                 chRoomId: "마감",
                                 senderName: [[${session.nickname}]],
