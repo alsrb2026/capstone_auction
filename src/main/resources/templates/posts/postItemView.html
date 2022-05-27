@@ -58,9 +58,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
 
     <div class="product-box">
-        <div class="product-box" th:each="list : ${bidList}">
-            <div class="p-title" th:text="${list.bidUserName}"></div>
-        </div>
         <form class= product-info th:object="${form}" method="post">
                 <div class="product-title form-groups">
                     <span>제목 : </span>
@@ -126,17 +123,50 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
                             <a id="deleteButton" href="#" class="button" th:if="${form.postUserId == session.id}" th:href="@{/post/{id}/delete (id=${form.id})}"  role="button">삭제</a>
 
+                        <div class="button bid-list-btn">입찰 현황</div>
                     </div>
                 </div>
                 </div>
             </div>
+            </div>
             </form>
+
+
             <input type="hidden" th:field="${form.id}">
         </div>
     </div>
 </div>
+<div class="modall hidden">
+    <div class="r-r-box">
+            <div style="text-align: center; height: 40px;">입찰자 목록</div>
+            <button class="closeBtn">✖</button>
+        <div class="bid-list-box">
+            <div class="bid-list" th:each="list : ${bidList}">
+                <div class="bid-user-name" th:text="${list.bidUserName}"></div>
+            </div>
+        </div>
+    </div>
+    <div class="bg hidden">
+    </div>
+</div>
 </body>
 <script th:inline="javascript">
+//모달창
+  const open = () => {
+    document.querySelector(".modall").classList.remove("hidden");
+    document.querySelector(".bg").classList.remove("hidden");
+  }
+
+  const close = () => {
+    document.querySelector(".modall").classList.add("hidden");
+    document.querySelector(".bg").classList.add("hidden");
+  }
+
+  document.querySelector(".bid-list-btn").addEventListener("click", open);
+  document.querySelector(".closeBtn").addEventListener("click", close);
+  document.querySelector(".bg").addEventListener("click", close);
+
+
     const period = [[${form.auctionPeriod}]];
     const status = [[${form.status}]];
     var regisTime = new Date([[${form.regisTime}]]);
