@@ -161,7 +161,7 @@
   width: 20vw;
 }
 .product-box:hover{
-  background: rgb(199, 229, 255);
+  background: #fca863;
 }
 .product-box a{
   width: calc(20vw - 30px);
@@ -174,6 +174,7 @@
   height: calc(20vw - 30px);
   object-fit: contain;
   border: 1px solid black;
+  background: white;
 }
 .product-info{
   width: calc(20vw - 30px);
@@ -250,14 +251,14 @@
 }
 .top5{
   display: flex;
-  background: aliceblue;
+  background: #ffe5cc;
   padding-bottom: 45px;
 }
 .top5-head{
   display: block;
   padding: 10px;
   font-size: 20px;
-  background: aliceblue;
+  background: #ffe5cc;
 }
     .nav-banner {
 
@@ -300,7 +301,7 @@
   .sec_content {
     height: 500px;
     line-height: 2;
-    background-color: aliceblue;
+    background: #ffe5cc;
     letter-spacing: -0.03em;
     font-size: 30px;
     font-weight: bold;
