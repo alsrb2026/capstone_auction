@@ -130,13 +130,24 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             <div style="text-align: center; height: 40px;">입찰자 목록</div>
             <button class="closeBtn">✖</button>
             <div class="bid-list-box">
+                <table>
+                    <tr style="border-bottom: solid 1px black;">
+                        <th>닉네임</th>
+                        <th>아이디</th>
+                        <th>입찰 가격</th>
+                        <th>입찰 시간</th>
+                        <th>입찰 상태</th>
+                    </tr>
                 <div class="bid-list" th:each="list : ${bidList}">
-                    <div class="bid-user-name" th:text="${list.bidUserName}"></div>
-                    <div class="bid-user-name" th:text="${list.bidUserAccountId}"></div>
-                    <div class="bid-user-name" th:text="${list.bid}"></div>
-                    <div class="bid-user-name" th:text="${#dates.format(list.bidDate, 'yyyy-MM-dd HH:mm:ss')}"></div>
-                    <div class="bid-user-name" th:text="${list.type}"></div>
+                    <tr>
+                        <td><div th:text="${list.bidUserName}"></div></td>
+                        <td><div th:text="${list.bidUserAccountId}"></div></td>
+                        <td><div th:text="${list.bid}"></div></td>
+                        <td><div th:text="${#dates.format(list.bidDate, 'yyyy-MM-dd HH:mm:ss')}"></div></td>
+                        <td><div th:text="${list.type}"></div></td>
+                    </tr>
                 </div>
+                </table>
             </div>
         </div>
         <div class="bg hidden">

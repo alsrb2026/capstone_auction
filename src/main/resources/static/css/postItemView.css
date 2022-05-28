@@ -115,6 +115,7 @@ button{
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 3;
 }
 .bg{
   position: absolute;
@@ -123,7 +124,7 @@ button{
   width: 100%;
   height: 1000px;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 11;
+  z-index: 4;
 }
 .closeBtn{
   width: 20px;
@@ -154,8 +155,10 @@ button{
 .bid-list:last-child{
   color:blue;
 }
-
-.bid-list:last-child div::after{
+.bid-list{
+  display: flex;
+}
+.bid-list:last-child::after{
   content: " (낙찰예정자)";
 }
 .l-box{
