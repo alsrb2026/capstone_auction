@@ -205,11 +205,11 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         price.innerText = [[${form.startBid}]];
     }
     else{
-        if(bid + [[${form.unitBid}]] >= [[${form.winningBid}]] ){
+        if(bid*1 + [[${form.unitBid}]] >= [[${form.winningBid}]] ){
             price.innerText = [[${form.winningBid}]];
         }
         else{
-            price.innerText = bid + [[${form.unitBid}]];
+            price.innerText = bid*1 + [[${form.unitBid}]];
         }
     }
 
@@ -225,11 +225,18 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
     const minus = () => {
         var currentBid = document.getElementById("currentBid").innerText;
-        if (price.innerText <= currentBid + [[${form.unitBid}]]){
-
+        if(currentBid == [[${form.startBid}]]){
+            if (price.innerText != currentBid){
+                price.innerText = price.innerText*1 - [[${form.unitBid}]];
+            }
         }
         else{
-            price.innerText = price.innerText - [[${form.unitBid}]];
+            if (price.innerText <= currentBid*1 + [[${form.unitBid}]]){
+
+            }
+            else{
+                price.innerText = price.innerText*1 - [[${form.unitBid}]];
+            }
         }
     }
 
@@ -274,6 +281,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         stomp.connect({}, function(){
 
             console.log("server connected... ");
+
 
             stomp.subscribe("/sub/chat/room", function(chat){
 
