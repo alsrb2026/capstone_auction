@@ -109,9 +109,16 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                                 <div id="timer">마감된 물품입니다.</div>
                                 <input type="hidden" th:field="*{regisTime}">
                             </div>
+                            <div>입찰금액 : <div id="price"></div>
+                                <div id="plus">+</div>
+                                <div id="minus">-</div>
+                            </div>
                             <div style="display:flex; align-items:center">
+
                                 <div class="bid-btn" >
-                                    <button id="bidButton" class="button" type="button"th:if="${form.status == '입찰 중' and form.postUserId != session.id and session.id != form.currentBidId}">입찰하기</button>
+                                    <div>
+                                        <button id="bidButton" class="button" type="button"th:if="${form.status == '입찰 중' and form.postUserId != session.id and session.id != form.currentBidId}">입찰하기</button>
+                                    </div><br>
                                     <button id="buyButton"  class="buy-btn button" type="button" th:if="${form.status == '입찰 중' and form.postUserId != session.id and session.id != form.currentBidId}">즉시 구매</button>
                                     <a id="modifyButton" class="button" href="#" th:if="${form.postUserId == session.id}" th:href="@{/post/{id}/edit (id=${form.id})}"  role="button">수정</a>
                                     <a id="deleteButton" href="#" class="button" th:if="${form.postUserId == session.id}" th:href="@{/post/{id}/delete (id=${form.id})}"  role="button">삭제</a>
@@ -127,7 +134,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     </div>
     <div class="modall hidden">
         <div class="r-r-box">
-            <div style="text-align: center; height: 40px;">입찰자 목록 (최상단 > 낙찰예정자)</div>
+            <div style="text-align: center; height: 40px;">입찰자 목록</div>
             <button class="closeBtn">✖</button>
             <div class="bid-list-box">
                 <table id="bid-list-table">
@@ -156,11 +163,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     </div>
 </body>
 <script th:inline="javascript">
-const blt = document.getElementById('bid-list-table');
-
-blt.children[0].children[1].children[0].children[0].style.color = "blue";
-blt.children[0].children[1].children[0].children[0].innerText += " (최고입찰자)";
-
 //모달창
   const open = () => {
     document.querySelector(".modall").classList.remove("hidden");
@@ -186,6 +188,35 @@ blt.children[0].children[1].children[0].children[0].innerText += " (최고입찰
     const productName = [[${form.productName}]];
     const currentBidId = [[${form.currentBidId}]];
     const name = [[${session.nickname}]];
+
+
+//입찰가 증감
+const price = document.getElementById('price');
+
+const plus = () => {
+  price.innerText = price.innerText*1 + [[${form.unitBid}]];
+    if (price.innerText >= [[${form.winningBid}]]){
+      price.innerText = "[[${form.winningBid}]]";
+    }
+}
+
+const minus = () => {
+  price.innerText = price.innerText*1 - [[${form.unitBid}]];
+    if (price.innerText <= [[${form.nextBid}]]){
+      price.innerText = "[[${form.nextBid}]]";
+    }
+}
+
+document.getElementById('plus').addEventListener("click", plus);
+document.getElementById('minus').addEventListener("click", minus);
+
+price.innerText = "[[${form.nextBid}]]";
+if (price.innerText >= [[${form.winningBid}]]){
+  price.innerText = "[[${form.winningBid}]]";
+} else if (price.innerText <= [[${form.startBid}]]){
+  price.innerText = "[[${form.startBid}]]";
+}
+
 
     toastr.options = {
 	          "closeButton": false,
@@ -488,6 +519,11 @@ blt.children[0].children[1].children[0].children[0].innerText += " (최고입찰
                     document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
                 }
             }
+
+const blt = document.getElementById('bid-list-table');
+
+blt.children[0].children[1].children[0].children[0].style.color = "blue";
+blt.children[0].children[1].children[0].children[0].innerText += " (최고입찰자)";
 
 </script>
 </html>
