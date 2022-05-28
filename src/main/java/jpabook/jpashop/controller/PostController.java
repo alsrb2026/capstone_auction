@@ -514,7 +514,7 @@ public class PostController {
     @ResponseBody
     @Transactional
     @PostMapping("/post/bid") // id에 해당하는 물품 입찰.
-    public void auctionItem(@RequestParam("postId") Long postId, @RequestParam("regisId") Long regisId, HttpServletRequest request) {
+    public void auctionItem(@RequestParam("postId") Long postId, @RequestParam("regisId") Long regisId, @RequestParam("bid") int bid, HttpServletRequest request) {
 
         HttpSession session = request.getSession();
         Date date = new Date();
@@ -535,7 +535,6 @@ public class PostController {
             // 1-1. 현재 입찰한 사용자가 첫 번째 입찰자일 경우
             if (form.getCurrentBidId() == 0) { //
                 System.out.println(">>> startBid , unit" + form.getStartBid() + "   " + form.getUnitBid() + " >>>");
-                int bid = form.getStartBid() + form.getUnitBid();
                 postService.updatePostBidStatus(form.getId(), id, bid, "입찰 중");
                 postUser.setPostId(postId);
                 postUser.setBidUserAccountId(bidUserAccountId);
@@ -564,7 +563,6 @@ public class PostController {
                     chatRoomService.createChatRoom(form.getProductName(), form.getPostUserId(), id
                             , regisName, buyerName);
                 } else if (form.getCurrentBid() < form.getWinningBid()) { // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
-                    int bid = form.getCurrentBid() + form.getUnitBid();
                     postService.updatePostBidStatus(form.getId(), id, bid, "입찰 중");
                     postUser.setPostId(postId);
                     postUser.setBidUserAccountId(bidUserAccountId);
