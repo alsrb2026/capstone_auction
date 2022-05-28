@@ -32,15 +32,11 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final UserService userService;
     private final ChatRoomService chatRoomService;
     private final FilesService filesService;
-    private final FilesRepository filesRepository;
-    private final CertifiService certifiService;
     private final PostUserService postUserService;
-    private final EntityManager em;
 
     @GetMapping("/posts/new")
     public String createForm(HttpServletRequest request, Model model) {
@@ -292,7 +288,7 @@ public class PostController {
         form.setStartBid(post.getStartBid());
         form.setWinningBid(post.getWinningBid());
         form.setUnitBid(post.getUnitBid());
-        form.setNextBid(post.getNextBid());
+        form.setCurrentBid(post.getCurrentBid());
         form.setAuctionPeriod(post.getAuctionPeriod());
         form.setStatus(post.getStatus());
         form.setCurrentBidId(post.getCurrentBidId());
@@ -348,7 +344,7 @@ public class PostController {
 
         postService.updatePost(id, form.getTitle(),
                 form.getContents(), form.getProductName(), form.getCategory(), form.getStartBid()
-                , form.getWinningBid(), form.getUnitBid(), form.getNextBid(), form.getAuctionPeriod(),
+                , form.getWinningBid(), form.getUnitBid(), form.getCurrentBid(), form.getAuctionPeriod(),
                 form.getStatus(), form.getCurrentBidId(), file.getFilename());
 
         return "redirect:/";
@@ -418,7 +414,7 @@ public class PostController {
         form.setStartBid(post.getStartBid());
         form.setWinningBid(post.getWinningBid());
         form.setUnitBid(post.getUnitBid());
-        form.setNextBid(post.getNextBid());
+        form.setCurrentBid(post.getCurrentBid());
         form.setRegisTime(post.getRegisTime());
         form.setAuctionPeriod(post.getAuctionPeriod());
         form.setStatus(post.getStatus());
@@ -446,7 +442,7 @@ public class PostController {
         // .html 화면에서 이미 즉시 구매하는 사람과 등록한 사람을 구분해서 데이터가 오기 때문에 예외 처리할 필요 X.
         // 현재 구매한 사용자 id, 입찰 상태,
         Post post = postService.findOne(postId);
-        postService.updatePostBidStatusDate(post.getId(), id, post.getWinningBid(), "구매 완료", new Date());
+        postService.updatePostBidStatus(post.getId(), id, post.getWinningBid(), "구매 완료");
 
         String regisName = userRepository.findById(post.getPostUserId()).get().getNickname();
         String buyerName = (String)session.getAttribute("nickname");
@@ -500,7 +496,7 @@ public class PostController {
             postUser.setBidUserName(bidUserName);
             postUser.setPostUserAccountId(postUserAccountId);
             postUser.setPostUserName(postUserName);
-            postUser.setBid(post.getNextBid() - post.getUnitBid());
+            postUser.setBid(post.getCurrentBid());
             postUser.setBidDate(date);
             postUser.setType("낙찰");
             postUserService.save(postUser);
@@ -540,7 +536,7 @@ public class PostController {
             if (form.getCurrentBidId() == 0) { //
                 System.out.println(">>> startBid , unit" + form.getStartBid() + "   " + form.getUnitBid() + " >>>");
                 int bid = form.getStartBid() + form.getUnitBid();
-                postService.updatePostBidStatusDate(form.getId(), id, bid, "입찰 중", form.getRegisTime());
+                postService.updatePostBidStatus(form.getId(), id, bid, "입찰 중");
                 postUser.setPostId(postId);
                 postUser.setBidUserAccountId(bidUserAccountId);
                 postUser.setBidUserName(buyerName);
@@ -553,8 +549,8 @@ public class PostController {
             }
             // 1-2. 첫 번째 입찰자가 아닐 경우
             else {
-                if (form.getNextBid() == form.getWinningBid()) { // 1-2-(1). 현재 입찰한 금액이 낙찰가일 경우
-                    postService.updatePostBidStatusDate(form.getId(), id, form.getWinningBid(), "낙찰 완료", date);
+                if (form.getCurrentBid() == form.getWinningBid()) { // 1-2-(1). 현재 입찰한 금액이 낙찰가일 경우
+                    postService.updatePostBidStatus(form.getId(), id, form.getWinningBid(), "낙찰 완료");
                     postUser.setPostId(postId);
                     postUser.setBidUserAccountId(bidUserAccountId);
                     postUser.setBidUserName(buyerName);
@@ -567,9 +563,9 @@ public class PostController {
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
                     chatRoomService.createChatRoom(form.getProductName(), form.getPostUserId(), id
                             , regisName, buyerName);
-                } else if (form.getNextBid() < form.getWinningBid()) { // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
-                    int bid = form.getNextBid() + form.getUnitBid();
-                    postService.updatePostBidStatusDate(form.getId(), id, bid, "입찰 중", form.getRegisTime());
+                } else if (form.getCurrentBid() < form.getWinningBid()) { // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
+                    int bid = form.getCurrentBid() + form.getUnitBid();
+                    postService.updatePostBidStatus(form.getId(), id, bid, "입찰 중");
                     postUser.setPostId(postId);
                     postUser.setBidUserAccountId(bidUserAccountId);
                     postUser.setBidUserName(buyerName);
@@ -585,7 +581,7 @@ public class PostController {
     }
 
     public Post makePost(Post post, Long id, String name, String title, String contents, String productName,
-                         String category, int view, int startBid, int winningBid, int unitBid, int nextBid,
+                         String category, int view, int startBid, int winningBid, int unitBid, int CurrentBid,
                          Timestamp nowTime, int auctionPeriod, String status, Long currentBidId){
         post.setPostUserId(id); // 상품 등록한 사용자 id
         post.setPostUserName(name); // 상품 등록한 사용자 id(닉네임)
@@ -597,7 +593,7 @@ public class PostController {
         post.setStartBid(startBid);
         post.setWinningBid(winningBid);
         post.setUnitBid(unitBid);
-        post.setNextBid(startBid); // 처음 물품 등록할 때에는 입찰한 사람이 없으므로 현재 입찰 가격은 시작 가격으로 설정.
+        post.setCurrentBid(startBid); // 처음 물품 등록할 때에는 입찰한 사람이 없으므로 현재 입찰 가격은 시작 가격으로 설정.
         post.setRegisTime(nowTime);
         post.setAuctionPeriod(auctionPeriod);
         post.setStatus(status); // 등록하면 바로 입찰 중인 상태가 될 것이기 때문에.

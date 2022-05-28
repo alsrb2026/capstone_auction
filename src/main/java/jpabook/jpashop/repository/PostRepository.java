@@ -108,13 +108,12 @@ public class PostRepository {
     }
     @Transactional
     @Modifying(clearAutomatically = true)
-    public void updatePostBidStatusDate(Long id, Long currentBidId, int nextBid, String status, Date date) {
-        em.createQuery("update Post p SET p.status = :status, p.currentBidId = :currentBidId, p.nextBid = :nextBid, p.regisTime = :date where p.id = :id")
+    public void updatePostBidStatus(Long id, Long currentBidId, int currentBid, String status) {
+        em.createQuery("update Post p SET p.status = :status, p.currentBidId = :currentBidId, p.currentBid = :currentBid where p.id = :id")
                 .setParameter("id", id)
                 .setParameter("status", status)
                 .setParameter("currentBidId", currentBidId)
-                .setParameter("nextBid", nextBid)
-                .setParameter("date", date)
+                .setParameter("currentBid", currentBid)
                 .executeUpdate();
         em.clear();
     }

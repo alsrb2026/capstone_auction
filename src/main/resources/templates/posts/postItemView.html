@@ -79,17 +79,19 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     <div class="r-box">
                         <div class="post-content">
                             <input type="hidden" th:field="*{status}">
-                            <input type="hidden" th:field="*{startBid}">
+
                             <div class="writter form-groups">
                                 <span>작성자 : </span><div class="text" style="width:50%" th:text="*{postUserName}"></div>
                                 <input type="hidden" th:field="*{postUserName}">
                             </div>
-                            <div class="nextBid form-groups">
-                                <span>다음 입찰가 : </span><div class="text" style="width:50%" id="nextBid" th:text="*{nextBid}"></div>
-                                <input type="hidden" th:field="*{nextBid}">
+                            <div class="startBid form-groups">
+                                <span>시작가 : </span><div class="text" style="width:50%" id="startBid" th:text="*{startBid}"></div>
+                                <input type="hidden" th:field="*{startBid}">
                             </div>
-                            <input type="hidden" th:field="*{nextBid}">
-
+                            <div class="currentBid form-groups">
+                                <span>입찰가 : </span><div class="text" style="width:50%" id="currentBid" th:text="*{currentBid}"></div>
+                                <input type="hidden" th:field="*{currentBid}">
+                            </div>
                             <div class="winningBid form-groups">
                                 <span>즉시 구매가 : </span><div id="winningBid" class="text" style="width:50%" th:text="*{winningBid}"></div>
                                 <input type="hidden" th:field="*{winningBid}">
@@ -202,15 +204,15 @@ const plus = () => {
 
 const minus = () => {
   price.innerText = price.innerText*1 - [[${form.unitBid}]];
-    if (price.innerText <= [[${form.nextBid}]]){
-      price.innerText = "[[${form.nextBid}]]";
+    if (price.innerText <= [[${form.currentBid}]]){
+      price.innerText = "[[${form.currentBid}]]";
     }
 }
 
 document.getElementById('plus').addEventListener("click", plus);
 document.getElementById('minus').addEventListener("click", minus);
 
-price.innerText = "[[${form.nextBid}]]";
+price.innerText = "[[${form.currentBid}]]";
 if (price.innerText >= [[${form.winningBid}]]){
   price.innerText = "[[${form.winningBid}]]";
 } else if (price.innerText <= [[${form.startBid}]]){
@@ -275,7 +277,7 @@ if (price.innerText >= [[${form.winningBid}]]){
                 if(content.chRoomId == "입찰"){ // 입찰인 경우, 입찰한 사용자와 입찰한 게시물 유저에게 메세지 전송 및 데이터 변경.
                     msg = content.message.split(" ");
                     if(postId == parseInt(msg[5])){
-                        $('#nextBid').text([[${form.nextBid}]] + [[${form.unitBid}]]);
+                        $('#currentBid').text([[${form.currentBid}]] + [[${form.unitBid}]]);
                         if(id == parseInt(msg[1])){
                             toastr.success("입찰에 성공하였습니다.");
                         }
@@ -376,7 +378,7 @@ if (price.innerText >= [[${form.winningBid}]]){
 
             $("#bidButton").on("click", function(e){
                 if(confirm("입찰하시겠습니까?")){
-                    if([[${form.nextBid}]] < [[${form.winningBid}]]){
+                    if([[${form.currentBid}]] < [[${form.winningBid}]]){
                         $.ajax({
                             type: "POST",
                             url: "/post/bid",
@@ -398,7 +400,7 @@ if (price.innerText >= [[${form.winningBid}]]){
                             }
                         })
                     }
-                    else if([[${form.nextBid}]] == [[${form.winningBid}]]){
+                    else if([[${form.currentBid}]] == [[${form.winningBid}]]){
                         $.ajax({
                             type: "POST",
                             url: "/post/bid",

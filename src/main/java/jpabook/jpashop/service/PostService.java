@@ -24,7 +24,7 @@ public class PostService {
     @Transactional
     public void updatePost(Long id, String title, String contents,
                            String productName, String category, int startBid,
-                           int winningBid, int unitBid, int nextBid,
+                           int winningBid, int unitBid, int currentBid,
                            int auctionPeriod, String status, Long currentBidId, String file) {
         System.out.println("updatett"+id);
         Post post = postRepository.findOne(id);
@@ -35,7 +35,7 @@ public class PostService {
         post.setStartBid(startBid);
         post.setWinningBid(winningBid);
         post.setUnitBid(unitBid);
-        post.setNextBid(nextBid);
+        post.setCurrentBid(currentBid);
         post.setAuctionPeriod(auctionPeriod);
         post.setStatus(status);
         post.setCurrentBidId(currentBidId);
@@ -105,7 +105,7 @@ public class PostService {
 
     public void updatePostStatus(Long id, Long currentBidId, String status){ postRepository.updatePostStatus(id, currentBidId, status); }
 
-    public void updatePostBidStatusDate(Long id, Long currentBidId, int nextBid, String status, Date date){ postRepository.updatePostBidStatusDate(id, currentBidId, nextBid, status, date); }
+    public void updatePostBidStatus(Long id, Long currentBidId, int currentBid, String status){ postRepository.updatePostBidStatus(id, currentBidId, currentBid, status); }
 
 
     //카테고리 별 게시글 개수
