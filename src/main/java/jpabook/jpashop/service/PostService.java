@@ -107,6 +107,11 @@ public class PostService {
 
     public void updatePostBidStatusDate(Long id, Long currentBidId, int nextBid, String status, Date date){ postRepository.updatePostBidStatusDate(id, currentBidId, nextBid, status, date); }
 
+
+    //카테고리 별 게시글 개수
+    public int findCategoryCount(String category) {
+        return postRepository.findCategoryCnt(category);
+    }
 }
 
 

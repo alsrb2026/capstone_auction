@@ -197,8 +197,22 @@ public class PostController {
     public String searchCategory(@PathVariable("category") String category, @RequestParam(defaultValue = "1") int page, Model model) {
 
         // 총 게시물 수
-        int totalListCnt = postService.findAllCount();
-        // 생성인자로  총 게시물 수, 현재 페이지를 전달
+        //int totalListCnt = postService.findAllCount();
+        int totalListCnt = postService.findCategoryCount(category);
+//        if(category.equals("all")){
+//
+//        } else if(category.equals("book")) {
+//
+//        } else if(category.equals("studyMaterial")) {
+//
+//        } else if(category.equals("electronics")) {
+//
+//        } else if(category.equals("daily")) {
+//
+//        }
+
+
+    // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
         // DB select start index
         int startIndex = pagination.getStartIndex();

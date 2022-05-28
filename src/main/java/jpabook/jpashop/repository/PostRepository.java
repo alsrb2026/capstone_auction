@@ -118,4 +118,10 @@ public class PostRepository {
                 .executeUpdate();
         em.clear();
     }
+
+    public int findCategoryCnt(String category) {
+        return ((Number) em.createQuery("select count(*) from Post p where p.category = :category")
+                .setParameter("category",category)
+                .getSingleResult()).intValue();
+    }
 }
