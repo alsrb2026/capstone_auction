@@ -71,8 +71,8 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             <img th:if="*{status == '입찰 중'}" id="expired" class="post-img" th:src="'/postimages/'+${file}"/>
                             <img th:if="*{status != '입찰 중'}" class="post-img post-img-gray" th:src="'/postimages/'+${file}"/>
                         </div>
-                        <div class="content form-groups">
-                            내용: <br> <div class="text" style="width:50%" th:text="*{contents}"></div>
+                        <div class="content form-groups" style="display:block;">
+                            <div>내용</div><div class="text content-text" th:text="*{contents}"></div>
                             <input type="hidden" th:field="*{contents}">
                         </div>
                     </div>
