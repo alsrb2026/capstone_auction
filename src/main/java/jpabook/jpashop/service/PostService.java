@@ -112,6 +112,10 @@ public class PostService {
     public int findCategoryCount(String category) {
         return postRepository.findCategoryCnt(category);
     }
+
+    public int findAllCategoryKeyword(String category, String keyword) {
+        return postRepository.findCategoryKeywordCnt(category, keyword);
+    }
 }
 
 

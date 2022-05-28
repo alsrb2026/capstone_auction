@@ -147,7 +147,7 @@
       >
         <a
                 class="page-link"
-                th:href="@{/posts?page={page} (page = ${pageButton})}"
+                th:href="@{/{link}?page={page} (page = ${pageButton}, link = ${link})}"
                 th:text="${pageButton}"
         ></a>
       </li>

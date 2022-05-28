@@ -45,7 +45,7 @@ public class PostRepository {
     }
 
     public List<Post> findAll() {
-        return em.createQuery("select i from Post i", Post.class)
+        return em.createQuery("select i from Post i order by i.id desc", Post.class)
                 .getResultList();
     }
 
@@ -61,7 +61,7 @@ public class PostRepository {
                 .getResultList();
     }
     public List<Post> findSearchListPaging(int startIndex, int pageSize, String keyword) {
-        return em.createQuery("select b from Post b where b.title LIKE :keyword", Post.class)
+        return em.createQuery("select b from Post b where b.title LIKE :keyword order by b.id desc", Post.class)
                 .setParameter("keyword","%"+keyword+"%")
                 .setFirstResult(startIndex)
                 .setMaxResults(pageSize)
@@ -69,7 +69,7 @@ public class PostRepository {
     }
 
     public List<Post> findCategoryListPaging(int startIndex, int pageSize, String category) {
-        return em.createQuery("select b from Post b where b.category = :category", Post.class)
+        return em.createQuery("select b from Post b where b.category = :category order by b.id desc", Post.class)
                 .setParameter("category",category)
                 .setFirstResult(startIndex)
                 .setMaxResults(pageSize)
@@ -77,7 +77,7 @@ public class PostRepository {
     }
 
     public List<Post> findCategorySearchListPaging(int startIndex, int pageSize, String category, String keyword) {
-        return em.createQuery("select b from Post b where b.category = :category AND b.title LIKE :keyword", Post.class)
+        return em.createQuery("select b from Post b where b.category = :category AND b.title LIKE :keyword order by b.id desc", Post.class)
                 .setParameter("category",category)
                 .setParameter("keyword","%"+keyword+"%")
                 .setFirstResult(startIndex)
@@ -89,7 +89,7 @@ public class PostRepository {
     //내 게시글인지 어떻게 판단할래? JOIN해서? 아니면 id값? -> Post에 postUserId필드가 있음 이거 활용
     public List<Post> findMyListPaging(Long myId) {
         System.out.println("id테스트"+myId);
-        return em.createQuery("select b from Post b where b.postUserId = :myId", Post.class)
+        return em.createQuery("select b from Post b where b.postUserId = :myId order by b.id desc", Post.class)
                 .setParameter("myId",myId)
                 .getResultList();
     }
@@ -122,6 +122,13 @@ public class PostRepository {
     public int findCategoryCnt(String category) {
         return ((Number) em.createQuery("select count(*) from Post p where p.category = :category")
                 .setParameter("category",category)
+                .getSingleResult()).intValue();
+    }
+
+    public int findCategoryKeywordCnt(String category, String keyword) {
+        return ((Number) em.createQuery("select count(*) from Post p where p.category = :category and p.title LIKE :keyword")
+                .setParameter("category",category)
+                .setParameter("keyword",keyword)
                 .getSingleResult()).intValue();
     }
 }
