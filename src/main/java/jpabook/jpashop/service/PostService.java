@@ -88,9 +88,15 @@ public class PostService {
     }
 
     //카테고리 별 게시글
-    public List<Post> findCategoryListPaging(int startIndex, int pageSize, String keyword) {
-        return postRepository.findCategoryListPaging(startIndex, pageSize, keyword);
+    public List<Post> findCategoryListPaging(int startIndex, int pageSize, String category) {
+        return postRepository.findCategoryListPaging(startIndex, pageSize, category);
     }
+
+    //카테고리+검색적용 게시글
+    public List<Post> findCategorySearchListPaging(int startIndex, int pageSize, String category, String keyword) {
+        return postRepository.findCategorySearchListPaging(startIndex, pageSize, category, keyword);
+    }
+
 
     //내가 쓴 게시글
     public List<Post> findMyListPaging(Long myId) {

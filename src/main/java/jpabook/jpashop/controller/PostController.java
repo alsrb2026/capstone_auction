@@ -138,7 +138,8 @@ public class PostController {
     }
 
     @GetMapping("/post/search")
-    public String searchList(@RequestParam(value = "keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
+    public String searchList(@RequestParam(value = "keyword") String keyword,
+                             @RequestParam(defaultValue = "1") int page, Model model) {
 
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
@@ -151,14 +152,17 @@ public class PostController {
 
         List<Post> searchboardList = postService.findSearchListPaging(startIndex, pageSize, keyword);
 
+
         model.addAttribute("boardList", searchboardList);
         model.addAttribute("pagination", pagination);
 
         return "posts/postList";
     }
 
-    @GetMapping("/post/searchCategory/{keyword}") //카테고리 검색 + 일반검색
-    public String searchCategory(@PathVariable("keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
+    @GetMapping("/post/CategoryKeywordSearch")
+    public String categoryKeywordSearch(HttpServletRequest request,
+                             @RequestParam(value = "keyword") String keyword,
+                             @RequestParam(defaultValue = "1") int page, Model model) {
 
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
@@ -169,7 +173,39 @@ public class PostController {
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
 
-        List<Post> searchboardList = postService.findCategoryListPaging(startIndex, pageSize, keyword);
+        String category = request.getParameter("category");
+
+        List<Post> searchboardList;
+        System.out.println("wow" + category);
+        if(category.equals("all")) {
+            System.out.println("진입" + category);
+            searchboardList = postService.findSearchListPaging(startIndex, pageSize, keyword);
+        } else {
+            searchboardList = postService.findCategorySearchListPaging(startIndex, pageSize, category, keyword);
+        }
+
+
+
+
+        model.addAttribute("boardList", searchboardList);
+        model.addAttribute("pagination", pagination);
+
+        return "posts/postList";
+    }
+
+    @GetMapping("/post/searchCategory/{category}") //카테고리 검색
+    public String searchCategory(@PathVariable("category") String category, @RequestParam(defaultValue = "1") int page, Model model) {
+
+        // 총 게시물 수
+        int totalListCnt = postService.findAllCount();
+        // 생성인자로  총 게시물 수, 현재 페이지를 전달
+        Pagination pagination = new Pagination(totalListCnt, page);
+        // DB select start index
+        int startIndex = pagination.getStartIndex();
+        // 페이지 당 보여지는 게시글의 최대 개수
+        int pageSize = pagination.getPageSize();
+
+        List<Post> searchboardList = postService.findCategoryListPaging(startIndex, pageSize, category);
         model.addAttribute("boardList", searchboardList);
         model.addAttribute("pagination", pagination);
 
