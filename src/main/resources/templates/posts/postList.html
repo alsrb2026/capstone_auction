@@ -47,9 +47,9 @@
     >
   </div>
   <div class="search-form">
-    <form action="/post/search" method="GET">
+    <form action="/post/CategoryKeywordSearch" method="GET">
       <select id="sel-category" name="category">
-        <option value="">전체</option>
+        <option value="all">전체</option>
         <option value="book">책</option>
         <option value="studyMaterial">학습자료</option>
         <option value="electronics">전자기기</option>
@@ -147,7 +147,7 @@
       >
         <a
                 class="page-link"
-                th:href="@{/posts?page={page} (page = ${pageButton})}"
+                th:href="@{/{link}?page={page} (page = ${pageButton}, link = ${link})}"
                 th:text="${pageButton}"
         ></a>
       </li>
@@ -175,8 +175,13 @@
 </body>
 <script th:inline="javascript">
 
+
+  console.log(selectedCategory);
   const id = [[${session.id}]];
   const name = [[${session.nickname}]];
+
+
+
 
   toastr.options = {
 	          "closeButton": false,

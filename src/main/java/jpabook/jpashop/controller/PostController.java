@@ -132,13 +132,17 @@ public class PostController {
         int pageSize = pagination.getPageSize();
         List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
+        String link = "posts";
+
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
+        model.addAttribute("link",link);
         return "posts/postList";
     }
 
     @GetMapping("/post/search")
-    public String searchList(@RequestParam(value = "keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
+    public String searchList(@RequestParam(value = "keyword", defaultValue = "") String keyword,
+                             @RequestParam(defaultValue = "1") int page, Model model) {
 
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
@@ -151,17 +155,27 @@ public class PostController {
 
         List<Post> searchboardList = postService.findSearchListPaging(startIndex, pageSize, keyword);
 
+        String link = "post/search";
+
         model.addAttribute("boardList", searchboardList);
         model.addAttribute("pagination", pagination);
+        model.addAttribute("link",link);
 
         return "posts/postList";
     }
 
-    @GetMapping("/post/searchCategory/{keyword}") //카테고리 검색 + 일반검색
-    public String searchCategory(@PathVariable("keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
+    //카테고리 적용 + 검색기능
+    @GetMapping("/post/CategoryKeywordSearch")
+    public String categoryKeywordSearch(HttpServletRequest request,
+                             @RequestParam(value = "keyword") String keyword,
+                             @RequestParam(defaultValue = "1") int page, Model model) {
+
+
+        String category = request.getParameter("category");
 
         // 총 게시물 수
-        int totalListCnt = postService.findAllCount();
+        int totalListCnt = postService.findAllCategoryKeyword(category, keyword);
+        System.out.println("zgzg"+totalListCnt);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
         // DB select start index
@@ -169,28 +183,46 @@ public class PostController {
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
 
-        List<Post> searchboardList = postService.findCategoryListPaging(startIndex, pageSize, keyword);
+
+        List<Post> searchboardList;
+        System.out.println("wow" + category);
+        if(category.equals("all")) {
+            System.out.println("진입" + category);
+            searchboardList = postService.findSearchListPaging(startIndex, pageSize, keyword);
+        } else {
+            searchboardList = postService.findCategorySearchListPaging(startIndex, pageSize, category, keyword);
+        }
+
+        String link = "post/CategoryKeywordSearch?category=" + category + "&keyword=" + keyword;
+
         model.addAttribute("boardList", searchboardList);
         model.addAttribute("pagination", pagination);
+        model.addAttribute("link",link);
 
         return "posts/postList";
     }
 
-    @GetMapping("/post/searchCategoryAndKeyword/{keyword}/{category}") //카테고리적용+검색
-    public String searchCategoryAndKeyword(@PathVariable("keyword") String keyword, @RequestParam(defaultValue = "1") int page, Model model) {
+    @GetMapping("/post/searchCategory/{category}") //카테고리 선택
+    public String searchCategory(@PathVariable("category") String category, @RequestParam(defaultValue = "1") int page, Model model) {
 
         // 총 게시물 수
-        int totalListCnt = postService.findAllCount();
-        // 생성인자로  총 게시물 수, 현재 페이지를 전달
+        //int totalListCnt = postService.findAllCount();
+        int totalListCnt = postService.findCategoryCount(category);
+
+    // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
         // DB select start index
         int startIndex = pagination.getStartIndex();
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
 
-        List<Post> searchboardList = postService.findCategoryListPaging(startIndex, pageSize, keyword);
+        String link = ("post/searchCategory/" + category);
+        System.out.println("zzg"+link);
+
+        List<Post> searchboardList = postService.findCategoryListPaging(startIndex, pageSize, category);
         model.addAttribute("boardList", searchboardList);
         model.addAttribute("pagination", pagination);
+        model.addAttribute("link", link);
 
         return "posts/postList";
     }
