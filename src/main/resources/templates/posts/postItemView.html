@@ -91,7 +91,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             <input type="hidden" th:field="*{nextBid}">
 
                             <div class="winningBid form-groups">
-                                <span>즉구가 : </span><div id="winningBid" class="text" style="width:50%" th:text="*{winningBid}"></div>
+                                <span>즉시 구매가 : </span><div id="winningBid" class="text" style="width:50%" th:text="*{winningBid}"></div>
                                 <input type="hidden" th:field="*{winningBid}">
                             </div>
                             <div class="unitBid form-groups">
@@ -127,10 +127,10 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     </div>
     <div class="modall hidden">
         <div class="r-r-box">
-            <div style="text-align: center; height: 40px;">입찰자 목록</div>
+            <div style="text-align: center; height: 40px;">입찰자 목록 (최상단 > 낙찰예정자)</div>
             <button class="closeBtn">✖</button>
             <div class="bid-list-box">
-                <table>
+                <table id="bid-list-table">
                     <tr style="border-bottom: solid 1px black;">
                         <th>닉네임</th>
                         <th>아이디</th>
@@ -156,6 +156,11 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     </div>
 </body>
 <script th:inline="javascript">
+const blt = document.getElementById('bid-list-table');
+
+blt.children[0].children[1].children[0].children[0].style.color = "blue";
+blt.children[0].children[1].children[0].children[0].innerText += " (최고입찰자)";
+
 //모달창
   const open = () => {
     document.querySelector(".modall").classList.remove("hidden");

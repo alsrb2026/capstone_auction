@@ -136,8 +136,8 @@ button{
 .r-r-box{
   position: relative;
   border-radius: 15px;
-  width:500px;
-  height:300px;
+  width:700px;
+  height:500px;
   display: flex;
   flex-direction: column;
   background: white;
@@ -152,14 +152,8 @@ button{
 .bid-list-btn{
   cursor: pointer;
 }
-.bid-list:last-child{
-  color:blue;
-}
 .bid-list{
   display: flex;
-}
-.bid-list:last-child::after{
-  content: " (낙찰예정자)";
 }
 .l-box{
   width:50%;
