@@ -133,11 +133,32 @@ button{
   right:13px;
   top:10px;
 }
+#price{
+  margin-left: 5px;
+  width: 80px;
+  padding-left: 5px;
+  background: white;
+  border: 1px solid black;
+  text-align: center;
+}
+#plus, #minus{
+  margin-left: 5px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  position: relative;
+  top: 3px;
+}
 .r-r-box{
   position: relative;
   border-radius: 15px;
-  width:500px;
-  height:300px;
+  width:700px;
+  height:500px;
   display: flex;
   flex-direction: column;
   background: white;
@@ -152,14 +173,8 @@ button{
 .bid-list-btn{
   cursor: pointer;
 }
-.bid-list:last-child{
-  color:blue;
-}
 .bid-list{
   display: flex;
-}
-.bid-list:last-child::after{
-  content: " (낙찰예정자)";
 }
 .l-box{
   width:50%;
