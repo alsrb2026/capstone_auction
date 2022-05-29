@@ -27,7 +27,7 @@ public class PostUserService {
 
     @Transactional
     public List<PostUser> bidList(Long id) {
-        return em.createQuery("select i from PostUser i where i.postId = :id", PostUser.class)
+        return em.createQuery("select i from PostUser i where i.postId = :id order by i.bidDate desc", PostUser.class)
                 .setParameter("id", id)
                 .getResultList();
     }
