@@ -48,7 +48,7 @@
   </div>
   <div class="search-form">
     <form action="/post/CategoryKeywordSearch" method="GET">
-      <select id="sel-category" name="category">
+      <select id="sel-category" name="category" style="border-color: #fca863">
         <option value="all">전체</option>
         <option value="book">책</option>
         <option value="studyMaterial">학습자료</option>
@@ -60,9 +60,14 @@
               name="keyword"
               type="text"
               placeholder="내가 찾는 도서, 전자기기"
+              style="border-color: #fca863"
       />
       <input type="submit" class="search-btn" value="검색" style="background-color: #fca863; border-color: white" />
     </form>
+  </div>
+  <div id="select" name="select" class="select">
+    <button type="button" id="newOrder" value="newOrder" /> 최신순
+    <button type="button" id="deadlineOrder" value="deadlineOrder" /> 마감기한순
   </div>
 </div>
 <div class="container">
@@ -175,13 +180,16 @@
 </body>
 <script th:inline="javascript">
 
-
-  console.log(selectedCategory);
   const id = [[${session.id}]];
   const name = [[${session.nickname}]];
 
 
-
+  $("#newOrder").on("click", function(e){
+      location.href="/posts";
+  });;
+  $("#deadlineOrder").on("click", function(e){
+    location.href="/posts"
+  });;
 
   toastr.options = {
 	          "closeButton": false,

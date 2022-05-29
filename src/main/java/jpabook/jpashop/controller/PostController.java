@@ -119,8 +119,11 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public String list(@RequestParam(defaultValue = "1") int page, Model model) {
+    public String list(@RequestParam(defaultValue = "1") int page,
+                       @RequestParam(value = "order", defaultValue = "newOrder") String order,
+                       Model model) {
 
+        System.out.println("www"+order);
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
