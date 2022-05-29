@@ -33,6 +33,13 @@ public class ChatMessageRepository {
                 .getResultList();
     }
 
+    public List<ChatMessage> findUserMsg(String id, String name){
+        return em.createQuery("select cm from ChatMessage cm where cm.chRoomId = :id and cm.receiverName = :name", ChatMessage.class)
+                .setParameter("id", id)
+                .setParameter("name", name)
+                .getResultList();
+    }
+
     public int findUnReadMsg(String roomId, String recName){
         int count = 0; // 메시지 받는 사용자가 읽지 않은 메시지 개수
         List<ChatMessage> msgList = em.createQuery("select cm from ChatMessage cm where cm.chRoomId = :roomId and cm.receiverName = :recName",
