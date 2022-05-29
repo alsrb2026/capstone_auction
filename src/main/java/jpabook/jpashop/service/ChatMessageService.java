@@ -23,6 +23,11 @@ public class ChatMessageService {
     public List<ChatMessage> findChatMessages(String id){
         return chatMessageRepository.findAll(id);
     }
+
+    public List<ChatMessage> findUserMsg(String id, String name){
+        return chatMessageRepository.findUserMsg(id, name);
+    }
+
     public int findUnReadMsg(String roomId, String recName) { return chatMessageRepository.findUnReadMsg(roomId, recName); }
 
     public void updateUnreadMsg(String roomId, Date date, String name){ chatMessageRepository.updateUnreadMsg(roomId, date, name); }

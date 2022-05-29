@@ -21,7 +21,7 @@ public class ChatController {
 
     @MessageMapping(value = "/chat/enter")
     public void enter(ChatMessage message) throws Exception {
-        List<ChatMessage> list = chatMessageService.findChatMessages(message.getChRoomId());
+        List<ChatMessage> list = chatMessageService.findUserMsg(message.getChRoomId(), message.getReceiverName());
         if(list.size() == 0){
             message.setCheckRead(1);
             chatMessageService.saveChatMessage(message);

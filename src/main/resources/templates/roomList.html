@@ -64,7 +64,9 @@
                               </h6>
                             </div>
                             <div th:if="${unRead.count == 0}">
-                              <h6 th:id="${unRead.roomId}"></h6>
+                              <h6 th:id="${unRead.roomId}">
+                                <br>
+                              </h6>
                             </div>
                           </div>
                         </div>
@@ -90,10 +92,6 @@
       </div>
     </div>
     <script th:inline="javascript">
-
-      document.getElementById("msg").style.display = 'none';
-      document.getElementById("send").style.display = 'none';
-      document.getElementById("exit").style.display = 'none';
 
       var sender = [[${session.nickname}]];
       var roomId;
@@ -124,18 +122,30 @@
 
               console.log("server connected...");
 
+              stomp.subscribe("/sub/chat/room", function(chat){
+                var content = JSON.parse(chat.body);
+                if(roomId == null){
+                  if(document.getElementById(content.chRoomId)){
+                    document.getElementById(content.chRoomId).innerText = "새 메시지";
+                  }
+                }
+              })
+
               $('.chatList').on('click', function(){
+                  $("#chatList").empty();
+                  $('#chat-input-box').empty();
+
                   var receiver;
-                  var roomId = $(this).attr('roomId');
+                  roomId = $(this).attr('roomId');
 
                   if(document.getElementById(roomId)){
-                      document.getElementById(roomId).style.display = 'none';
+                      document.getElementById(roomId).innerText = "";
                   }
 
                   stomp.send('/pub/chat/enter', {}, JSON.stringify({
                     chRoomId: roomId,
                     senderName: "system",
-                    receiverName: receiver,
+                    receiverName: sender,
                     sendTime: new Date(),
                     message: sender + "님이 입장하셨습니다.",
                     checkRead: 0
@@ -169,6 +179,7 @@
                                     $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
                                 }
                             });
+
                         }
 
                         stomp.subscribe("/sub/chat/room", function(chat){
@@ -211,7 +222,7 @@
                                     toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰을(를) 종료하였습니다. <br> 채팅방을 새로고침 해주세요");
                                   }
                                 }
-                                else if(document.getElementByd(content.chRoomId)){
+                                else if(document.getElementById(content.chRoomId)){
                                     // 현재 세션의 id가 속한 다른 방으로 가는 메시지는 방에 문자로만 알려준다.
                                     document.getElementById(content.chRoomId).innerText = "새 메시지";
                                 }
