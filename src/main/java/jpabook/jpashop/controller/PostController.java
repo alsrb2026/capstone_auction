@@ -475,10 +475,6 @@ public class PostController {
 
         HttpSession session = request.getSession();
 
-        String bidUserAccountId = userRepository.findById(post.getCurrentBidId()).get().getName();
-        String bidUserName = userRepository.findById(post.getCurrentBidId()).get().getNickname();
-        String postUserAccountId = (String)session.getAttribute("accountId");
-        String postUserName = (String)session.getAttribute("nickname");
 
         if(post.getCurrentBidId() == 0){
             System.out.println("currentBidId = 0, no bid user -> status = '입찰 종료'");
@@ -487,6 +483,10 @@ public class PostController {
         }
         else{
             Long currentBidId = post.getCurrentBidId();
+            String bidUserAccountId = userRepository.findById(post.getCurrentBidId()).get().getName();
+            String bidUserName = userRepository.findById(post.getCurrentBidId()).get().getNickname();
+            String postUserAccountId = (String)session.getAttribute("accountId");
+            String postUserName = (String)session.getAttribute("nickname");
             System.out.println("currentBidId = " + currentBidId + "has bid user -> status = '낙찰 완료'");
 
             postService.updatePostStatus(postId, currentBidId, "낙찰 완료");
@@ -501,7 +501,7 @@ public class PostController {
             postUser.setType("낙찰");
             postUserService.save(postUser);
 
-            String productName = postService.findOne(postId).getFname();
+            String productName = postService.findOne(postId).getProductName();
             String regisName = postUserName;
 
             String buyerName = userRepository.findById(currentBidId).get().getNickname();
