@@ -22,7 +22,7 @@
     <body>
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
         <div class="container">
-            <form th:action="@{/post/{id}/edit (id=${form.id})}" th:object="${form}" method="post" enctype="multipart/form-data">
+            <form class="post-form" th:action="@{/post/{id}/edit (id=${form.id})}" th:object="${form}" method="post" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{id}" th:src="*{fname}" />
                 <div class="form-group">
 
@@ -45,18 +45,22 @@
                     <input
                             type="text"
                             th:field="*{title}"
+                            id="title"
                             class="form-control"
                             placeholder="제목을 입력하세요"
                     />
                 </div>
                 <div class="form-group">
-                    <input type="file" name="files">
+                    <div>상품 사진</div>
+                    <input type="file" name="files"
+                           id="img" class="form-control" style="border: none;">
                     <!-- 여기서 files는 controller에 @RequestPart MultipartFile files -->
 
                 </div>
                 <div class="form-group" id="content">
                     <div th:for="price">내용</div>
                     <textarea
+                            id="contents"
                             th:field="*{contents}"
                             maxlength="255"
                             rows="5"
@@ -68,6 +72,7 @@
                     <div th:for="price">상품명</div>
                     <input
                             type="text"
+                            id="name"
                             th:field="*{productName}"
                             class="form-control"
                             placeholder="상품명을 입력하세요"
@@ -77,6 +82,7 @@
                     <div th:for="price">시작가</div>
                     <input
                             type="text"
+                            id="startBid"
                             th:field="*{startBid}"
                             class="form-control"
                             placeholder="시작 가격을 입력하세요"
@@ -86,6 +92,7 @@
                     <div th:for="price">즉시 낙찰가</div>
                     <input
                             type="text"
+                            id="winningBid"
                             th:field="*{winningBid}"
                             class="form-control"
                             placeholder="즉시 낙찰가를 입력하세요"
@@ -95,6 +102,7 @@
                     <div th:for="price">입찰 단위</div>
                     <select
                             type="text"
+                            id="unitBid"
                             th:field="*{unitBid}"
                             class="form-control"
                             placeholder="입찰 단위을 입력하세요"
@@ -112,6 +120,7 @@
                 <div class="form-group">
                     <div th:for="price">경매 기간</div>
                     <select
+                            id="auctionPeriod"
                             type="text"
                             th:field="*{auctionPeriod}"
                             class="form-control"
@@ -132,13 +141,47 @@
                             placeholder="기간을 입력하세요"
                     />
                 </div>
-                <button type="submit" class="btn btn-primary">수정하기</button>
+
+                <!--<div class="form-group">
+                    <label th:for="price">상품 상태</label>
+                    <input type="text" th:field="*{status}" class="form-control" placeholder="가격을 입력하세요">
+                </div> -->
+                <!--        <div class="form-group">-->
+                <!--            <label th:for="price">조회수</label>-->
+                <!--            <input type="text" th:field="*{view}" class="form-control" placeholder="가격을 입력하세요">-->
+                <!--        </div>-->
             </form>
-            <br/>
+            <br />
+            <button onclick="submit()" class="btn btn-primary submit-btn">수정</button>
         </div>
-</div>
 </body>
 <script>
-    document.getElementById()
+    //유효성검사
+    const title = document.getElementById('title');
+    const img = document.getElementById('img');
+    const contents = document.getElementById('contents');
+    const name = document.getElementById('name');
+    const startBid = document.getElementById('startBid');
+    const winningBid = document.getElementById('winningBid');
+    const unitBid = document.getElementById('unitBid');
+    const auctionPeriod = document.getElementById('auctionPeriod');
+      const submit = () => {
+        if(!title.value){
+          alert("제목을 입력하세요");
+        }else if(!contents.value){
+          alert("내용을 입력하세요");
+        }else if(!name.value){
+          alert("상품명을 입력하세요");
+        }else if(startBid.value>winningBid.value){
+          alert("시작가는 즉시낙찰가보다 작거나 같아야합니다.");
+        }else if(unitBid.value==0){
+          alert("입찰단위를 선택하세요");
+        }else if(auctionPeriod.value==0){
+          alert("경매기간을 선택하세요");
+        }
+        else{
+          document.querySelector(".post-form").submit();
+        }
+      }
 </script>
 </html>

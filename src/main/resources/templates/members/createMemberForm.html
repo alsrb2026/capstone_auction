@@ -53,6 +53,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           <br />
           <input
             type="text"
+            id="id"
             th:field="*{id}"
             class="form-control"
             placeholder="이름을 입력하세요"
@@ -66,6 +67,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
             <label th:for="nickname">닉네임</label>
             <br />
             <input
+                    id="nick"
                     type="text"
                     th:field="*{nickname}"
                     class="form-control"
@@ -76,6 +78,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           <label th:for="passwd">비밀번호</label>
           <br />
           <input
+                  id="pw"
                   type="password"
                   th:field="*{passwd}"
                   class="form-control"
@@ -106,47 +109,68 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         </div>
         </div>
 
-        <button style="background-color: #5a6268" type="submit" class="btn btn-primary sign-up-btn"
-                disabled/>
-        인증하세요
       </form>
+      <button style="background-color: #5a6268" onclick="submit()" class="btn btn-primary sign-up-btn" title="인증을 진행하세요"
+              disabled>가입하기</button>
       <br />
     </div>
     <!-- /container -->
   </body>
 
 <script type="text/javascript">
+
+  //유효성검사
+    const id = document.getElementById('id');
+    const nick = document.getElementById('nick');
+    const pw = document.getElementById('pw');
+    const tel = document.getElementById('tel');
+    const submit = () => {
+      if(!id.value){
+        alert("아이디를 입력하세요");
+      }else if(!nick.value){
+        alert("닉네임 입력하세요");
+      }else if(!pw.value){
+        alert("비밀번호를 입력하세요");
+      }else{
+        document.querySelector(".form-box").submit();
+      }
+    }
+
   const certify = document.querySelector(".certify");
   const signupBtn = document.querySelector(".sign-up-btn");
   $('#send').click(function() {
-    certify.style.display = "block";
     const to = $('#to').val();
+    var regPhone = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
+    if (regPhone.test(to) === true) {
+      certify.style.display = "block";
+        $.ajax ({
+          url: '/check/sendSMS',
+          type: 'GET',
+          data: {
+            "to" : to
+          },
+          success: function(data) {
+            const checkNum = data;
+            alert('문자전송비용 아끼려고 문자대신 팝업창띄움 \n인증번호 :'+ checkNum);
 
-    $.ajax ({
-      url: '/check/sendSMS',
-      type: 'GET',
-      data: {
-        "to" : to
-      },
-      success: function(data) {
-        const checkNum = data;
-        alert('문자전송비용 아끼려고 문자대신 팝업창띄움 \n인증번호 :'+ checkNum);
-
-        $('#enterBtn').click(function() {
-          const userNum = $('#userNum').val();
-
-          if(checkNum === userNum) {
-            alert('인증 성공하였습니다.');
-            signupBtn.disabled = false;
-            signupBtn.innerText = "가입하기"
-            signupBtn.style.backgroundColor = "#07C9F0"
-          }
-          else {
-            alert('인증 실패하였습니다. 다시 입력해주세요.');
+            $('#enterBtn').click(function() {
+              const userNum = $('#userNum').val();
+              if(checkNum === userNum) {
+                alert('인증에 성공하였습니다.');
+                signupBtn.disabled = false;
+                signupBtn.title= false;
+                signupBtn.style.backgroundColor = "#07C9F0"
+              }
+              else {
+                alert('인증 실패하였습니다. 다시 입력해주세요.');
+              }
+            });
           }
         });
+      } else {
+        alert("전화번호(휴대폰)를 다시 입력하세요");
       }
-    });
   });
+
 </script>
 </html>
