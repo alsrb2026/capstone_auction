@@ -54,7 +54,7 @@
                           <h5>[[${room.buyerName}]]님과의 채팅방([[${room.name}]])</h5>
                         </div>
                         <div th:if="${room.buyerName == session.nickname}">
-                          <h5>[[${room.regisName}]]님과의 채팅방([[${room.name]])</h5>
+                          <h5>[[${room.regisName}]]님과의 채팅방([[${room.name}]])</h5>
                         </div>
                         <div th:each="unRead : ${unReadMsgList}">
                           <div th:if="${unRead.roomId == room.roomId}">

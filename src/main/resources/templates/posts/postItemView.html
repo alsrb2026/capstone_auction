@@ -105,7 +105,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                                 입찰상태 : <div id="stat" class="text" style="width:50%" th:text="*{status}"></div>
                                 <input type="hidden" th:field="*{status}">
                             </div>
-                            <div class="regisTime form-groups">
+                            <div class="regisTime form-groups" >
                                 <button style=""type="button" id="expButton" th:if="${form.status == '입찰 중' and form.postUserId == session.id}">마감하기</button>
                                 <br>
                                 <div id="timer">마감된 물품입니다.</div>
@@ -197,19 +197,28 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     var bid = document.getElementById("currentBid").innerText;
 
     if(status != '입찰 중'){
-        $('bidArea').hide();
+        $('#bidArea').hide();
     }
 
     // price id 설정
     if(bid == [[${form.startBid}]]){
-        price.innerText = [[${form.startBid}]];
+        if(id != [[${form.postUserId}]]){
+            if([[${form.currentBidId}]] == 0){
+                price.innerText = [[${form.startBid}]];
+            }
+            else{
+                price.innerText = [[${form.startBid}]] + [[${form.unitBid}]];
+            }
+        }
     }
     else{
-        if(bid*1 + [[${form.unitBid}]] >= [[${form.winningBid}]] ){
-            price.innerText = [[${form.winningBid}]];
-        }
-        else{
-            price.innerText = bid*1 + [[${form.unitBid}]];
+        if(id != [[${form.postUserId}]]){
+            if([[${form.currentBid}]] + [[${form.unitBid}]] >= [[${form.winningBid}]]){
+                price.innerText = [[${form.winningBid}]];
+            }
+            else{
+                price.innerText = [[${form.currentBid}]] + [[${form.unitBid}]];
+            }
         }
     }
 
@@ -225,24 +234,35 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
     const minus = () => {
         var currentBid = document.getElementById("currentBid").innerText;
-        if(currentBid == [[${form.startBid}]]){
-            if (price.innerText != currentBid){
-                price.innerText = price.innerText*1 - [[${form.unitBid}]];
-            }
-        }
-        else{
-            if (price.innerText <= currentBid*1 + [[${form.unitBid}]]){
-
+        if([[${form.currentBidId}]] == 0){
+             if(currentBid == [[${form.startBid}]]){
+                if (price.innerText != currentBid){
+                    price.innerText = price.innerText*1 - [[${form.unitBid}]];
+                }
             }
             else{
-                price.innerText = price.innerText*1 - [[${form.unitBid}]];
+                if (price.innerText <= currentBid*1 + [[${form.unitBid}]]){
+
+                }
+                else{
+                    price.innerText = price.innerText*1 - [[${form.unitBid}]];
+                }
+            }
+        }
+        else{ // 입찰자가 있지만 시작가와 같은 가격으로 입찰했을 때
+            if(currentBid == [[${form.startBid}]]){
+                if(price.innerText*1 - [[${form.unitBid}]] <= [[${form.currentBid}]]){}
+                else{
+                    price.innerText = price.innerText*1 - [[${form.unitBid}]];
+                }
             }
         }
     }
 
-    document.getElementById('plus').addEventListener("click", plus);
-    document.getElementById('minus').addEventListener("click", minus);
-
+    if(id != [[${form.postUserId}]]){
+        document.getElementById('plus').addEventListener("click", plus);
+        document.getElementById('minus').addEventListener("click", minus);
+    }
 
     toastr.options = {
 	          "closeButton": false,
@@ -282,7 +302,6 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
             console.log("server connected... ");
 
-
             stomp.subscribe("/sub/chat/room", function(chat){
 
                 var content = JSON.parse(chat.body);
@@ -304,21 +323,25 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     if(postId == parseInt(msg[5])){
                         $('#currentBid').text(parseInt(msg[7]));
                         // price text 설정
-                        if(parseInt(msg[7]) == [[${form.startBid}]]){
-                        }
-                        else if(parseInt(msg[7]) + [[${form.unitBid}]] >= [[${form.winningBid}]]){
-                            price.innerText = [[${form.winningBid}]];
-                        }
-                        else{
-                            price.innerText = msg[7]*1 + [[${form.unitBid}]];
-                        }
-
-                        // 입찰에 관여되어있는 유저에게 메시지 전송
-                        if(id == parseInt(msg[1])){
-                            toastr.success("입찰에 성공하였습니다.");
+                        if(parseInt(msg[7]) == [[${form.startBid}]]){ // 입찰한 유저의 입찰가가 시작가와 같으면, 입찰가격을 조정해야 함.
+                            // 입찰에 관여되어있는 유저에게 메시지 전송
+                            if(id == parseInt(msg[1])){
+                                toastr.success("입찰에 성공하였습니다.");
+                            }
+                            else{
+                                toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰에 참가했습니다. <br> 새로고침 하세요.");
+                            }
                         }
                         else{
-                            toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰에 참가했습니다.");
+                            if(id != parseInt(msg[3])){
+                                if(parseInt(msg[7]) + [[${form.unitBid}]] >= [[${form.winningBid}]]){
+                                    price.innerText = [[${form.winningBid}]];
+                                }
+                                else{
+                                    price.innerText = msg[7]*1 + [[${form.unitBid}]];
+                                }
+                            }
+                            toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰에 참가했습니다. <br> 새로고침 하세요.");
                         }
                     }
                 }
@@ -331,7 +354,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         $('#bidButton').hide();
                         $('#buyButton').hide();
                         $('#expButton').hide();
-                        $('bidArea').hide();
+                        $('#bidArea').hide();
                         $('#timer').text('마감된 물품입니다.'); // timer 변경
                         $('#expired').addClass('post-img-gray'); // 이미지 흑백으로
 
@@ -358,7 +381,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         $('#bidButton').hide();
                         $('#buyButton').hide();
                         $('#expButton').hide();
-                        $('bidArea').hide();
+                        $('#bidArea').hide();
                         $('#timer').text('마감된 물품입니다.'); // timer 변경
                         $('#expired').addClass('post-img-gray'); // 이미지 흑백으로
 
@@ -382,7 +405,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         $('#bidButton').hide();
                         $('#buyButton').hide();
                         $('#expButton').hide();
-                        $('bidArea').hide();
+                        $('#bidArea').hide();
                         $('#timer').text('마감된 물품입니다.'); // timer 변경
                         $('#expired').addClass('post-img-gray'); // 이미지 흑백으로
 
@@ -435,14 +458,12 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             }
                         })
                     }
-                    else if(bid == [[${form.winningBid}]]){
+                    else{
                         $.ajax({
                             type: "POST",
-                            url: "/post/bid",
+                            url: "/post/buy",
                             data: {
                                 "postId": postId,
-                                "nickname": name,
-                                "postUserName": postUserName,
                             },
                             success: function(){
                                 stomp.send('/pub/chat/message', {}, JSON.stringify({
