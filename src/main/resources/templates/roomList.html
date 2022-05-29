@@ -83,9 +83,6 @@
               <div id="msgList"></div>
             </div>
             <div class="chat-input-box">
-              <input type="text" id="msg" class="form-control" />
-              <button id="send" class="btn btn-default">전송</button>
-              <button id="exit" class="btn btn-default">나가기</button>
             </div>
           </div>
         </div>
@@ -124,20 +121,17 @@
 
               stomp.subscribe("/sub/chat/room", function(chat){
                 var content = JSON.parse(chat.body);
-                if(roomId == null){
-                  if(document.getElementById(content.chRoomId)){
+                if(document.getElementById(content.chRoomId) && content.senderName != 'system'){
+                  if(roomId == null){
                     document.getElementById(content.chRoomId).innerText = "새 메시지";
                   }
                 }
               })
 
               $('.chatList').on('click', function(){
-                  $("#chatList").empty();
-                  $('#chat-input-box').empty();
-
                   var receiver;
                   roomId = $(this).attr('roomId');
-
+                  console.log('현재 방 id: ' + roomId);
                   if(document.getElementById(roomId)){
                       document.getElementById(roomId).innerText = "";
                   }
@@ -157,6 +151,7 @@
                       data: { "roomId": roomId },
                       success: function(data){
                           $('#msgList').empty();
+                          $('.chat-input-box').empty();
                           values = data.chatList;
 
                           if(data.user1 == sender){
@@ -166,21 +161,21 @@
                               receiver = data.user1;
                           }
 
-                          roomId = data.roomId;
-
-                        if(values.length != 0){
-                            $.each(values, function(index, value){
-                                if (value.senderName == sender){
-                                    $("#msgList").append("<div class='mychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
-                                }else if(value.senderName == receiver){
-                                    $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
-                                }
-                                else if(value.senderName == "system"){
-                                    $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
-                                }
+                           $.each(values, function(index, value){
+                              if (value.senderName == sender){
+                                $("#msgList").append("<div class='mychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
+                              }
+                              else if(value.senderName == receiver){
+                                $("#msgList").append("<div class='notmychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
+                              }
+                              else if(value.senderName == "system"){
+                                $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
+                              }
                             });
+                            $('.chat-input-box').append("<input type='text' id='msg' class='form-control' />");
+                            $('.chat-input-box').append("<button id='send' class='btn btn-default'>전송</button>");
+                            $('.chat-input-box').append("<button id='exit' class='btn btn-default'>나가기</button>");
 
-                        }
 
                         stomp.subscribe("/sub/chat/room", function(chat){
                             var content = JSON.parse(chat.body);
@@ -224,15 +219,13 @@
                                 }
                                 else if(document.getElementById(content.chRoomId)){
                                     // 현재 세션의 id가 속한 다른 방으로 가는 메시지는 방에 문자로만 알려준다.
-                                    document.getElementById(content.chRoomId).innerText = "새 메시지";
+                                    if(roomId != content.chRoomId){
+                                      document.getElementById(content.chRoomId).innerText = "새 메시지";
+                                    }
                                 }
                             }
                             scrollBottom();
                         }); // stomp.subscribe("/sub/chat/room", function(chat){}) 끝
-
-                          $('#msg').show();
-                          $('#send').show();
-                          $('#exit').show();
 
                           $("#send").on("click", function(e){
                               var msg = document.getElementById("msg");
@@ -265,11 +258,8 @@
                                       message: sender + "님이 나가셨습니다.",
                                       checkRead: 0
                                   }));
-
-                                  $('#msg').hide();
-                                  $('#send').hide();
-                                  $('#exit').hide();
                                   $('#msgList').empty();
+                                  $('.chat-input-box').empty();
 
                                   $.ajax({
                                       type: "POST",
