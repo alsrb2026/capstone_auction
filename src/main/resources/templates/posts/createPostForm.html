@@ -67,19 +67,22 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           <input
             type="text"
             th:field="*{title}"
+            id="title"
             class="form-control"
             placeholder="제목을 입력하세요"
           />
         </div>
         <div class="form-group">
           <div>상품 사진</div>
-          <input type="file" name="files" class="form-control" style="border: none;">
+          <input type="file" name="files"
+                 id="img" class="form-control" style="border: none;">
           <!-- 여기서 files는 controller에 @RequestPart MultipartFile files -->
 
         </div>
         <div class="form-group" id="content">
           <div th:for="price">내용</div>
           <textarea
+            id="contents"
             th:field="*{contents}"
             maxlength="255"
             rows="5"
@@ -91,6 +94,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           <div th:for="price">상품명</div>
           <input
             type="text"
+            id="name"
             th:field="*{productName}"
             class="form-control"
             placeholder="상품명을 입력하세요"
@@ -100,6 +104,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           <div th:for="price">시작가</div>
           <input
             type="text"
+            id="startBid"
             th:field="*{startBid}"
             class="form-control"
             placeholder="시작 가격을 입력하세요"
@@ -109,6 +114,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           <div th:for="price">즉시 낙찰가</div>
           <input
             type="text"
+            id="winningBid"
             th:field="*{winningBid}"
             class="form-control"
             placeholder="즉시 낙찰가를 입력하세요"
@@ -118,6 +124,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           <div th:for="price">입찰 단위</div>
           <select
             type="text"
+            id="unitBid"
             th:field="*{unitBid}"
             class="form-control"
             placeholder="입찰 단위을 입력하세요"
@@ -135,6 +142,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         <div class="form-group">
           <div th:for="price">경매 기간</div>
           <select
+            id="auctionPeriod"
             type="text"
             th:field="*{auctionPeriod}"
             class="form-control"
@@ -166,9 +174,42 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         <!--        </div>-->
       </form>
       <br />
-      <button type="submit" class="btn btn-primary submit-btn">등록</button>
+      <button onclick="submit()" class="btn btn-primary submit-btn">등록</button>
     </div>
     <script>
+    //유효성검사
+    const title = document.getElementById('title');
+    const img = document.getElementById('img');
+    const contents = document.getElementById('contents');
+    const name = document.getElementById('name');
+    const startBid = document.getElementById('startBid');
+    const winningBid = document.getElementById('winningBid');
+    const unitBid = document.getElementById('unitBid');
+    const auctionPeriod = document.getElementById('auctionPeriod');
+      const submit = () => {
+        if(!title.value){
+          alert("제목을 입력하세요");
+        }else if(!contents.value){
+          alert("내용을 입력하세요");
+        }else if(!name.value){
+          alert("상품명을 입력하세요");
+        }else if(!name.value){
+          alert("상품명을 입력하세요");
+        }else if(startBid.value>winningBid.value){
+          alert("시작가는 즉시낙찰가보다 작거나 같아야합니다.");
+        }else if((winningBid.value*1-startBid.value*1)<unitBid.value){
+          alert("입찰단위가 너무 큽니다.");
+        }else if(unitBid.value==0){
+          alert("입찰단위를 선택하세요");
+        }else if(auctionPeriod.value==0){
+          alert("경매기간을 선택하세요");
+        }
+        else{
+          document.querySelector(".post-form").submit();
+        }
+      }
+
+
       var a =
         document.getElementById("category").options[
           document.getElementById("category").selectedIndex

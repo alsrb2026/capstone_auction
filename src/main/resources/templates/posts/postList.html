@@ -48,7 +48,7 @@
   </div>
   <div class="search-form">
     <form action="/post/CategoryKeywordSearch" method="GET">
-      <select id="sel-category" name="category" style="border-color: #fca863">
+      <select id="sel-category" name="category">
         <option value="all">전체</option>
         <option value="book">책</option>
         <option value="studyMaterial">학습자료</option>
@@ -60,9 +60,8 @@
               name="keyword"
               type="text"
               placeholder="내가 찾는 도서, 전자기기"
-              style="border-color: #fca863"
       />
-      <input type="submit" class="search-btn" value="검색" style="background-color: #fca863; border-color: white" />
+      <input type="submit" class="search-btn" value="검색" />
     </form>
   </div>
   <div id="select" name="select" class="select">
@@ -75,7 +74,7 @@
     <div class="product-box" th:each="board : ${boardList}">
       <a href="#" th:if="${board.status != '입찰 중'}"  th:href="@{/post/{id}/bid (id=${board.id})}">
         <div class="imgbox">
-          <img class="product-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${board.getFname()}"/>
+          <img class="product-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${board.getFname()}" onerror="this.src='/images/noimage.png'"/>
         </div>
         <div class="product-info saled" style=" background-color:#e6e6e6">
           <div>
@@ -101,9 +100,9 @@
       </a>
       <a href="#" th:if="${board.status == '입찰 중'}" th:href="@{/post/{id}/bid (id=${board.id})}">
         <div style="border: solid 0.5px; display: flex; justify-content: center; ">
-          <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
+          <img class="product-img" th:src="'/postimages/'+${board.getFname()}" onerror="this.src='/images/noimage.png'"/>
         </div>
-        <div class="product-info" style="background-color:#ffe5cc; border: solid 1px">
+        <div class="product-info">
           <div>
             <span class="p-title" th:text="${board.title}"></span>
           </div>

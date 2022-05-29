@@ -127,7 +127,7 @@
   <div class="product-box" th:each="board : ${boardList}">
 
     <a href="#" th:href="@{/post/{id}/bid (id=${board.id})}">
-      <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
+      <img class="product-img" th:src="'/postimages/'+${board.getFname()}" onerror="this.src='/images/noimage.png'"/>
 
       <div class="product-info">
               <span>
