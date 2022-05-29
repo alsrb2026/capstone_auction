@@ -4,14 +4,14 @@ import jpabook.jpashop.domain.Post;
 import jpabook.jpashop.repository.EntityRepository;
 import jpabook.jpashop.service.CertifiService;
 import lombok.RequiredArgsConstructor;
-import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -25,6 +25,7 @@ public class HomeController {
     public String getHome(HttpServletRequest request, Model model) {
         List<Post> posts = entityRepository.findTop5ByOrderByViewDesc();
         model.addAttribute("boardList", posts);
+
         return "home/home";
     }
 

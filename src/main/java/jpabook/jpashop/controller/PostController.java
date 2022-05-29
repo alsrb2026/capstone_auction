@@ -2,8 +2,6 @@ package jpabook.jpashop.controller;
 
 import jpabook.jpashop.Form.PostForm;
 import jpabook.jpashop.domain.*;
-import jpabook.jpashop.repository.FilesRepository;
-import jpabook.jpashop.repository.PostRepository;
 import jpabook.jpashop.repository.UserRepository;
 import jpabook.jpashop.service.*;
 import lombok.RequiredArgsConstructor;
@@ -17,13 +15,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -56,9 +54,33 @@ public class PostController {
 
         Long id = (Long)session.getAttribute("id"); // 상품 등록한 user id 를 repository에서 조회해서 넣었음.
 
+        String today = null;
+
+        Date date = new Date();
+
+        // 포맷변경 ( 년월일 시분초)
+        SimpleDateFormat sdformat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
+        // Java 시간 더하기
+        Calendar cal = Calendar.getInstance();
+
+        cal.setTime(date);
+
+        today = sdformat.format(cal.getTime());
+        System.out.println("지금 : " + today);
+
+        cal.add(Calendar.HOUR, form.getAuctionPeriod()); //시간 추가
+
+        today = sdformat.format(cal.getTime());
+        System.out.println("마감시간 : " + today);
+
+
+
+        //시24 넘으면 일1 추가
+
         post = makePost(post,id,name,form.getTitle(),form.getContents(),form.getProductName(),
                 form.getCategory(),0, form.getStartBid(), form.getWinningBid(), form.getUnitBid(),
-                form.getStartBid(),Timestamp.valueOf(LocalDateTime.now()),form.getAuctionPeriod(),
+                form.getStartBid(),Timestamp.valueOf(LocalDateTime.now()), today, form.getAuctionPeriod(),
                 "입찰 중" ,0L);
 
         //이미지 업로드 코드
@@ -116,7 +138,7 @@ public class PostController {
 
     @GetMapping("/posts")
     public String list(@RequestParam(defaultValue = "1") int page,
-                       @RequestParam(value = "order", defaultValue = "newOrder") String order,
+                       @RequestParam(name = "order", defaultValue = "newOrder") String order,
                        Model model) {
 
         System.out.println("www"+order);
@@ -129,9 +151,17 @@ public class PostController {
         int startIndex = pagination.getStartIndex();
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
-        List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
+        List<Post> boardList = null;
+        if(order.equals("newOrder")) {
+            boardList = postService.findListPaging(startIndex, pageSize);
+            System.out.println("newOrder 진입");
+        } else if(order.equals("deadlineOrder")) {
+            boardList = postService.findListDeadLinePaging(startIndex, pageSize);
+            System.out.println("deadlineOrder 진입");
+        }
         String link = "posts";
+        System.out.println("zzzx"+boardList);
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
@@ -583,7 +613,7 @@ public class PostController {
 
     public Post makePost(Post post, Long id, String name, String title, String contents, String productName,
                          String category, int view, int startBid, int winningBid, int unitBid, int CurrentBid,
-                         Timestamp nowTime, int auctionPeriod, String status, Long currentBidId){
+                         Timestamp nowTime, String endTime, int auctionPeriod, String status, Long currentBidId){
         post.setPostUserId(id); // 상품 등록한 사용자 id
         post.setPostUserName(name); // 상품 등록한 사용자 id(닉네임)
         post.setTitle(title);
@@ -596,6 +626,7 @@ public class PostController {
         post.setUnitBid(unitBid);
         post.setCurrentBid(startBid); // 처음 물품 등록할 때에는 입찰한 사람이 없으므로 현재 입찰 가격은 시작 가격으로 설정.
         post.setRegisTime(nowTime);
+        post.setEndTime(endTime);
         post.setAuctionPeriod(auctionPeriod);
         post.setStatus(status); // 등록하면 바로 입찰 중인 상태가 될 것이기 때문에.
         post.setCurrentBidId(currentBidId);

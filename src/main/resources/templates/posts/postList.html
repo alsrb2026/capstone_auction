@@ -65,10 +65,10 @@
       <input type="submit" class="search-btn" value="검색" style="background-color: #fca863; border-color: white" />
     </form>
   </div>
-  <div id="select" name="select" class="select">
-    <button type="button" id="newOrder" value="newOrder" /> 최신순
-    <button type="button" id="deadlineOrder" value="deadlineOrder" /> 마감기한순
-  </div>
+  <label>
+    <input type="radio" name="order" value="newOrder" /> 최신순
+    <input type="radio" name="order" value="deadlineOrder"; /> 마감임박순
+  </label>
 </div>
 <div class="container">
   <div class="product-list">
@@ -116,7 +116,7 @@
                 <span class="winningBid" th:text="${board.winningBid}"></span>
           </div>
           <div>
-                <span id="${board.id}">남은시간 : </span>
+                <span id="${board.id}">마감시간 : </span>
             <span
                   th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
           ></span>
@@ -184,12 +184,11 @@
   const name = [[${session.nickname}]];
 
 
-  $("#newOrder").on("click", function(e){
-      location.href="/posts";
-  });;
-  $("#deadlineOrder").on("click", function(e){
-    location.href="/posts"
-  });;
+  $('input[type=radio][name=order]').change(function() {
+      console.log($("input[name='order']:checked").val());
+      var order = $("input[name='order']:checked").val();
+      location.href="/posts?order="+ order;
+  });
 
   toastr.options = {
 	          "closeButton": false,

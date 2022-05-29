@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -82,6 +81,11 @@ public class PostService {
     public List<Post> findListPaging(int startIndex, int pageSize){
         return postRepository.findListPaging(startIndex, pageSize);
     }
+
+    //마감임박 순서
+    public List<Post> findListDeadLinePaging(int startIndex, int pageSize) {
+        return postRepository.findListDeadLinePaging(startIndex, pageSize);
+    }
     //검색 게시글
     public List<Post> findSearchListPaging(int startIndex, int pageSize, String keyword) {
         return postRepository.findSearchListPaging(startIndex, pageSize, keyword);
@@ -116,6 +120,8 @@ public class PostService {
     public int findAllCategoryKeyword(String category, String keyword) {
         return postRepository.findCategoryKeywordCnt(category, keyword);
     }
+
+
 }
 
 
