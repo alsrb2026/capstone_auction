@@ -96,6 +96,11 @@
       var sender = [[${session.nickname}]];
       var roomId;
 
+      $('#msg').hide();
+      $('#send').hide();
+      $('#exit').hide();
+
+
       toastr.options = {
 	          "closeButton": false,
 			  "debug": false,
@@ -132,8 +137,6 @@
               })
 
               $('.chatList').on('click', function(){
-                  $("#chatList").empty();
-                  $('#chat-input-box').empty();
 
                   var receiver;
                   roomId = $(this).attr('roomId');
@@ -179,7 +182,6 @@
                                     $("#msgList").append("<div class='syschat'><div>"+ value.senderName + ": " + value.message + "</div></div>");
                                 }
                             });
-
                         }
 
                         stomp.subscribe("/sub/chat/room", function(chat){
