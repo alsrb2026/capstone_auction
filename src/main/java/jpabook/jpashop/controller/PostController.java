@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -153,19 +154,22 @@ public class PostController {
         int pageSize = pagination.getPageSize();
 
         List<Post> boardList = null;
+
+        String link = "posts?order="+order;
+
         if(order.equals("newOrder")) {
             boardList = postService.findListPaging(startIndex, pageSize);
-            System.out.println("newOrder 진입");
+
         } else if(order.equals("deadlineOrder")) {
             boardList = postService.findListDeadLinePaging(startIndex, pageSize);
-            System.out.println("deadlineOrder 진입");
         }
-        String link = "posts";
-        System.out.println("zzzx"+boardList);
+
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
         model.addAttribute("link",link);
+        String encode = URLEncoder.encode("&");
+        model.addAttribute("second", encode);
         return "posts/postList";
     }
 
@@ -189,6 +193,7 @@ public class PostController {
         model.addAttribute("boardList", searchboardList);
         model.addAttribute("pagination", pagination);
         model.addAttribute("link",link);
+        model.addAttribute("second", "?");
 
         return "posts/postList";
     }
@@ -227,6 +232,7 @@ public class PostController {
         model.addAttribute("boardList", searchboardList);
         model.addAttribute("pagination", pagination);
         model.addAttribute("link",link);
+        model.addAttribute("second", "?");
 
         return "posts/postList";
     }
@@ -252,6 +258,7 @@ public class PostController {
         model.addAttribute("boardList", searchboardList);
         model.addAttribute("pagination", pagination);
         model.addAttribute("link", link);
+        model.addAttribute("second", "?");
 
         return "posts/postList";
     }

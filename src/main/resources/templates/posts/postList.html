@@ -16,7 +16,7 @@
   <script src="/webjars/jquery/jquery.min.js"></script>
   <script src="/webjars/stomp-websocket/stomp.min.js"></script>
   <meta charset="UTF-8" />
-  <title>paging</title>
+  <title>도전경매 - 경매리스트</title>
   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
   <link rel="stylesheet" type="text/css" href="/css/common.css" />
   <link rel="stylesheet" type="text/css" href="/css/postList.css" />
@@ -89,7 +89,6 @@
                 <span>즉시구매가 : </span
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
           </div>
-
           <div>
                 <span>마감된 시간 : </span
                 ><span
@@ -152,7 +151,7 @@
       >
         <a
                 class="page-link"
-                th:href="@{/{link}?page={page} (page = ${pageButton}, link = ${link})}"
+                th:href="@{/{link}{second}page={page} (page = ${pageButton}, link = ${link}, second = ${second})}"
                 th:text="${pageButton}"
         ></a>
       </li>
