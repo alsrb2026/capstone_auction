@@ -34,7 +34,7 @@ public class ChatMessageRepository {
     }
 
     public List<ChatMessage> findUserMsg(String id, String name){
-        return em.createQuery("select cm from ChatMessage cm where cm.chRoomId = :id and cm.receiverName = :name", ChatMessage.class)
+        return em.createQuery("select cm from ChatMessage cm where cm.chRoomId = :id and cm.receiverName = :name and cm.senderName = 'system'", ChatMessage.class)
                 .setParameter("id", id)
                 .setParameter("name", name)
                 .getResultList();

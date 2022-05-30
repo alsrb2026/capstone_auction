@@ -341,12 +341,12 @@ public class PostController {
     @PostMapping("post/{id}/edit")
     public String auctionPost(@RequestParam(defaultValue = "1") int page, @PathVariable Long id,
                               @ModelAttribute("form") PostForm form, Model model, @RequestPart MultipartFile files) throws Exception {
-        System.out.println("yyyy"+id);
-
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
+
+        System.out.println("auction period: " + form.getAuctionPeriod());
 
         // DB select start index
         int startIndex = pagination.getStartIndex();
@@ -380,10 +380,9 @@ public class PostController {
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
 
-        postService.updatePost(id, form.getTitle(),
-                form.getContents(), form.getProductName(), form.getCategory(), form.getStartBid()
-                , form.getWinningBid(), form.getUnitBid(), form.getCurrentBid(), form.getAuctionPeriod(),
-                form.getStatus(), form.getCurrentBidId(), file.getFilename());
+        postService.updatePost(id, form.getTitle(), form.getContents(), form.getProductName(), form.getCategory(),
+                form.getStartBid(), form.getWinningBid(), form.getUnitBid(), form.getAuctionPeriod(), form.getStatus(),
+                file.getFilename());
 
         return "redirect:/";
     }
