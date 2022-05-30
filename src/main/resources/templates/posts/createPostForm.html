@@ -187,6 +187,8 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     const winningBid = document.getElementById('winningBid');
     const unitBid = document.getElementById('unitBid');
     const auctionPeriod = document.getElementById('auctionPeriod');
+    console.log(startBid.value);
+    console.log(winningBid.value);
       const submit = () => {
         if(!title.value){
           alert("제목을 입력하세요");
@@ -196,9 +198,9 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           alert("상품명을 입력하세요");
         }else if(!name.value){
           alert("상품명을 입력하세요");
-        }else if(startBid.value>winningBid.value){
+        }else if(startBid.value*1>winningBid.value*1){
           alert("시작가는 즉시낙찰가보다 작거나 같아야합니다.");
-        }else if((winningBid.value*1-startBid.value*1)<unitBid.value){
+        }else if((winningBid.value*1-startBid.value*1)<unitBid.value*1){
           alert("입찰단위가 너무 큽니다.");
         }else if(unitBid.value==0){
           alert("입찰단위를 선택하세요");

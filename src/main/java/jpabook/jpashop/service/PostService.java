@@ -21,10 +21,8 @@ public class PostService {
     }
 
     @Transactional
-    public void updatePost(Long id, String title, String contents,
-                           String productName, String category, int startBid,
-                           int winningBid, int unitBid, int currentBid,
-                           int auctionPeriod, String status, Long currentBidId, String file) {
+    public void updatePost(Long id, String title, String contents, String productName, String category, int startBid,
+                           int winningBid, int unitBid, int auctionPeriod, String status, String file) {
         System.out.println("updatett"+id);
         Post post = postRepository.findOne(id);
         post.setTitle(title);
@@ -34,10 +32,10 @@ public class PostService {
         post.setStartBid(startBid);
         post.setWinningBid(winningBid);
         post.setUnitBid(unitBid);
-        post.setCurrentBid(currentBid);
+        post.setCurrentBid(startBid);
         post.setAuctionPeriod(auctionPeriod);
         post.setStatus(status);
-        post.setCurrentBidId(currentBidId);
+        post.setCurrentBidId(0L);
         post.setFname(file);
     } // 만약 입찰한 유저가 있고, currentBidId를 update할 때, 같이 넣지 않으면 입찰한 유저 정보가 사라져서 추가함.
 

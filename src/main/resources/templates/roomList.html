@@ -92,6 +92,7 @@
     <script th:inline="javascript">
 
       var sender = [[${session.nickname}]];
+      var receiver;
       var roomId;
 
       toastr.options = {
@@ -122,29 +123,66 @@
 
               stomp.subscribe("/sub/chat/room", function(chat){
                 var content = JSON.parse(chat.body);
-                if(document.getElementById(content.chRoomId) && content.senderName != 'system'){
-                  if(roomId == null){
-                    document.getElementById(content.chRoomId).innerText = "새 메시지";
+                if(document.getElementById(content.chRoomId)){
+                  if(content.chRoomId != roomId){
+                    if(content.senderName != "system"){
+                      document.getElementById(content.chRoomId).innerText = "새 메시지";
+                    }
+                  }
+                  else if(content.chRoomId == roomId){
+                    console.log(content);
+                    var msgDate = sendMsgDate(content.sendTime);
+                    if(content.senderName == sender){
+                      $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
+                    }
+                    else if(content.senderName == "system"){
+                      $("#msgList").append("<div class='syschat'><div>"+ "system : " + content.message + "</div></div>");
+                    }
+                    else if(content.senderName == receiver){
+                      $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
+                    }
+                    scrollBottom();
+                  }
+                else{
+                    msg = content.message.split(" ");
+                    // msg[1]: 입찰한 유저 id
+                    // msg[3]: 이벤트 발생한 게시물 올린 유저 id
+                    // msg[5]: 이벤트 발생한 게시물 id
+                    if(content.chRoomId == "입찰"){ // 입찰자는 입찰 페이지에 있으므로, 경매글 등록자에게만.
+                      if([[${session.id}]] == parseInt(msg[3])){
+                        toastr.info(content.senderName + "님이 " + content.receiverName + "에 입찰하였습니다. ");
+                      }
+                    }
+                    else if(content.chRoomId == "낙찰"){ // 낙찰자는 입찰 페이지에 있으므로, 경매글 등록자에게만.
+                      if([[${session.id}]] == parseInt(msg[3])){
+                        toastr.info(content.senderName + "님이 " + content.receiverName + "을(를) 낙찰하였습니다. <br> 채팅방을 새로고침 해주세요");
+                      }
+                    }
+                    else if(content.chRoomId == "즉구"){ // 구매자는 입찰 페이지에 있으므로, 경매글 등록자에게만.
+                      if([[${session.id}]] == parseInt(msg[3])){
+                        toastr.info(content.senderName + "님이 " + content.receiverName + "을(를) 구매하였습니다. <br> 채팅방을 새로고침 해주세요");
+                      }
+                    }
+                    else if(content.chRoomId == "마감"){ // 마감하는 유저는 입찰 페이지에 있으므로, 현재 입찰자만 메시지.
+                      if([[${session.id}]] == parseInt(msg[3])){
+                        toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰을(를) 종료하였습니다. <br> 채팅방을 새로고침 해주세요");
+                      }
+                    }
+                    else if(document.getElementById(content.chRoomId)){
+                    // 현재 세션의 id가 속한 다른 방으로 가는 메시지는 방에 문자로만 알려준다.
+                      if(roomId != content.chRoomId){
+                        document.getElementById(content.chRoomId).innerText = "새 메시지";
+                      }
+                    }
                   }
                 }
               })
 
               $('.chatList').on('click', function(){
-                  var receiver;
                   roomId = $(this).attr('roomId');
-                  console.log('현재 방 id: ' + roomId);
                   if(document.getElementById(roomId)){
                       document.getElementById(roomId).innerText = "";
                   }
-
-                  stomp.send('/pub/chat/enter', {}, JSON.stringify({
-                    chRoomId: roomId,
-                    senderName: "system",
-                    receiverName: sender,
-                    sendTime: new Date(),
-                    message: sender + "님이 입장하셨습니다.",
-                    checkRead: 0
-                  }));
 
                   $.ajax({
                       type: "GET",
@@ -162,7 +200,16 @@
                               receiver = data.user1;
                           }
 
-                           $.each(values, function(index, value){
+                          stomp.send('/pub/chat/enter', {}, JSON.stringify({
+                            chRoomId: roomId,
+                            senderName: "system",
+                            receiverName: sender,
+                            sendTime: new Date(),
+                            message: sender + "님이 입장하셨습니다.",
+                            checkRead: 0
+                          }));
+
+                          $.each(values, function(index, value){
                               if (value.senderName == sender){
                                 $("#msgList").append("<div class='mychat'><span>"+ value.senderName + ": " + value.message + " " + sendMsgDate(value.sendTime) + "</span></div>");
                               }
@@ -177,61 +224,11 @@
                             $('.chat-input-box').append("<button id='send' class='btn btn-default'>전송</button>");
                             $('.chat-input-box').append("<button id='exit' class='btn btn-default'>나가기</button>");
 
-
-                        stomp.subscribe("/sub/chat/room", function(chat){
-                            var content = JSON.parse(chat.body);
-                            if(content.chRoomId == roomId){ // 채팅 온 문자가 자신이 눌렀던 채팅방일 경우.
-                                var msgDate = sendMsgDate(content.sendTime);
-
-                                if(content.senderName == "system"){
-                                  $("#msgList").append("<div class='syschat'><div>"+ content.senderName + ": " + content.message + "</div></div>");
-                                }
-                                else if(content.senderName == receiver){
-                                  $("#msgList").append("<div class='notmychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
-                                }
-                                scrollBottom();
-                            } // 입찰, 낙찰, 즉구, 마감 이벤트인 경우.
-                            else{
-                                msg = content.message.split(" ");
-                                // msg[1]: 입찰한 유저 id
-                                // msg[3]: 이벤트 발생한 게시물 올린 유저 id
-                                // msg[5]: 이벤트 발생한 게시물 id
-                                if(content.chRoomId == "입찰"){ // 입찰자는 입찰 페이지에 있으므로, 경매글 등록자에게만.
-                                  if([[${session.id}]] == parseInt(msg[3])){
-                                    toastr.info(content.senderName + "님이 " + content.receiverName + "에 입찰하였습니다. ");
-                                  }
-                                }
-                                else if(content.chRoomId == "낙찰"){ // 낙찰자는 입찰 페이지에 있으므로, 경매글 등록자에게만.
-                                  if([[${session.id}]] == parseInt(msg[3])){
-                                    toastr.info(content.senderName + "님이 " + content.receiverName + "을(를) 낙찰하였습니다. <br> 채팅방을 새로고침 해주세요");
-                                  }
-                                }
-                                else if(content.chRoomId == "즉구"){ // 구매자는 입찰 페이지에 있으므로, 경매글 등록자에게만.
-                                  if([[${session.id}]] == parseInt(msg[3])){
-                                    toastr.info(content.senderName + "님이 " + content.receiverName + "을(를) 구매하였습니다. <br> 채팅방을 새로고침 해주세요");
-                                  }
-                                }
-                                else if(content.chRoomId == "마감"){ // 마감하는 유저는 입찰 페이지에 있으므로, 현재 입찰자만 메시지.
-                                  if([[${session.id}]] == parseInt(msg[3])){
-                                    toastr.info(content.senderName + "님이 " + content.receiverName + " 입찰을(를) 종료하였습니다. <br> 채팅방을 새로고침 해주세요");
-                                  }
-                                }
-                                else if(document.getElementById(content.chRoomId)){
-                                    // 현재 세션의 id가 속한 다른 방으로 가는 메시지는 방에 문자로만 알려준다.
-                                    if(roomId != content.chRoomId){
-                                      document.getElementById(content.chRoomId).innerText = "새 메시지";
-                                    }
-                                }
-                            }
-                            scrollBottom();
-                        }); // stomp.subscribe("/sub/chat/room", function(chat){}) 끝
-
                           $("#send").on("click", function(e){
                               var msg = document.getElementById("msg");
                               if(msg.value != ""){
                                   var date = new Date();
                                   var msgDate = sendMsgDate(date);
-                                  $("#msgList").append("<div class='mychat'><span>" + sender + ": " + msg.value + " " + msgDate + "</span></div>");
                                   stomp.send('/pub/chat/message', {}, JSON.stringify({
                                       chRoomId: roomId,
                                       senderName: sender,

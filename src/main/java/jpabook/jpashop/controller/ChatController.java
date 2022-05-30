@@ -1,16 +1,13 @@
 package jpabook.jpashop.controller;
 
-import jpabook.jpashop.Form.PostForm;
 import jpabook.jpashop.domain.ChatMessage;
 import jpabook.jpashop.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
-import netscape.javascript.JSObject;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
