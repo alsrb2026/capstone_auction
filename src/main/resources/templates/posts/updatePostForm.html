@@ -89,6 +89,10 @@
                             placeholder="시작 가격을 입력하세요"
                     />
                 </div>
+                <input
+                        type="hidden"
+                        th:field="*{endTime}"
+                />
                 <div class="form-group">
                     <div th:for="price">즉시 낙찰가</div>
                     <input

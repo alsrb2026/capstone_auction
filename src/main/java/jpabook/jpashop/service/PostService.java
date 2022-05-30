@@ -22,7 +22,7 @@ public class PostService {
 
     @Transactional
     public void updatePost(Long id, String title, String contents, String productName, String category, int startBid,
-                           int winningBid, int unitBid, int auctionPeriod, String status, String file) {
+                           int winningBid, int unitBid, int auctionPeriod, String endTime, String status, String file) {
         System.out.println("updatett"+id);
         Post post = postRepository.findOne(id);
         post.setTitle(title);
@@ -34,6 +34,7 @@ public class PostService {
         post.setUnitBid(unitBid);
         post.setCurrentBid(startBid);
         post.setAuctionPeriod(auctionPeriod);
+        post.setEndTime(endTime);
         post.setStatus(status);
         post.setCurrentBidId(0L);
         post.setFname(file);

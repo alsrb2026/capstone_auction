@@ -54,33 +54,24 @@ public class PostController {
 
         Long id = (Long)session.getAttribute("id"); // 상품 등록한 user id 를 repository에서 조회해서 넣었음.
 
-        String today = null;
-
+        String endTime = null;
         Date date = new Date();
-
         // 포맷변경 ( 년월일 시분초)
         SimpleDateFormat sdformat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-
         // Java 시간 더하기
         Calendar cal = Calendar.getInstance();
-
         cal.setTime(date);
-
-        today = sdformat.format(cal.getTime());
-        System.out.println("지금 : " + today);
-
+        endTime = sdformat.format(cal.getTime());
+        System.out.println("지금 : " + endTime);
         cal.add(Calendar.HOUR, form.getAuctionPeriod()); //시간 추가
-
-        today = sdformat.format(cal.getTime());
-        System.out.println("마감시간 : " + today);
-
-
+        endTime = sdformat.format(cal.getTime());
+        System.out.println("마감시간 : " + endTime);
 
         //시24 넘으면 일1 추가
 
         post = makePost(post,id,name,form.getTitle(),form.getContents(),form.getProductName(),
                 form.getCategory(),0, form.getStartBid(), form.getWinningBid(), form.getUnitBid(),
-                form.getStartBid(),Timestamp.valueOf(LocalDateTime.now()), today, form.getAuctionPeriod(),
+                form.getStartBid(),Timestamp.valueOf(LocalDateTime.now()), endTime, form.getAuctionPeriod(),
                 "입찰 중" ,0L);
 
         //이미지 업로드 코드
@@ -324,6 +315,7 @@ public class PostController {
         form.setProductName(post.getProductName());
         form.setCategory(post.getCategory());
         form.setStartBid(post.getStartBid());
+        form.setEndTime(post.getEndTime());
         form.setWinningBid(post.getWinningBid());
         form.setUnitBid(post.getUnitBid());
         form.setCurrentBid(post.getCurrentBid());
@@ -346,7 +338,18 @@ public class PostController {
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
 
-        System.out.println("auction period: " + form.getAuctionPeriod());
+        String endTime = null;
+        Date date = new Date();
+        // 포맷변경 ( 년월일 시분초)
+        SimpleDateFormat sdformat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        // Java 시간 더하기
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        endTime = sdformat.format(cal.getTime());
+        System.out.println("지금 : " + endTime);
+        cal.add(Calendar.HOUR, form.getAuctionPeriod()); //시간 추가
+        endTime = sdformat.format(cal.getTime());
+        System.out.println("마감시간 : " + endTime);
 
         // DB select start index
         int startIndex = pagination.getStartIndex();
@@ -381,7 +384,7 @@ public class PostController {
         model.addAttribute("pagination", pagination);
 
         postService.updatePost(id, form.getTitle(), form.getContents(), form.getProductName(), form.getCategory(),
-                form.getStartBid(), form.getWinningBid(), form.getUnitBid(), form.getAuctionPeriod(), form.getStatus(),
+                form.getStartBid(), form.getWinningBid(), form.getUnitBid(), form.getAuctionPeriod(), endTime, form.getStatus(),
                 file.getFilename());
 
         return "redirect:/";
