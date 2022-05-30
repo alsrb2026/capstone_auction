@@ -16,7 +16,7 @@
   <script src="/webjars/jquery/jquery.min.js"></script>
   <script src="/webjars/stomp-websocket/stomp.min.js"></script>
   <meta charset="UTF-8" />
-  <title>paging</title>
+  <title>도전경매 - 경매리스트</title>
   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
   <link rel="stylesheet" type="text/css" href="/css/common.css" />
   <link rel="stylesheet" type="text/css" href="/css/postList.css" />
@@ -64,10 +64,10 @@
       <input type="submit" class="search-btn" value="검색" />
     </form>
   </div>
-  <div id="select" name="select" class="select">
-    <button type="button" id="newOrder" value="newOrder" /> 최신순
-    <button type="button" id="deadlineOrder" value="deadlineOrder" /> 마감기한순
-  </div>
+  <label>
+    <label><input type="radio" name="order" value="newOrder" /> 최신순</label>
+    <label><input type="radio" name="order" value="deadlineOrder"; /> 마감임박순</label>
+  </label>
 </div>
 <div class="container">
   <div class="product-list">
@@ -88,7 +88,6 @@
                 <span>즉시구매가 : </span
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
           </div>
-
           <div>
                 <span>마감된 시간 : </span
                 ><span
@@ -115,7 +114,7 @@
                 <span class="winningBid" th:text="${board.winningBid}"></span>
           </div>
           <div>
-                <span id="${board.id}">남은시간 : </span>
+                <span id="${board.id}">마감시간 : </span>
             <span
                   th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
           ></span>
@@ -149,9 +148,11 @@
               th:with="start = ${pagination.startPage}, end = ${pagination.endPage}"
               th:each="pageButton : ${#numbers.sequence(start, end)}"
       >
-        <a
+        <a href="javascript:void(0);"
+
                 class="page-link"
-                th:href="@{/{link}?page={page} (page = ${pageButton}, link = ${link})}"
+                th:onclick="goUrl([[${link}]],[[${second}]],[[${pageButton}]])"
+
                 th:text="${pageButton}"
         ></a>
       </li>
@@ -182,13 +183,19 @@
   const id = [[${session.id}]];
   const name = [[${session.nickname}]];
 
+  function goUrl(link,second,pageButton){
+    console.log(link);
+    //th:href="@{/{link}{second}page={page} (page = ${pageButton}, link = ${link}, second = ${second})}"
+    location.href = "/"+link+""+decodeURIComponent(second)+"page="+pageButton;
 
-  $("#newOrder").on("click", function(e){
-      location.href="/posts";
-  });;
-  $("#deadlineOrder").on("click", function(e){
-    location.href="/posts"
-  });;
+            ///{link}{second}page={page} (page = ${pageButton}, link = ${link}, second = ${second})}"
+  }
+
+  $('input[type=radio][name=order]').change(function() {
+      console.log($("input[name='order']:checked").val());
+      var order = $("input[name='order']:checked").val();
+      location.href="/posts?order="+ order;
+  });
 
   toastr.options = {
 	          "closeButton": false,

@@ -60,6 +60,15 @@ public class PostRepository {
                 .setMaxResults(pageSize)
                 .getResultList();
     }
+
+    //마감임박순 리스트
+    public List<Post> findListDeadLinePaging(int startIndex, int pageSize) {
+        return em.createQuery("select b from Post b order by b.endTime", Post.class)
+                .setFirstResult(startIndex)
+                .setMaxResults(pageSize)
+                .getResultList();
+    }
+
     public List<Post> findSearchListPaging(int startIndex, int pageSize, String keyword) {
         return em.createQuery("select b from Post b where b.title LIKE :keyword order by b.id desc", Post.class)
                 .setParameter("keyword","%"+keyword+"%")
@@ -130,4 +139,6 @@ public class PostRepository {
                 .setParameter("keyword",keyword)
                 .getSingleResult()).intValue();
     }
+
+
 }

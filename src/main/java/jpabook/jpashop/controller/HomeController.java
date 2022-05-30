@@ -4,12 +4,9 @@ import jpabook.jpashop.domain.Post;
 import jpabook.jpashop.repository.EntityRepository;
 import jpabook.jpashop.service.CertifiService;
 import lombok.RequiredArgsConstructor;
-import net.nurigo.java_sdk.exceptions.CoolsmsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -24,7 +21,9 @@ public class HomeController {
     @GetMapping("/")
     public String getHome(HttpServletRequest request, Model model) {
         List<Post> posts = entityRepository.findTop5ByOrderByViewDesc();
+
         model.addAttribute("boardList", posts);
+
         return "home/home";
     }
 
