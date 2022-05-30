@@ -439,6 +439,7 @@ public class PostController {
         postService.viewPost(itemId);
 
         List<PostUser> bidList = postUserService.bidList(itemId);
+        int bidCnt = postUserService.bidCount(itemId);
 
         PostForm form = new PostForm();
         form.setId(post.getId());
@@ -464,6 +465,7 @@ public class PostController {
         model.addAttribute("loginName",name);
         model.addAttribute("file", form.getFname());
         model.addAttribute("bidList", bidList);
+        model.addAttribute("bidCnt",bidCnt);
 
         return "posts/postItemView";
     }

@@ -9,9 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -24,6 +21,7 @@ public class HomeController {
     @GetMapping("/")
     public String getHome(HttpServletRequest request, Model model) {
         List<Post> posts = entityRepository.findTop5ByOrderByViewDesc();
+
         model.addAttribute("boardList", posts);
 
         return "home/home";

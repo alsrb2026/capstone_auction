@@ -131,7 +131,9 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                                     <a id="modifyButton" class="button" href="#" th:if="${form.postUserId == session.id}" th:href="@{/post/{id}/edit (id=${form.id})}"  role="button">수정</a>
                                     <a id="deleteButton" href="#" class="button" th:if="${form.postUserId == session.id}" th:href="@{/post/{id}/delete (id=${form.id})}"  role="button">삭제</a>
                                 </div>
-                                <div class="button bid-list-btn">입찰 현황</div>
+                                <div style="width: 100px; height: 100px;" class="button bid-list-btn">
+                                    <div th:text="'입찰 현황 보기 (' + ${bidCnt} + '명 입찰중)'"></div>
+                                </div>
                             </div>
 
                         </div>
