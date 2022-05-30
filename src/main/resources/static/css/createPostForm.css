@@ -1,51 +1,51 @@
-
-.form-control
-{
-    height: 50px;
-    border: solid 2px black;
-    border-radius: 0;
+.form-control {
+  height: 50px;
+  border: solid 2px black;
+  border-radius: 0;
 }
-.form-group
-{
-    display: flex;
-    width: 100%;
-    height: 100px;
-    margin: 0;
-    align-items: center;
-    border-bottom: solid 2px black;
+.form-group {
+  display: flex;
+  width: 100%;
+  height: 100px;
+  margin: 0;
+  align-items: center;
+  border-bottom: solid 2px black;
 }
-.submit-btn{
-    margin-top:20px;
-
+.submit-btn {
+  margin-top: 20px;
+  border: solid 1px;
+  border-radius: 0.3em;
+  width: 150px;
+  height: 50px;
+  color: white;
+  background-color: #fca863;
 }
-#content{
-    height: 180px;
+#content {
+  height: 180px;
 }
-.post-content-textarea{
-    height: 150px;
+.post-content-textarea {
+  height: 150px;
 }
-.post-form{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+.post-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
-.form-group div{
-
-    width : 150px;
-    margin-right: 20px;
-    font-size: 20px;
-    font-weight: bolder;
+.form-group div {
+  width: 150px;
+  margin-right: 20px;
+  font-size: 20px;
+  font-weight: bolder;
 }
-.btn{
-    width: 100px;
-    background-color: black;
-    color: white;
-    height: 40px;
-    border-radius: 0;
-    border: solid 1px black;
+.btn {
+  width: 100px;
+  background-color: black;
+  color: white;
+  height: 40px;
+  border-radius: 0;
+  border: solid 1px black;
 }
-.btn:hover{
-    background-color: black;
-    border: solid 1px black;
+.btn:hover {
+  background-color: black;
+  border: solid 1px black;
 }
-

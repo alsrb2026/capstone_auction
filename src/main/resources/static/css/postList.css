@@ -6,6 +6,7 @@
     border: 1px solid rgb(213, 213, 213);
     padding-left: 10px;
     font-size: 15px;
+    border-color: #fca863;
 }
 #saled{
   position:absolute;
@@ -18,8 +19,9 @@
   display: inline;
   height: 30px;
   width: 70px;
-  background-color: black;
   color: white;
+  background-color: #fca863;
+  border-color: white;
 }
 .search-form{
   height: 50px;
@@ -62,6 +64,7 @@
 #sel-category{
   height: 30px;
   font-size: 13px;
+  border-color: #fca863;
 }
 .product-img{
   height: 200px;
@@ -74,6 +77,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  background-color:#ffe5cc;
+  border: solid 1px;
 }
 .page-link{
   color: #fca863;

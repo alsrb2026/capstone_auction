@@ -26,6 +26,7 @@ public class Post {
     private int unitBid; // 입찰 단위 -> 1000, 5000, 10000, 15000, 20000, 50000
     private int currentBid; // 현재 입찰가
     private Timestamp regisTime; // 경매 올린 시간 -> yyyy-mm-dd hh:mm:ss
+    private String endTime; //마감 시간
     private int auctionPeriod; // 경매 기간 -> 12시간, 24시간, 36시간, 48시간
     private String status; // 상품 상태 -> 낙찰 중, 낙찰 완료
     private Long currentBidId; // 현재 입찰한 사용자 id

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title>도전경매 - 내 게시글 모음</title>
     <meta charset="UTF-8">
     <title>paging</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
@@ -23,7 +24,7 @@
         <div class="product-box" th:each="board : ${boardList}">
             <a href="#" th:if="${board.status != '입찰 중'}"  th:href="@{/post/{id}/bid (id=${board.id})}">
                 <div style="display: flex; justify-content: center;">
-                    <img class="product-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${board.getFname()}"/>
+                    <img class="product-img" style="-webkit-filter: grayscale(100%); filter:gray;" th:src="'/postimages/'+${board.getFname()}" onerror="this.src='/images/noimage.png'"/>
                 </div>
                 <div class="product-info saled" style=" background-color:#e6e6e6">
                     <div>
@@ -60,7 +61,7 @@
             </a>
             <a href="#" th:if="${board.status == '입찰 중'}" th:href="@{/post/{id}/bid (id=${board.id})}">
                 <div style="display: flex; justify-content: center; ">
-                    <img class="product-img" th:src="'/postimages/'+${board.getFname()}"/>
+                    <img class="product-img" th:src="'/postimages/'+${board.getFname()}" onerror="this.src='/images/noimage.png'"/>
                 </div>
                 <div class="product-info">
                     <div>

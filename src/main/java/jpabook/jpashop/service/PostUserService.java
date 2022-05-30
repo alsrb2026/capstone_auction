@@ -9,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.List;
 
+
 @Service
 @Transactional()
 @RequiredArgsConstructor
@@ -31,6 +32,15 @@ public class PostUserService {
                 .setParameter("id", id)
                 .getResultList();
     }
+
+    @Transactional
+    public int bidCount(Long id) {
+        return ((Number) em.createQuery("select count(*) from PostUser i where i.postId = :id")
+                .setParameter("id", id)
+                .getSingleResult()).intValue();
+    }
+
+
 
 
 }
