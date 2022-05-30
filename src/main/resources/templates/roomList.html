@@ -181,10 +181,8 @@
                             var content = JSON.parse(chat.body);
                             if(content.chRoomId == roomId){ // 채팅 온 문자가 자신이 눌렀던 채팅방일 경우.
                                 var msgDate = sendMsgDate(content.sendTime);
-                                if (content.senderName == sender){
-                                  $("#msgList").append("<div class='mychat'><span>" + content.senderName + ": " + content.message + " " + msgDate + "</span></div>");
-                                }
-                                else if(content.senderName == "system"){
+
+                                if(content.senderName == "system"){
                                   $("#msgList").append("<div class='syschat'><div>"+ content.senderName + ": " + content.message + "</div></div>");
                                 }
                                 else if(content.senderName == receiver){
@@ -230,11 +228,14 @@
                           $("#send").on("click", function(e){
                               var msg = document.getElementById("msg");
                               if(msg.value != ""){
+                                  var date = new Date();
+                                  var msgDate = sendMsgDate(date);
+                                  $("#msgList").append("<div class='mychat'><span>" + sender + ": " + msg.value + " " + msgDate + "</span></div>");
                                   stomp.send('/pub/chat/message', {}, JSON.stringify({
                                       chRoomId: roomId,
                                       senderName: sender,
                                       receiverName: receiver,
-                                      sendTime: new Date(),
+                                      sendTime: date,
                                       message: msg.value,
                                       checkRead: 0
                                   }));
