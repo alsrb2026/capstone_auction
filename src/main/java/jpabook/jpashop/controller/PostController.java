@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.net.URLEncoder;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -168,8 +167,7 @@ public class PostController {
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
         model.addAttribute("link",link);
-        String encode = URLEncoder.encode("&");
-        model.addAttribute("second", encode);
+        model.addAttribute("second", "&");
         return "posts/postList";
     }
 
@@ -232,7 +230,7 @@ public class PostController {
         model.addAttribute("boardList", searchboardList);
         model.addAttribute("pagination", pagination);
         model.addAttribute("link",link);
-        model.addAttribute("second", "?");
+        model.addAttribute("second", "&");
 
         return "posts/postList";
     }

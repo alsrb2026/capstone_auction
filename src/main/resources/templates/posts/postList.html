@@ -149,9 +149,11 @@
               th:with="start = ${pagination.startPage}, end = ${pagination.endPage}"
               th:each="pageButton : ${#numbers.sequence(start, end)}"
       >
-        <a
+        <a href="javascript:void(0);"
+
                 class="page-link"
-                th:href="@{/{link}{second}page={page} (page = ${pageButton}, link = ${link}, second = ${second})}"
+                th:onclick="goUrl([[${link}]],[[${second}]],[[${pageButton}]])"
+
                 th:text="${pageButton}"
         ></a>
       </li>
@@ -182,6 +184,13 @@
   const id = [[${session.id}]];
   const name = [[${session.nickname}]];
 
+  function goUrl(link,second,pageButton){
+    console.log(link);
+    //th:href="@{/{link}{second}page={page} (page = ${pageButton}, link = ${link}, second = ${second})}"
+    location.href = "/"+link+""+decodeURIComponent(second)+"page="+pageButton;
+
+            ///{link}{second}page={page} (page = ${pageButton}, link = ${link}, second = ${second})}"
+  }
 
   $('input[type=radio][name=order]').change(function() {
       console.log($("input[name='order']:checked").val());
