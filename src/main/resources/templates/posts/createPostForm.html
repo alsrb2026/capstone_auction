@@ -179,16 +179,14 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
     </div>
     <script>
     //유효성검사
-    const title = document.getElementById('title');
-    const img = document.getElementById('img');
-    const contents = document.getElementById('contents');
-    const name = document.getElementById('name');
-    const startBid = document.getElementById('startBid');
-    const winningBid = document.getElementById('winningBid');
-    const unitBid = document.getElementById('unitBid');
-    const auctionPeriod = document.getElementById('auctionPeriod');
-    console.log(startBid.value);
-    console.log(winningBid.value);
+    let title = document.getElementById('title');
+    let img = document.getElementById('img');
+    let contents = document.getElementById('contents');
+    let name = document.getElementById('name');
+    let startBid = document.getElementById('startBid');
+    let winningBid = document.getElementById('winningBid');
+    let unitBid = document.getElementById('unitBid');
+    let auctionPeriod = document.getElementById('auctionPeriod');
       const submit = () => {
         if(!title.value){
           alert("제목을 입력하세요");
