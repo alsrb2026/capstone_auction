@@ -74,7 +74,7 @@ public class PostRepository {
 
     //마감임박순 리스트
     public List<Post> findListDeadLinePaging(int startIndex, int pageSize) {
-        return em.createQuery("select b from Post b order by b.endTime", Post.class)
+        return em.createQuery("select b from Post b where b.status = '입찰 중' order by b.endTime", Post.class)
                 .setFirstResult(startIndex)
                 .setMaxResults(pageSize)
                 .getResultList();
