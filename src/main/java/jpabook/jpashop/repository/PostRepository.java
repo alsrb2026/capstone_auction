@@ -1,6 +1,7 @@
 package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Post;
+import jpabook.jpashop.domain.PostUser;
 import jpabook.jpashop.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -44,6 +45,13 @@ public class PostRepository {
 
     public Post findOne(Long id) {
         return em.find(Post.class, id);
+
+    }
+
+    public List<Post> findManyBidding(List<Integer> id) {
+        return em.createQuery("select i from Post i where i.id in :id", Post.class)
+                .setParameter("id",id)
+                .getResultList();
     }
 
     public List<Post> findAll() {
@@ -153,5 +161,11 @@ public class PostRepository {
         return em.createQuery("select m from UserEntity m where m.nickname = :nickname",
                         UserEntity.class).setParameter("nickname", nickname)
                 .getSingleResult();
+    }
+
+    public List<Integer> findMyBiddingList(String myname) {
+        return em.createQuery("select p.postId from PostUser p where p.type = '입찰' AND p.bidUserName = :myname")
+                .setParameter("myname", myname)
+                .getResultList();
     }
 }

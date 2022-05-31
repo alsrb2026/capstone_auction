@@ -267,7 +267,7 @@ public class PostController {
         return "posts/myPostList";
     }
 
-    @GetMapping("/post/myBidding") //
+    @GetMapping("/post/myBidding") //나의 입찰 중인 게시글 목록
     public String myBiddingList(@RequestParam(defaultValue = "1") int page, Model model) {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -275,10 +275,16 @@ public class PostController {
 
         //현재 로그인한 사용자정보 가져와서
         UserEntity myId = userService.findIdByNickname(nickname);
-        //사용자의 id값 가져오기
-        List<Post> myPosts = postService.findMyListPaging(myId.getUserId());
 
-        model.addAttribute("boardList", myPosts);
+        //내가 입찰한 게시글들의 id 받아오고
+        List<Integer> myBidding = postService.findMyBiddingList(nickname);
+        //받아온 id를 통해서 List<Post> posts를 만들어야함 how>? -> 쿼리에서 In쓰면 List도 가능
+        List<Post> list = postService.findManyBidding(myBidding);
+
+        System.out.println("ddfdf" + myBidding);
+
+
+        model.addAttribute("boardList", list);
         return "posts/myPostList";
     }
 

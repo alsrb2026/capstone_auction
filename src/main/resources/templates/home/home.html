@@ -102,6 +102,10 @@
         <a sec:authorize="isAuthenticated()">
           <a class="loginbox-btn" href="/post/myPost">내 게시물</a>
         </a>
+        <a sec:authorize="isAuthenticated()">
+          <a class="loginbox-btn" href="/post/myBidding">내가 입찰중인 게시글</a>
+        </a>
+
 
       </div>
     </div>
@@ -187,6 +191,7 @@
   <div><a href="roomList">채팅 목록</a></div>
 </div>
 </body>
+
 <script th:inline="javascript">
 
   toastr.options = {

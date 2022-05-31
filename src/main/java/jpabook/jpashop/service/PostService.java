@@ -72,6 +72,10 @@ public class PostService {
         return postRepository.findOne(id);
     }
 
+    public List<Post> findManyBidding(List<Integer> id) {
+        return postRepository.findManyBidding(id);
+    }
+
     //게시글 개수
     public int findAllCount() {
         return postRepository.findAllCnt();
@@ -123,6 +127,10 @@ public class PostService {
 
     public Timestamp findRegisTime(Long id) {
         return postRepository.findRegisTime(id);
+    }
+
+    public List<Integer> findMyBiddingList(String myname) {
+        return postRepository.findMyBiddingList(myname);
     }
 }
 
