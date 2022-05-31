@@ -147,7 +147,7 @@ public class PostRepository {
     public int findCategoryKeywordCnt(String category, String keyword) {
         return ((Number) em.createQuery("select count(*) from Post p where p.category = :category and p.title LIKE :keyword")
                 .setParameter("category",category)
-                .setParameter("keyword",keyword)
+                .setParameter("keyword","%"+keyword+"%")
                 .getSingleResult()).intValue();
     }
 

@@ -128,11 +128,8 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public String list(@RequestParam(defaultValue = "1") int page,
-                       @RequestParam(name = "order", defaultValue = "newOrder") String order,
-                       Model model) {
+    public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 
-        System.out.println("www"+order);
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
@@ -142,23 +139,14 @@ public class PostController {
         int startIndex = pagination.getStartIndex();
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
+        List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
-        List<Post> boardList = null;
-
-        String link = "posts?order="+order;
-
-        if(order.equals("newOrder")) {
-            boardList = postService.findListPaging(startIndex, pageSize);
-
-        } else if(order.equals("deadlineOrder")) {
-            boardList = postService.findListDeadLinePaging(startIndex, pageSize);
-        }
-
+        String link = "posts";
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
         model.addAttribute("link",link);
-        model.addAttribute("second", "&");
+        model.addAttribute("second", "?");
         return "posts/postList";
     }
 
@@ -193,12 +181,19 @@ public class PostController {
                              @RequestParam(value = "keyword") String keyword,
                              @RequestParam(defaultValue = "1") int page, Model model) {
 
-
         String category = request.getParameter("category");
+        // 카테고리+키워드 게시글 수
+        int totalListCnt;
+        totalListCnt = postService.findAllCategoryKeyword(category, keyword);
 
-        // 총 게시물 수
-        int totalListCnt = postService.findAllCategoryKeyword(category, keyword);
-        System.out.println("zgzg"+totalListCnt);
+        if(category.equals("all")){
+            totalListCnt = postService.findAllCount();
+        }
+
+
+
+        System.out.println("총개수"+totalListCnt);
+        System.out.println("카테고리"+category);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
         // DB select start index

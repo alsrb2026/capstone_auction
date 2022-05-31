@@ -64,10 +64,6 @@
       <input type="submit" class="search-btn" value="검색" />
     </form>
   </div>
-  <label>
-    <label><input type="radio" name="order" value="newOrder" /> 최신순</label>
-    <label><input type="radio" name="order" value="deadlineOrder"; /> 마감임박순</label>
-  </label>
 </div>
 <div class="container">
   <div class="product-list">
@@ -127,14 +123,18 @@
 <nav class="nav-box" aria-label="Page navigation example ">
   <ul style="border : solid 2px; border-color: #fca863"  class="pagination">
     <li class="page-item">
-      <a class="page-link" th:href="@{/posts?page=1}" aria-label="Previous">
+      <a href="javascript:void(0);"
+         class="page-link"
+         th:onclick="goUrl([[${link}]],[[${second}]],[[1]])"
+         aria-label="Previous"
+      >
         <span aria-hidden="true">처음</span>
       </a>
     </li>
     <li class="page-item">
-      <a
+      <a href="javascript:void(0);"
               class="page-link"
-              th:href="@{/posts?page={page} (page = ${pagination.prevBlock}) }"
+              th:onclick="goUrl([[${link}]],[[${second}]],[[${pagination.prevBlock}]])"
               aria-label="Previous"
       >
         <span aria-hidden="true">이전</span>
@@ -149,27 +149,25 @@
               th:each="pageButton : ${#numbers.sequence(start, end)}"
       >
         <a href="javascript:void(0);"
-
                 class="page-link"
                 th:onclick="goUrl([[${link}]],[[${second}]],[[${pageButton}]])"
-
                 th:text="${pageButton}"
         ></a>
       </li>
     </th:block>
     <li class="page-item">
-      <a
+      <a href="javascript:void(0);"
               class="page-link"
-              th:href="@{posts?page={page} (page = ${pagination.nextBlock})}"
+              th:onclick="goUrl([[${link}]],[[${second}]],[[${pagination.nextBlock}]])"
               aria-label="Next"
       >
         <span aria-hidden="true">다음</span>
       </a>
     </li>
     <li class="page-item">
-      <a
+      <a href="javascript:void(0);"
               class="page-link"
-              th:href="@{posts?page={page} (page = ${pagination.totalPageCnt})}"
+              th:onclick="goUrl([[${link}]],[[${second}]],[[${pagination.totalPageCnt}]])"
               aria-label="Previous"
       >
         <span aria-hidden="true">끝</span>
@@ -185,10 +183,7 @@
 
   function goUrl(link,second,pageButton){
     console.log(link);
-    //th:href="@{/{link}{second}page={page} (page = ${pageButton}, link = ${link}, second = ${second})}"
     location.href = "/"+link+""+decodeURIComponent(second)+"page="+pageButton;
-
-            ///{link}{second}page={page} (page = ${pageButton}, link = ${link}, second = ${second})}"
   }
 
   $('input[type=radio][name=order]').change(function() {
