@@ -72,8 +72,8 @@ public class PostService {
         return postRepository.findOne(id);
     }
 
-    public List<Post> findManyBidding(List<Integer> id) {
-        return postRepository.findManyBidding(id);
+    public List<Post> findManyByStatus(List<Integer> id, String status) {
+        return postRepository.findManyByStatus(id, status);
     }
 
     //게시글 개수

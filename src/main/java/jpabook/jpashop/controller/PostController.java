@@ -279,7 +279,7 @@ public class PostController {
         //내가 입찰한 게시글들의 id 받아오고
         List<Integer> myBidding = postService.findMyBiddingList(nickname);
         //받아온 id를 통해서 List<Post> posts를 만들어야함 how>? -> 쿼리에서 In쓰면 List도 가능
-        List<Post> list = postService.findManyBidding(myBidding);
+        List<Post> list = postService.findManyByStatus(myBidding, "입찰 중");
 
         System.out.println("ddfdf" + myBidding);
 
@@ -287,6 +287,27 @@ public class PostController {
         model.addAttribute("boardList", list);
         return "posts/myPostList";
     }
+
+
+
+    @GetMapping("/post/mySuccess") //나의 낙찰 + 즉시 구매한 게시글
+    public String myNowBuyList(@RequestParam(defaultValue = "1") int page, Model model) {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String nickname = ((UserDetails) principal).getUsername();
+
+        //현재 로그인한 사용자정보 가져와서
+        UserEntity myId = userService.findIdByNickname(nickname);
+
+        //내가 입찰한 게시글들의 id 받아오고
+        List<Integer> myBidding = postService.findMyBiddingList(nickname);
+        //받아온 id를 통해서 List<Post> posts를 만들어야함 how>? -> 쿼리에서 In쓰면 List도 가능
+        List<Post> list = postService.findManyByStatus(myBidding, "구매 완료");
+
+        model.addAttribute("boardList", list);
+        return "posts/myPostList";
+    }
+
 
 
     @GetMapping("/post/{id}")

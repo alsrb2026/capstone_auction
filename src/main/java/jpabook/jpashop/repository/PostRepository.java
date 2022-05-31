@@ -48,9 +48,10 @@ public class PostRepository {
 
     }
 
-    public List<Post> findManyBidding(List<Integer> id) {
-        return em.createQuery("select i from Post i where i.id in :id", Post.class)
+    public List<Post> findManyByStatus(List<Integer> id, String status) {
+        return em.createQuery("select i from Post i where i.id IN (:id) AND i.status= :status", Post.class)
                 .setParameter("id",id)
+                .setParameter("status",status)
                 .getResultList();
     }
 
