@@ -338,18 +338,34 @@ public class PostController {
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
 
+        //걍 Timestamp(regisTime) -> Long
+        // String(endTime) -> Long
+        // Long끼리 add 하고 String으로 변환? ㄴ
+        //form.getRegisTime() [TimeStamp] 를
+        //TimeStamp를 Long으로?
+        //html에서 가져오는건 String으로 가져와짐
+        //걍 DB에서 TimeStamp형 그대로 가져와서 getTime으로 Long으로 변환해주고 Date.setTime으로
+        //최초등록시간 set해주고 Calendar로 변환해준 다음 cal.add로 마감시간 변경
+
+        System.out.println("zzdz" + form.getRegisTime());
+
+        Timestamp regisTime = postService.findRegisTime(id);
+
+        //Service에서 findRegisTime(id)로 특정id값을 가진 게시글의 registime을 가져와서 setTIme에? ㅇㅋ
+
         String endTime = null;
         Date date = new Date();
+        date.setTime(regisTime.getTime());
         // 포맷변경 ( 년월일 시분초)
         SimpleDateFormat sdformat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         // Java 시간 더하기
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
+        Calendar cal = Calendar.getInstance(); //객체 생성
+        cal.setTime(date); //Date객체를 Calendar로 변환
         endTime = sdformat.format(cal.getTime());
-        System.out.println("지금 : " + endTime);
+        System.out.println("최초등록시간 : " + date);
         cal.add(Calendar.HOUR, form.getAuctionPeriod()); //시간 추가
         endTime = sdformat.format(cal.getTime());
-        System.out.println("마감시간 : " + endTime);
+        System.out.println("변경된 마감시간 : " + endTime);
 
         // DB select start index
         int startIndex = pagination.getStartIndex();

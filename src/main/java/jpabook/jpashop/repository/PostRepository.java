@@ -1,12 +1,14 @@
 package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Post;
+import jpabook.jpashop.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -141,4 +143,15 @@ public class PostRepository {
     }
 
 
+    public Timestamp findRegisTime(Long id) {
+        return (Timestamp) em.createQuery("select p.regisTime from Post p where p.id = :id")
+                .setParameter("id",id)
+                .getSingleResult();
+    }
+
+    public UserEntity findIdByNickname(String nickname) {
+        return em.createQuery("select m from UserEntity m where m.nickname = :nickname",
+                        UserEntity.class).setParameter("nickname", nickname)
+                .getSingleResult();
+    }
 }
