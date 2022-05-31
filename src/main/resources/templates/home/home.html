@@ -193,6 +193,11 @@
   <div><a href="/posts">물품 거래</a></div>
   <div><a href="roomList">채팅 목록</a></div>
 </div>
+<a href="#" class="btn_gotop">
+  <span class="glyphicon glyphicon-chevron-up">
+    <div>&nbsp;^&nbsp;</div><div>Top</div>
+  </span>
+</a>
 </body>
 
 <script th:inline="javascript">
@@ -277,5 +282,18 @@
       });
     });
   }
+
+  $(window).scroll(function(){
+    if ($(this).scrollTop() > 300){
+      $('.btn_gotop').show();
+    } else{
+      $('.btn_gotop').hide();
+    }
+  });
+  $('.btn_gotop').click(function(){
+    $('html, body').animate({scrollTop:0},400);
+    return false;
+  });
+
 </script>
 </html>
