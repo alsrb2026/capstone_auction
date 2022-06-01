@@ -19,7 +19,7 @@ public class ChatController {
     @MessageMapping(value = "/chat/enter")
     public void enter(ChatMessage message) throws Exception {
         List<ChatMessage> list = chatMessageService.findUserMsg(message.getChRoomId(), message.getReceiverName());
-        if(list.size() == 0){
+        if(list.size() == 0){// 유저 두명의 입장문을 한 번만 처리하기 위한 절차.
             message.setCheckRead(1);
             chatMessageService.saveChatMessage(message);
             template.convertAndSend("/sub/chat/room", message);

@@ -47,10 +47,10 @@ public class CertifiService {
         Message coolsms = new Message(api_key, api_secret);
         HashMap<String, String> params = new HashMap<String, String>();
 
-        params.put("to", "01074948233"); //발신자 전화번호
-        params.put("from", "01074948233"); //여기에 받는 사람 전화번호
+        params.put("to", to); //발신자 전화번호
+        params.put("from", from); //여기에 받는 사람 전화번호
         params.put("type", "SMS");
-        params.put("text", "[도전경매]경매글 :\"삶과 꿈 교재\" 낙찰or즉구 완료! 채팅목록을 확인하세요");
+        params.put("text", msg);
 
         try {
             JSONObject obj = (JSONObject) coolsms.send(params);

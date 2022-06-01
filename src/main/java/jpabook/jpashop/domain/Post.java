@@ -32,6 +32,4 @@ public class Post {
     private Long currentBidId; // 현재 입찰한 사용자 id
     private String fname;
 
-    // private String time; //작성 시간 -> 물품 등록 시간이랑 겹쳐서 굳이 안써도 될 거 같음
-
 }
