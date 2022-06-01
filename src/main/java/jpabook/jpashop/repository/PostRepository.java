@@ -1,12 +1,15 @@
 package jpabook.jpashop.repository;
 
 import jpabook.jpashop.domain.Post;
+import jpabook.jpashop.domain.PostUser;
+import jpabook.jpashop.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +45,14 @@ public class PostRepository {
 
     public Post findOne(Long id) {
         return em.find(Post.class, id);
+
+    }
+
+    public List<Post> findManyByStatus(List<Integer> id, String status) {
+        return em.createQuery("select i from Post i where i.id IN (:id) AND i.status= :status", Post.class)
+                .setParameter("id",id)
+                .setParameter("status",status)
+                .getResultList();
     }
 
     public List<Post> findAll() {
@@ -63,7 +74,7 @@ public class PostRepository {
 
     //마감임박순 리스트
     public List<Post> findListDeadLinePaging(int startIndex, int pageSize) {
-        return em.createQuery("select b from Post b order by b.endTime", Post.class)
+        return em.createQuery("select b from Post b where b.status = '입찰 중' order by b.endTime", Post.class)
                 .setFirstResult(startIndex)
                 .setMaxResults(pageSize)
                 .getResultList();
@@ -136,9 +147,26 @@ public class PostRepository {
     public int findCategoryKeywordCnt(String category, String keyword) {
         return ((Number) em.createQuery("select count(*) from Post p where p.category = :category and p.title LIKE :keyword")
                 .setParameter("category",category)
-                .setParameter("keyword",keyword)
+                .setParameter("keyword","%"+keyword+"%")
                 .getSingleResult()).intValue();
     }
 
 
+    public Timestamp findRegisTime(Long id) {
+        return (Timestamp) em.createQuery("select p.regisTime from Post p where p.id = :id")
+                .setParameter("id",id)
+                .getSingleResult();
+    }
+
+    public UserEntity findIdByNickname(String nickname) {
+        return em.createQuery("select m from UserEntity m where m.nickname = :nickname",
+                        UserEntity.class).setParameter("nickname", nickname)
+                .getSingleResult();
+    }
+
+    public List<Integer> findMyBiddingList(String myname) {
+        return em.createQuery("select p.postId from PostUser p where p.type = '입찰' AND p.bidUserName = :myname")
+                .setParameter("myname", myname)
+                .getResultList();
+    }
 }

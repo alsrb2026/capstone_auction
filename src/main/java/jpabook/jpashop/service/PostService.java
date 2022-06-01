@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -71,6 +72,10 @@ public class PostService {
         return postRepository.findOne(id);
     }
 
+    public List<Post> findManyByStatus(List<Integer> id, String status) {
+        return postRepository.findManyByStatus(id, status);
+    }
+
     //게시글 개수
     public int findAllCount() {
         return postRepository.findAllCnt();
@@ -120,7 +125,13 @@ public class PostService {
         return postRepository.findCategoryKeywordCnt(category, keyword);
     }
 
+    public Timestamp findRegisTime(Long id) {
+        return postRepository.findRegisTime(id);
+    }
 
+    public List<Integer> findMyBiddingList(String myname) {
+        return postRepository.findMyBiddingList(myname);
+    }
 }
 
 

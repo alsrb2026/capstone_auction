@@ -128,11 +128,8 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public String list(@RequestParam(defaultValue = "1") int page,
-                       @RequestParam(name = "order", defaultValue = "newOrder") String order,
-                       Model model) {
+    public String list(@RequestParam(defaultValue = "1") int page, Model model) {
 
-        System.out.println("www"+order);
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
@@ -142,23 +139,14 @@ public class PostController {
         int startIndex = pagination.getStartIndex();
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
+        List<Post> boardList = postService.findListPaging(startIndex, pageSize);
 
-        List<Post> boardList = null;
-
-        String link = "posts?order="+order;
-
-        if(order.equals("newOrder")) {
-            boardList = postService.findListPaging(startIndex, pageSize);
-
-        } else if(order.equals("deadlineOrder")) {
-            boardList = postService.findListDeadLinePaging(startIndex, pageSize);
-        }
-
+        String link = "posts";
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
         model.addAttribute("link",link);
-        model.addAttribute("second", "&");
+        model.addAttribute("second", "?");
         return "posts/postList";
     }
 
@@ -193,12 +181,19 @@ public class PostController {
                              @RequestParam(value = "keyword") String keyword,
                              @RequestParam(defaultValue = "1") int page, Model model) {
 
-
         String category = request.getParameter("category");
+        // 카테고리+키워드 게시글 수
+        int totalListCnt;
+        totalListCnt = postService.findAllCategoryKeyword(category, keyword);
 
-        // 총 게시물 수
-        int totalListCnt = postService.findAllCategoryKeyword(category, keyword);
-        System.out.println("zgzg"+totalListCnt);
+        if(category.equals("all")){
+            totalListCnt = postService.findAllCount();
+        }
+
+
+
+        System.out.println("총개수"+totalListCnt);
+        System.out.println("카테고리"+category);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
         // DB select start index
@@ -267,7 +262,7 @@ public class PostController {
         return "posts/myPostList";
     }
 
-    @GetMapping("/post/myBidding") //
+    @GetMapping("/post/myBidding") //나의 입찰 중인 게시글 목록
     public String myBiddingList(@RequestParam(defaultValue = "1") int page, Model model) {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -275,12 +270,39 @@ public class PostController {
 
         //현재 로그인한 사용자정보 가져와서
         UserEntity myId = userService.findIdByNickname(nickname);
-        //사용자의 id값 가져오기
-        List<Post> myPosts = postService.findMyListPaging(myId.getUserId());
 
-        model.addAttribute("boardList", myPosts);
+        //내가 입찰한 게시글들의 id 받아오고
+        List<Integer> myBidding = postService.findMyBiddingList(nickname);
+        //받아온 id를 통해서 List<Post> posts를 만들어야함 how>? -> 쿼리에서 In쓰면 List도 가능
+        List<Post> list = postService.findManyByStatus(myBidding, "입찰 중");
+
+        System.out.println("ddfdf" + myBidding);
+
+
+        model.addAttribute("boardList", list);
         return "posts/myPostList";
     }
+
+
+
+    @GetMapping("/post/mySuccess") //나의 낙찰 + 즉시 구매한 게시글
+    public String myNowBuyList(@RequestParam(defaultValue = "1") int page, Model model) {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String nickname = ((UserDetails) principal).getUsername();
+
+        //현재 로그인한 사용자정보 가져와서
+        UserEntity myId = userService.findIdByNickname(nickname);
+
+        //내가 입찰한 게시글들의 id 받아오고
+        List<Integer> myBidding = postService.findMyBiddingList(nickname);
+        //받아온 id를 통해서 List<Post> posts를 만들어야함 how>? -> 쿼리에서 In쓰면 List도 가능
+        List<Post> list = postService.findManyByStatus(myBidding, "구매 완료");
+
+        model.addAttribute("boardList", list);
+        return "posts/myPostList";
+    }
+
 
 
     @GetMapping("/post/{id}")
@@ -338,18 +360,34 @@ public class PostController {
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
 
+        //걍 Timestamp(regisTime) -> Long
+        // String(endTime) -> Long
+        // Long끼리 add 하고 String으로 변환? ㄴ
+        //form.getRegisTime() [TimeStamp] 를
+        //TimeStamp를 Long으로?
+        //html에서 가져오는건 String으로 가져와짐
+        //걍 DB에서 TimeStamp형 그대로 가져와서 getTime으로 Long으로 변환해주고 Date.setTime으로
+        //최초등록시간 set해주고 Calendar로 변환해준 다음 cal.add로 마감시간 변경
+
+        System.out.println("zzdz" + form.getRegisTime());
+
+        Timestamp regisTime = postService.findRegisTime(id);
+
+        //Service에서 findRegisTime(id)로 특정id값을 가진 게시글의 registime을 가져와서 setTIme에? ㅇㅋ
+
         String endTime = null;
         Date date = new Date();
+        date.setTime(regisTime.getTime());
         // 포맷변경 ( 년월일 시분초)
         SimpleDateFormat sdformat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
         // Java 시간 더하기
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
+        Calendar cal = Calendar.getInstance(); //객체 생성
+        cal.setTime(date); //Date객체를 Calendar로 변환
         endTime = sdformat.format(cal.getTime());
-        System.out.println("지금 : " + endTime);
+        System.out.println("최초등록시간 : " + date);
         cal.add(Calendar.HOUR, form.getAuctionPeriod()); //시간 추가
         endTime = sdformat.format(cal.getTime());
-        System.out.println("마감시간 : " + endTime);
+        System.out.println("변경된 마감시간 : " + endTime);
 
         // DB select start index
         int startIndex = pagination.getStartIndex();

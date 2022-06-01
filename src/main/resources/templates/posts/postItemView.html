@@ -107,7 +107,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         />
                     </div>
                     <div class="content form-groups" style="display: block">
-                        <div>내용</div>
+                        <div>내용 :</div>
                         <div class="text content-text" th:text="*{contents}"></div>
                         <input type="hidden" th:field="*{contents}" />
                     </div>
@@ -178,7 +178,8 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         </div>
                         <div class="regisTime form-groups">
                             <button
-                                    style=""
+                                    style="width: 70px; height: 50px;"
+                                    class="button"
                                     type="button"
                                     id="expButton"
                                     th:if="${form.status == '입찰 중' and form.postUserId == session.id}"
@@ -195,7 +196,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                             <div id="plus">+</div>
                             <div id="minus">-</div>
                         </div>
-                        <div style="display: flex; align-items: center">
+                        <div style="display: flex; align-items: center" width="500px">
                             <div class="bid-btn">
                                 <div>
                                     <button
@@ -223,6 +224,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                                         th:if="${form.postUserId == session.id && form.currentBidId == 0}"
                                         th:href="@{/post/{id}/edit (id=${form.id})}"
                                         role="button"
+                                        style="flex-grow: 3; width: 70px; height: 50px;"
                                 >수정</a
                                 >
                                 <a
@@ -232,11 +234,14 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                                         th:if="${form.postUserId == session.id}"
                                         th:href="@{/post/{id}/delete (id=${form.id})}"
                                         role="button"
+                                        style="flex-grow: 3; width: 70px; height: 50px;"
                                 >삭제</a
                                 >
                             </div>
-                            <div style="width: 100px; height: 100px;" class="button bid-list-btn">
-                                <div th:text="'입찰 현황 보기 (' + ${bidCnt} + '명 입찰중)'"></div>
+                            <div style="flex-grow:12; visibility: hidden">
+                            </div>
+                            <div style="width: 50px; height: 80px; flex-grow: 3; text-align: center " class="button bid-list-btn">
+                                <span th:text="'입찰 현황 보기  (' + ${bidCnt} + '명 입찰중)'"></span>
                         </div>
                     </div>
                 </div>
@@ -644,7 +649,8 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         const today = new Date();
         const distance = expiredDate.getTime() - today.getTime();
 
-        if(distance == 0){
+        if(status == '입찰 중'){
+            if(distance <= 0){
             $.ajax({
                 type: "POST",
                 url: "/post/expired",
@@ -668,14 +674,14 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     alert("오류 발생");
                 }
             });
-        }
-        else{
-            var day = Math.floor(distance / (1000*60*60*24));
-            var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
-            var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
-            var seconds = Math.floor((distance % (1000*60))/1000);
-
+            }
+            else{
+                var day = Math.floor(distance / (1000*60*60*24));
+                var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
+                var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
+                var seconds = Math.floor((distance % (1000*60))/1000);
             document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
+            }
         }
     }
 
