@@ -26,6 +26,8 @@
             <form class="post-form" th:action="@{/post/{id}/edit (id=${form.id})}" th:object="${form}" method="post" enctype="multipart/form-data">
                 <input type="hidden" th:field="*{id}" th:src="*{fname}" />
                 <input type="hidden" th:field="*{status}"/>
+                <input type="hidden" th:field="*{fname}" />
+                <input class="ischanged" name="ischanged" id="ischagned" type="hidden" value="notchange"/>
                 <div class="form-group">
                     <div>카테고리</div>
                     <select
@@ -53,7 +55,7 @@
                 </div>
                 <div class="form-group">
                     <div>상품 사진</div>
-                    <input type="file" name="files"
+                    <input type="file" name="files" onchange="onChange()"
                            id="img" class="form-control" style="border: none;">
                     <!-- 여기서 files는 controller에 @RequestPart MultipartFile files -->
 
@@ -162,6 +164,15 @@
         </div>
 </body>
 <script>
+
+
+
+    const onChange = (e) => {
+        console.log("zz");
+        var test = document.getElementById("ischagned");
+        test.value = "change";
+    };
+
     //유효성검사
     const title = document.getElementById('title');
     const img = document.getElementById('img');

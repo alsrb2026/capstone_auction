@@ -353,13 +353,16 @@ public class PostController {
     }
 
     @PostMapping("post/{id}/edit")
-    public String auctionPost(@RequestParam(defaultValue = "1") int page, @PathVariable Long id,
+    public String auctionPost(@RequestParam(defaultValue = "1") int page,
+                              @RequestParam(value ="fname") String fname,
+                              @RequestParam(value ="ischanged") String ischanged,
+                              @PathVariable Long id,
                               @ModelAttribute("form") PostForm form, Model model, @RequestPart MultipartFile files) throws Exception {
         // 총 게시물 수
         int totalListCnt = postService.findAllCount();
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
         Pagination pagination = new Pagination(totalListCnt, page);
-
+        System.out.println("ㅋㄴ"+ischanged);
         //걍 Timestamp(regisTime) -> Long
         // String(endTime) -> Long
         // Long끼리 add 하고 String으로 변환? ㄴ
@@ -420,10 +423,21 @@ public class PostController {
 
         model.addAttribute("boardList", boardList);
         model.addAttribute("pagination", pagination);
+        System.out.println("수정한 사진이름 : "+file.getFilename());
+        System.out.println("원래 사진이름 : "+ fname);
+
+        String isfname= null;
+        //만약 수정 안했으면 사진 그대로 set
+        if(ischanged.equals("notchange")){
+            isfname = fname;
+        } else if(ischanged.equals("change")){
+            isfname = file.getFilename();
+        }
+
 
         postService.updatePost(id, form.getTitle(), form.getContents(), form.getProductName(), form.getCategory(),
                 form.getStartBid(), form.getWinningBid(), form.getUnitBid(), form.getAuctionPeriod(), endTime, form.getStatus(),
-                file.getFilename());
+                isfname);
 
         return "redirect:/";
     }
