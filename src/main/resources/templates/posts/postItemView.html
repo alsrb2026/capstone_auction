@@ -347,27 +347,22 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
     const minus = () => {
         var currentBid = document.getElementById("currentBid").innerText;
-        if([[${form.currentBidId}]] == 0){
-            if(currentBid == [[${form.startBid}]]){
-                if (price.innerText != currentBid){
-                    price.innerText = price.innerText*1 - [[${form.unitBid}]];
-                }
-            }
-            else{
-                if (price.innerText <= currentBid*1 + [[${form.unitBid}]]){
-
-                }
-                else{
-                    price.innerText = price.innerText*1 - [[${form.unitBid}]];
-                }
+        if([[${form.currentBidId}]] == 0){ // 입찰자가 없는 경우, 가격대를 시작가부터 즉구가까지 빼질수 있도록.
+            if(price.innerText > [[${form.startBid}]]){
+                price.innerText = price.innerText*1 - [[${form.unitBid}]];
             }
         }
         else{ // 입찰자가 있지만 시작가와 같은 가격으로 입찰했을 때
             if(currentBid == [[${form.startBid}]]){
-                if(price.innerText*1 - [[${form.unitBid}]] <= [[${form.currentBid}]]){}
-                else{
+                if(price.innerText*1 - [[${form.unitBid}]] > [[${form.currentBid}]]){
                     price.innerText = price.innerText*1 - [[${form.unitBid}]];
                 }
+                else{
+
+                }
+            }
+            else{
+                price.innerText = price.innerText*1 - [[${form.unitBid}]];
             }
         }
     }
@@ -438,6 +433,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         // price text 설정
                         if(parseInt(msg[7]) == [[${form.startBid}]]){ // 입찰한 유저의 입찰가가 시작가와 같으면, 입찰가격을 조정해야 함.
                             // 입찰에 관여되어있는 유저에게 메시지 전송
+                            price.innerText = parseInt(msg[7]) + [[${form.unitBid}]];
                             if(id == parseInt(msg[1])){
                                 toastr.success("입찰에 성공하였습니다.");
                             }
