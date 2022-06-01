@@ -40,7 +40,7 @@ public class CertifiService {
         return numStr;
     }
 
-    public void sendSms() {
+    public void sendSms(String to, String from, String msg) {
 
         String api_key = "NCSKG3PJXW7O9OVN";
         String api_secret = "YJIWFSX2ZSNY7BMQ8W14VMO4NB6KDSPJ";

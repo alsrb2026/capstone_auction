@@ -352,26 +352,37 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 
     const minus = () => {
         var currentBid = document.getElementById("currentBid").innerText;
-        if([[${form.currentBidId}]] == 0){
-            if(currentBid == [[${form.startBid}]]){
-                if (price.innerText != currentBid){
-                    price.innerText = price.innerText*1 - [[${form.unitBid}]];
+        var min = bid*1 + [[${form.unitBid}]];
+
+        if([[${form.startBid}]] == [[${form.currentBid}]]){ // 시작가와 현재 입찰가가 같을 때, -> 맨 처음 등록했을 때 or 입찰자가 시작가로 입찰할 경우/
+            if([[${form.currentBidId}]] == 0){ // 맨 처음 올렸을 때.
+                // price - 입찰단위 > 시작가 -> 더 가격을 내릴 수 있다.
+                if(price.innerText - [[${form.unitBid}]] > [[${form.startBid}]]){
+                    price.innerText = price.innerText * 1 - [[${form.unitBid}]];
+                }
+                else{ // price - 입찰단위 <= 시작가 -> 더 가격을 내릴 수 없음.
+                    price.innerText = [[${form.startBid}]];
                 }
             }
-            else{
-                if (price.innerText <= currentBid*1 + [[${form.unitBid}]]){
-
+            else{ // 입찰자가 시작가로 입찰한 경우 -> 입찰가 + 입찰단위 아래로 가격이 떨어지면 안됨. 그러면 기존 입찰자와 같은 금액으로 입찰하게 됨.
+                if(price.innerText - [[${form.unitBid}]] > min){
+                    price.innerText = price.innerText * 1 - [[${form.unitBid}]];
                 }
                 else{
-                    price.innerText = price.innerText*1 - [[${form.unitBid}]];
+                    price.innerText = min
                 }
             }
         }
-        else{ // 입찰자가 있지만 시작가와 같은 가격으로 입찰했을 때
-            if(currentBid == [[${form.startBid}]]){
-                if(price.innerText*1 - [[${form.unitBid}]] <= [[${form.currentBid}]]){}
+        else{ // 시작가와 입찰가가 다른 경우
+            if(price.innerText - [[${form.unitBid}]] > min){
+                price.innerText = price.innerText * 1 - [[${form.unitBid}]];
+            }
+            else{
+                if(min > [[${form.winningBid}]]){
+                    price.innerText = [[${form.winningBid}]];
+                }
                 else{
-                    price.innerText = price.innerText*1 - [[${form.unitBid}]];
+                    price.innerText = min;
                 }
             }
         }
@@ -443,6 +454,7 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                         // price text 설정
                         if(parseInt(msg[7]) == [[${form.startBid}]]){ // 입찰한 유저의 입찰가가 시작가와 같으면, 입찰가격을 조정해야 함.
                             // 입찰에 관여되어있는 유저에게 메시지 전송
+                            price.innerText = parseInt(msg[7]) + [[${form.unitBid}]];
                             if(id == parseInt(msg[1])){
                                 toastr.success("입찰에 성공하였습니다.");
                             }
@@ -653,7 +665,8 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
         const today = new Date();
         const distance = expiredDate.getTime() - today.getTime();
 
-        if(distance == 0){
+        if(status == '입찰 중'){
+            if(distance <= 0){
             $.ajax({
                 type: "POST",
                 url: "/post/expired",
@@ -677,14 +690,14 @@ ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
                     alert("오류 발생");
                 }
             });
-        }
-        else{
-            var day = Math.floor(distance / (1000*60*60*24));
-            var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
-            var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
-            var seconds = Math.floor((distance % (1000*60))/1000);
-
+            }
+            else{
+                var day = Math.floor(distance / (1000*60*60*24));
+                var hour = Math.floor((distance % (1000*60*60*24))/(1000*60*60)) + day * 24;
+                var minutes = Math.floor((distance % (1000*60*60))/(1000*60));
+                var seconds = Math.floor((distance % (1000*60))/1000);
             document.getElementById("timer").innerText = "남은 시간: " + hour + ":" + minutes + ":" + seconds;
+            }
         }
     }
 

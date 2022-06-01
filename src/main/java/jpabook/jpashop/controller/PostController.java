@@ -35,6 +35,7 @@ public class PostController {
     private final ChatRoomService chatRoomService;
     private final FilesService filesService;
     private final PostUserService postUserService;
+    private final CertifiService certifiService;
 
     @GetMapping("/posts/new")
     public String createForm(HttpServletRequest request, Model model) {
@@ -190,8 +191,6 @@ public class PostController {
             totalListCnt = postService.findAllCount();
         }
 
-
-
         System.out.println("총개수"+totalListCnt);
         System.out.println("카테고리"+category);
         // 생성인자로  총 게시물 수, 현재 페이지를 전달
@@ -200,7 +199,6 @@ public class PostController {
         int startIndex = pagination.getStartIndex();
         // 페이지 당 보여지는 게시글의 최대 개수
         int pageSize = pagination.getPageSize();
-
 
         List<Post> searchboardList;
         System.out.println("wow" + category);
@@ -544,6 +542,10 @@ public class PostController {
         String bidUserAccountId = (String)session.getAttribute("accountId");
         String postUserAccountId = userRepository.findById(post.getPostUserId()).get().getName();
 
+        String from = userRepository.findById(id).get().getPhoneNumber(); // 구매자
+        String to = userRepository.findById(post.getPostUserId()).get().getPhoneNumber(); // 판매자
+
+
         postUser.setPostId(postId);
         postUser.setBidUserAccountId(bidUserAccountId);
         postUser.setBidUserName(buyerName);
@@ -556,6 +558,8 @@ public class PostController {
         postUserService.save(postUser);
 
         chatRoomService.createChatRoom(post.getProductName(), post.getPostUserId(), id, regisName, buyerName);
+
+        certifiService.sendSms(from, to, "[도전경매]경매글: " + post.getProductName() + " 구매 완료! 채팅목록을 확인하세요!");
     }
 
     @ResponseBody
@@ -600,6 +604,11 @@ public class PostController {
 
             String buyerName = userRepository.findById(currentBidId).get().getNickname();
             chatRoomService.createChatRoom(productName, postUserId, currentBidId, regisName, buyerName);
+
+            String from = userRepository.findById(post.getPostUserId()).get().getPhoneNumber();
+            String to = userRepository.findById(post.getCurrentBidId()).get().getPhoneNumber();
+
+            certifiService.sendSms(from, to, "[도전경매]경매글: " + post.getProductName() + " 낙찰 완료! 채팅목록을 확인하세요!");
 
             return "has bid user";
         }
@@ -656,6 +665,11 @@ public class PostController {
                     // 그리고 채팅방 생성, 채팅방 이름 : 물품이름(물품 올린 사용자 닉네임) 이렇게?
                     chatRoomService.createChatRoom(form.getProductName(), form.getPostUserId(), id
                             , regisName, buyerName);
+
+                    String from = userRepository.findById(id).get().getPhoneNumber();
+                    String to = userRepository.findById(regisId).get().getPhoneNumber();
+                    certifiService.sendSms(from, to, "[도전경매]: " + form.getProductName() + " 낙찰 완료! 채팅목록을 확인하세요!");
+
                 } else if (form.getCurrentBid() < form.getWinningBid()) { // 1-2-(2). 현재 입찰한 금액이 낙찰가보다 낮을 경우
                     postService.updatePostBidStatus(form.getId(), id, bid, "입찰 중");
                     postUser.setPostId(postId);
