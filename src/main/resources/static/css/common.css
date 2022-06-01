@@ -94,6 +94,10 @@ button {
 .link-box a{
   color: #5c5c5c;
 }
-.link-box a:hover{
+.link-box a:hover {
   text-decoration: underline;
+}
+
+input[type='file'] {
+  color: transparent;
 }
