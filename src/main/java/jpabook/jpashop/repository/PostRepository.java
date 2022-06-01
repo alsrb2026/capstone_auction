@@ -13,6 +13,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 @Repository
 @RequiredArgsConstructor
 public class PostRepository {
