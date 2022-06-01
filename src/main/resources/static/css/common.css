@@ -67,3 +67,28 @@ button {
   padding:15px 20px;
   border-radius:100%;
 }
+.footer{
+  height:150px;
+  padding: 20px;
+  background:#fca863;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.footer_img{
+  margin-left: 30px;
+  height: 80px;
+  width: auto;
+}
+.team-box{
+  margin-left: 100px;
+}
+.link-box{
+  margin-left: 100px;
+}
+.link-box a{
+  color: #5c5c5c;
+}
+.link-box a:hover{
+  text-decoration: underline;
+}
