@@ -82,9 +82,14 @@ button {
 }
 .team-box{
   margin-left: 100px;
+  width: 250px;
+  height: 80px;
+  overflow: hidden;
 }
 .link-box{
   margin-left: 100px;
+  width: 400px;
+  height: 80px;
 }
 .link-box a{
   color: #5c5c5c;
