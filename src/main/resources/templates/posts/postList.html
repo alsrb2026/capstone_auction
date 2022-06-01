@@ -85,7 +85,13 @@
                 ><span class="winningBid" th:text="${board.winningBid}"></span>
           </div>
           <div>
-                <span>마감된 시간 : </span
+            <span>등록 : </span>
+            <span class="regisTime"
+                  th:text="${#dates.format(board.regisTime.getTime(), 'MM/dd HH:mm')}"
+            ></span>
+          </div>
+          <div>
+                <span>마감 : </span
                 ><span
                   th:text="${#dates.format(board.regisTime.getTime(), 'MM/dd HH:mm')}"
           ></span>
@@ -110,7 +116,13 @@
                 <span class="winningBid" th:text="${board.winningBid}"></span>
           </div>
           <div>
-                <span id="${board.id}">마감시간 : </span>
+                <span>등록 : </span>
+            <span class="regisTime"
+                  th:text="${#dates.format(board.regisTime.getTime(), 'MM/dd HH:mm')}"
+            ></span>
+          </div>
+          <div>
+                <span id="${board.id}">마감 : </span>
             <span
                   th:text="${#dates.format(board.regisTime.getTime() + board.auctionPeriod * 1000 * 60 * 60, 'MM/dd HH:mm')}"
           ></span>

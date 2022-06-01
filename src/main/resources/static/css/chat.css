@@ -1,21 +1,22 @@
-@charset "UTF-8"
+@charset "UTF-8";
 
 .msg-container{ max-width:1170px; margin:auto; }
 
 .inbox_people{
-		none repeat scroll 0 0;
-	float: left:
+	none: repeat scroll 0 0;
+	float: left;
 	overflow: hidden;
 	width: 40%; border-right: 1px solid #f7f7f7;
 }
 
 .inbox_msg{
-	border: 1px solid #f7f7f7;
+	border: 3px solid #fca863;
+	border-radius: 10px;
 	clear: both;
 	overflow: hidden;
 }
 
-.headind_srch{ padding: 10px 29px 10px 20px; overflow:hidden; border-bottom:1px solid #b8b6b6; }
+.headind_srch{ padding: 10px 29px 10px 20px; overflow:hidden; border-bottom:1px solid #fca863; }
 
 .user_header h4 {
 	font-size: 20px;
